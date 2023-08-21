@@ -1,23 +1,34 @@
 package com.thirdgate.hackernews
 
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
-import android.view.Menu
-import android.view.MenuItem
 import com.thirdgate.hackernews.databinding.ActivityMainBinding
+import okhttp3.OkHttpClient
+import okhttp3.Request
+
+import okio.IOException
+
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
+    private lateinit var textView: TextView
+    val client = OkHttpClient()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -28,10 +39,40 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
 
-        binding.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+//        binding.fab.setOnClickListener { view ->
+//            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                    .setAction("Action", null).show()
+//        }
+
+
+        textView = findViewById(R.id.textview_first)
+        textView.text = "HIIII"
+
+        textView.text = textView.text.toString() + "\n BYYEEE"
+
+        var bodyString = doInBackground("abc")
+        //textView.text = bodyString
+
+
+    }
+
+    fun doInBackground(vararg urls: String): String? {
+
+
+        val getRequest: Request = Request.Builder()
+            .url("https://hacker-news.firebaseio.com/v0/item/37208083.json?print=pretty")
+            .build()
+
+        var bodyString = ""
+        try {
+            val response = client.newCall(getRequest).execute()
+            bodyString = response.body!!.string()
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
+
+        return bodyString
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
