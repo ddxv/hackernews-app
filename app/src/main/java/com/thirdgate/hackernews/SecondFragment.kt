@@ -25,8 +25,9 @@ class SecondFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-    
+
         _binding = FragmentSecondBinding.inflate(inflater, container, false)
+        binding.textviewSecond.text = "New Text"
         return binding.root
 
     }

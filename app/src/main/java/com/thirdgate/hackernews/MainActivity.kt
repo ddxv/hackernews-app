@@ -1,5 +1,6 @@
 package com.thirdgate.hackernews
 
+import ApiService
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -11,9 +12,6 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.thirdgate.hackernews.databinding.ActivityMainBinding
 import okhttp3.OkHttpClient
-import okhttp3.Request
-
-import okio.IOException
 
 
 class MainActivity : AppCompatActivity() {
@@ -22,7 +20,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     private lateinit var textView: TextView
+    private lateinit var textView2: TextView
     val client = OkHttpClient()
+    private val apiService = ApiService()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,41 +39,30 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
 
-//        binding.fab.setOnClickListener { view ->
-//            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                    .setAction("Action", null).show()
+
+        //textView = findViewById(R.id.textview_first)
+        //textView2 = findViewById(R.id.textview_second)
+        //textView.text = "HIIII"
+        //textView2.text = "222"
+
+
+//        CoroutineScope(Dispatchers.Main).launch {
+//            val result = getArticle("37208083")
+//            // Handle the result here, update your UI, etc.
+//            textView.text = result.toString()
+//            var pretty = """
+//               Title: ${result["title"]}
+//            """.trimIndent()
+//            //textView2.text = pretty
 //        }
-
-
-        textView = findViewById(R.id.textview_first)
-        textView.text = "HIIII"
-
-        textView.text = textView.text.toString() + "\n BYYEEE"
-
-        var bodyString = doInBackground("abc")
-        //textView.text = bodyString
-
-
     }
 
-    fun doInBackground(vararg urls: String): String? {
+//    suspend fun getArticle(articleNum: String): Map<String, Any> {
+//        return withContext(Dispatchers.IO) {
+//            apiService.getArticle(articleNum)
+//        }
+//    }
 
-
-        val getRequest: Request = Request.Builder()
-            .url("https://hacker-news.firebaseio.com/v0/item/37208083.json?print=pretty")
-            .build()
-
-        var bodyString = ""
-        try {
-            val response = client.newCall(getRequest).execute()
-            bodyString = response.body!!.string()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-
-        return bodyString
-
-    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
