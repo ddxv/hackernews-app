@@ -1,3 +1,4 @@
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
@@ -11,12 +12,12 @@ class ApiService {
 
     val gson = Gson()
     val type = object : TypeToken<Map<Int, Any>>() {}.type
-    val myBaseUrl: String = "https://thirdgate.dev/api/articles/"
+    val myBaseUrl: String = "https://thirdgate.dev/api/articles"
 
 
     suspend fun getArticle(articleNum: String): Map<String, Any> {
         return withContext(Dispatchers.IO) {
-            val url = myBaseUrl + articleNum
+            val url = "$myBaseUrl/$articleNum"
             val request = Request.Builder().url(url).build()
             client.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) throw IOException("Unexpected code $response")
@@ -31,9 +32,10 @@ class ApiService {
         }
     }
 
-    suspend fun getArticles(articleType: String): Map<String, Any> {
+    suspend fun getArticles(articleType: String, page: Int = 1): Map<String, Any> {
         return withContext(Dispatchers.IO) {
-            val url = "$myBaseUrl/list/$articleType"
+            val url = "$myBaseUrl/list/$articleType?page=$page"
+            Log.i("ApiService", "Calling url: $url")
             val request = Request.Builder().url(url).build()
             client.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) throw IOException("Unexpected code $response")

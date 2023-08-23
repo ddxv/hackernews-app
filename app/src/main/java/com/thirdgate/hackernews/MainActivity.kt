@@ -21,7 +21,10 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        viewModel.fetchArticles(apiService)
+        viewModel.fetchArticles(apiService, "top")
+        viewModel.fetchArticles(apiService, "best")
+        viewModel.fetchArticles(apiService, "new")
+
 
         setAppTheme()
         super.onCreate(savedInstanceState)
