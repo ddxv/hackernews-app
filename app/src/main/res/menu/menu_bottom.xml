@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/topNews"
+        android:icon="@android:drawable/arrow_up_float"
+        android:title="Top" />
+    <item
+        android:id="@+id/latestNews"
+        android:icon="@android:drawable/ic_menu_my_calendar"
+        android:title="Latest" />
+    <item
+        android:id="@+id/bestNews"
+        android:icon="@android:drawable/btn_star"
+        android:title="Best" />
+
+</menu>

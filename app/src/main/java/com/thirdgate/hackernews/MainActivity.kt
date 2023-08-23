@@ -4,64 +4,67 @@ import ApiService
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.NavigationUI
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.thirdgate.hackernews.databinding.ActivityMainBinding
-import okhttp3.OkHttpClient
 
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
-
-    private lateinit var textView: TextView
-    private lateinit var textView2: TextView
-    val client = OkHttpClient()
     private val apiService = ApiService()
+    private val viewModel: SharedViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        viewModel.fetchArticles(apiService)
+
+        setAppTheme()
         super.onCreate(savedInstanceState)
 
-
-
         binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(binding.root)  // Make sure to set the content view first
+
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        val navController = findNavController(R.id.nav_host_fragment_content_main)
+
+        NavigationUI.setupWithNavController(bottomNavigationView, navController)
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            val bundle = when (item.itemId) {
+                R.id.topNews -> bundleOf("articleType" to "top")
+                R.id.latestNews -> bundleOf("articleType" to "new")
+                R.id.bestNews -> bundleOf("articleType" to "best")
+                // Add other cases as needed
+                else -> null
+            }
+            if (bundle != null) {
+                navController.navigate(R.id.NewsFragment, bundle)
+                true
+            } else {
+                false
+            }
+        }
 
         setSupportActionBar(binding.toolbar)
 
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
 
-
-        //textView = findViewById(R.id.textview_first)
-        //textView2 = findViewById(R.id.textview_second)
-        //textView.text = "HIIII"
-        //textView2.text = "222"
-
-
-//        CoroutineScope(Dispatchers.Main).launch {
-//            val result = getArticle("37208083")
-//            // Handle the result here, update your UI, etc.
-//            textView.text = result.toString()
-//            var pretty = """
-//               Title: ${result["title"]}
-//            """.trimIndent()
-//            //textView2.text = pretty
-//        }
     }
 
-//    suspend fun getArticle(articleNum: String): Map<String, Any> {
-//        return withContext(Dispatchers.IO) {
-//            apiService.getArticle(articleNum)
-//        }
-//    }
+
+    private fun setAppTheme() {
+        when (ThemeManager.getThemePreference(this)) {
+            "EarthTheme" -> setTheme(R.style.EarthTheme)
+            "CyberpunkTheme" -> setTheme(R.style.CyberpunkTheme)
+            "DarculaTheme" -> setTheme(R.style.DarculaTheme)
+            "CreamTheme" -> setTheme(R.style.CreamTheme)
+            "SolarizedGrayTheme" -> setTheme(R.style.SolarizedGrayTheme)
+            else -> setTheme(R.style.AppTheme)  // Default theme
+        }
+    }
 
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -74,15 +77,47 @@ class MainActivity : AppCompatActivity() {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
+        when (item.itemId) {
+            R.id.action_theme_default -> {
+                ThemeManager.setThemePreference("AppTheme", this)
+                recreate()
+                return true
+            }
+
+            R.id.action_theme_cream -> {
+                ThemeManager.setThemePreference("CreamTheme", this)
+                recreate()
+                return true
+            }
+
+            R.id.action_theme_earth -> {
+                ThemeManager.setThemePreference("EarthTheme", this)
+                recreate()
+                return true
+            }
+
+            R.id.action_theme_cyberpunk -> {
+                ThemeManager.setThemePreference("CyberpunkTheme", this)
+                recreate()
+                return true
+            }
+
+
+            R.id.action_theme_darcula -> {
+                ThemeManager.setThemePreference("DarculaTheme", this)
+                recreate()
+                return true
+            }
+
+
+            R.id.action_theme_solarized -> {
+                ThemeManager.setThemePreference("SolarizedGrayTheme", this)
+                recreate()
+                return true
+            }
         }
+        return super.onOptionsItemSelected(item)
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        return navController.navigateUp(appBarConfiguration)
-                || super.onSupportNavigateUp()
-    }
+
 }

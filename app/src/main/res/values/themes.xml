@@ -1,9 +1,95 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.HackerNewsWidget" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+<resources>
+
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/defaultPrimary</item>
+        <item name="colorPrimaryDark">@color/defaultPrimaryDark</item>
+        <item name="colorAccent">@color/defaultAccent</item>
+        <!-- Text colors -->
+        <item name="android:textColorPrimary">@color/defaultText</item>
+        <item name="android:textColorSecondary">@color/defaultSecondaryText</item>
+        <!-- Icon color -->
+        <item name="android:textColorPrimaryInverse">@color/defaultIcons</item>
+        <!-- Divider color -->
+        <item name="android:colorEdgeEffect">@color/defaultDivider</item>
+        <!-- Action Bar and window settings -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.HackerNewsWidget" parent="Base.Theme.HackerNewsWidget" />
+
+    <style name="EarthTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:textColorPrimary">@color/earthTextPrimary</item>
+        <item name="android:textColorSecondary">@color/earthTextSecondary</item>
+        <item name="colorPrimary">@color/earthPrimary</item>
+        <item name="colorPrimaryDark">@color/earthPrimaryDark</item>
+        <item name="colorAccent">@color/earthAccent</item>
+        <item name="android:windowBackground">@color/earthBackground</item>
+        <item name="android:textColor">@color/earthText</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:background">@color/earthBackgroundPrimary</item>
+        <item name="backgroundSecondary">@color/earthBackgroundSecondary</item>
+
+    </style>
+
+    <style name="CyberpunkTheme" parent="Theme.AppCompat">
+        <item name="android:background">@color/cyberpunkBackgroundPrimary</item>
+        <item name="backgroundSecondary">@color/cyberpunkBackgroundSecondary</item>
+        <item name="android:textColorPrimary">@color/cyberpunkTextPrimary</item>
+        <item name="android:textColorSecondary">@color/cyberpunkTextSecondary</item>
+        <item name="colorPrimary">@color/cyberpunkPrimary</item>
+        <item name="colorPrimaryDark">@color/cyberpunkPrimaryDark</item>
+        <item name="colorAccent">@color/cyberpunkAccent</item>
+        <item name="android:windowBackground">@color/cyberpunkBackground</item>
+        <item name="android:textColor">@color/cyberpunkText</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+    </style>
+
+    <style name="DarculaTheme" parent="Theme.AppCompat">
+        <item name="android:textColorPrimary">@color/darculaTextPrimary</item>
+        <item name="android:textColorSecondary">@color/darculaTextSecondary</item>
+        <item name="colorPrimary">@color/darculaPrimary</item>
+        <item name="colorPrimaryDark">@color/darculaPrimaryDark</item>
+        <item name="colorAccent">@color/darculaAccent</item>
+        <item name="android:windowBackground">@color/darculaBackground</item>
+        <item name="android:textColor">@color/darculaText</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:background">@color/darculaBackgroundPrimary</item>
+        <item name="backgroundSecondary">@color/darculaBackgroundSecondary</item>
+    </style>
+
+    <style name="CreamTheme" parent="Theme.AppCompat">
+        <item name="android:textColorPrimary">@color/creamTextPrimary</item>
+        <item name="android:textColorSecondary">@color/creamTextSecondary</item>
+        <item name="colorPrimary">@color/creamPrimary</item>
+        <item name="colorPrimaryDark">@color/creamPrimaryDark</item>
+        <item name="colorAccent">@color/creamAccent</item>
+        <item name="android:windowBackground">@color/creamBackground</item>
+        <item name="android:textColor">@color/creamText</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:background">@color/creamBackgroundPrimary</item>
+        <item name="backgroundSecondary">@color/creamBackgroundSecondary</item>
+    </style>
+
+    <style name="SolarizedGrayTheme" parent="Theme.AppCompat">
+        <item name="android:textColorPrimary">@color/solarizedTextPrimary</item>
+        <item name="android:textColorSecondary">@color/solarizedTextSecondary</item>
+        <item name="colorPrimary">@color/solarizedPrimary</item>
+        <item name="colorPrimaryDark">@color/solarizedPrimaryDark</item>
+        <item name="colorAccent">@color/solarizedAccent</item>
+        <item name="android:windowBackground">@color/solarizedBackground</item>
+        <item name="android:textColor">@color/solarizedText</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:background">@color/solarizedBackgroundPrimary</item>
+        <item name="backgroundSecondary">@color/solarizedBackgroundSecondary</item>
+    </style>
+
+
 </resources>
