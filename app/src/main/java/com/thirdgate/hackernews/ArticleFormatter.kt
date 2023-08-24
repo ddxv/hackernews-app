@@ -1,11 +1,16 @@
 package com.thirdgate.hackernews
 
 import android.content.Context
+import android.content.Intent
+import android.graphics.Typeface
+import android.net.Uri
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.util.TypedValue
+import android.view.Gravity
+import android.widget.Button
 
 object ArticleFormatter {
     fun formatArticle(context: Context, article: Map<String, Any>): SpannableString {
@@ -16,14 +21,15 @@ object ArticleFormatter {
 
         context.theme.resolveAttribute(android.R.attr.textColorSecondary, typedValue, true)
         val otherTextColor = typedValue.data
+        val rank = article["rank"] as? String ?: ""
         val title = article["title"] as? String ?: ""
         val domain = article["domain"] as? String ?: ""
         val score = article["score"]?.toString()?.replace(".0", "") ?: ""
         val descendants = article["descendants"]?.toString()?.replace(".0", "") ?: ""
         val by = article["by"] as? String ?: ""
 
-        val formattedArticle = """$title ($domain)
-    |score: $score comments: $descendants  by: $by
+        val formattedArticle = """$rank. $title ($domain)
+    |$score points by: $by | $descendants comments
     """.trimMargin()
 
         val spannable = SpannableString(formattedArticle)
@@ -52,4 +58,45 @@ object ArticleFormatter {
 
         return spannable
     }
+
+    fun makeArticleButton(article: Map<String, Any>, context: Context): Button {
+        val typedValue = TypedValue()
+
+        context.theme.resolveAttribute(R.attr.backgroundSecondary, typedValue, true)
+        val articleBgColor = typedValue.data
+
+
+        val spannable = formatArticle(context, article)
+
+        val articleButton = Button(context)
+        articleButton.text = spannable
+
+        articleButton.setBackgroundColor(articleBgColor)
+        articleButton.isAllCaps = false
+        articleButton.setTypeface(null, Typeface.NORMAL)
+        articleButton.gravity = Gravity.LEFT
+
+        // Indent the text
+        val paddingStart = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP, 16f,
+            context.resources.displayMetrics
+        ).toInt()
+        articleButton.setPadding(
+            paddingStart,
+            0,
+            0,
+            0
+        )  // Only adding padding to the start (left for LTR layouts)
+
+
+        articleButton.setOnClickListener {
+            val url = article["url"] as? String
+            url?.let {
+                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(it))
+                context.startActivity(browserIntent)
+            }
+        }
+        return articleButton
+    }
+
 }

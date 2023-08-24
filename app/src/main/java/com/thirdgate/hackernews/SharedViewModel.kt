@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import java.lang.Thread.sleep
 
 class SharedViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -49,6 +50,7 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     private fun loadInitialDataFromPreferences() {
+        sleep(10000)
         topArticles.value = repository.loadArticlesFromPreferences("top")
         newArticles.value = repository.loadArticlesFromPreferences("new")
         bestArticles.value = repository.loadArticlesFromPreferences("best")

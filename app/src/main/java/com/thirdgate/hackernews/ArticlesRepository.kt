@@ -7,18 +7,10 @@ import org.json.JSONObject
 
 class ArticlesRepository(private val apiService: ApiService, private val context: Context) {
 
-    fun fetchArticles(articleType: String, page: Int = 1): Map<String, Any> {
-        //return apiService.getArticles(articleType, page)
-        val sharedPreferences =
-            context.getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
-        val jsonString = sharedPreferences.getString(articleType, null)
-        val jsonObject = JSONObject(jsonString)
-
-        val map = mutableMapOf<String, Any>()
-        jsonObject.keys().forEach { key ->
-            map[key] = jsonObject[key]
-        }
-        return map
+    suspend fun fetchArticles(articleType: String, page: Int = 1): Map<String, Any> {
+        val articles: Map<String, Any> = apiService.getArticles(articleType, page)
+        saveArticlesToPreferences(articleType, articles)
+        return articles
 
     }
 
@@ -31,16 +23,40 @@ class ArticlesRepository(private val apiService: ApiService, private val context
         sharedPreferences.edit().putString(articleType, jsonString).apply()
     }
 
-    fun loadArticlesFromPreferences(articleType: String): Map<String, Any>? {
+
+    fun loadArticlesFromPreferences(articleType: String): Map<String, Map<String, Any>> {
         val sharedPreferences =
             context.getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
-        val jsonString = sharedPreferences.getString(articleType, null) ?: return null
-        val jsonObject = JSONObject(jsonString)
+        val jsonString = sharedPreferences.getString(articleType, null)
 
-        val map = mutableMapOf<String, Any>()
-        jsonObject.keys().forEach { key ->
-            map[key] = jsonObject[key]
+        val map = mutableMapOf<String, Map<String, Any>>()
+        if (jsonString != null) {
+            var jsonObject = JSONObject(jsonString)
+            jsonObject.keys().forEach { key ->
+                val innerJsonObject = jsonObject.getJSONObject(key)
+                val innerMap = mutableMapOf<String, Any>()
+                innerJsonObject.keys().forEach { innerKey ->
+                    innerMap[innerKey] = innerJsonObject[innerKey]
+                }
+                map[key] = innerMap
+            }
+            // ... rest of your code
+        } else {
+            ApiService().getArticlesBlocking(articleType)
+            val jsonString = sharedPreferences.getString(articleType, null)
+            var jsonObject = JSONObject(jsonString)
+            val map = mutableMapOf<String, Map<String, Any>>()
+            jsonObject.keys().forEach { key ->
+                val innerJsonObject = jsonObject.getJSONObject(key)
+                val innerMap = mutableMapOf<String, Any>()
+                innerJsonObject.keys().forEach { innerKey ->
+                    innerMap[innerKey] = innerJsonObject[innerKey]
+                }
+                map[key] = innerMap
+            }
         }
         return map
     }
+
+
 }

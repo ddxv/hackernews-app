@@ -16,8 +16,10 @@
 
 package com.thirdgate.hackernews
 
+import ApiService
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,14 +55,16 @@ import androidx.glance.text.TextStyle
  */
 class GlanceButtonWidget : GlanceAppWidget() {
 
+
     @SuppressLint("RemoteViewLayout")
     @Composable
     override fun Content() {
+        val context = LocalContext.current.applicationContext
         GlanceTheme {
             Column(
                 modifier = GlanceModifier
                     .fillMaxSize()
-                    .padding(16.dp)
+                    .padding(8.dp)
                     .appWidgetBackground()
                     .background(GlanceTheme.colors.background)
                     .appWidgetBackgroundCornerRadius()
@@ -76,17 +80,34 @@ class GlanceButtonWidget : GlanceAppWidget() {
                         color = GlanceTheme.colors.primary
                     ),
                 )
+                val repository = ArticlesRepository(ApiService(), context)
+
+                val topArticlesMap = repository.loadArticlesFromPreferences("top")
+
                 LazyColumn {
-                    item {
-                        Button(
-                            text = "Button1",
-                            modifier = GlanceModifier.fillMaxWidth(),
-                            onClick = actionStartActivity<MainActivity>()
-                        )
+
+                    // Check if the map is not null
+                    topArticlesMap?.let { articles ->
+                        for ((key, value) in articles) {
+                            Log.i("looping_glances_widget", "$key = $value")
+                            var myButton = ArticleFormatter.makeArticleButton(
+                                value,
+                                context
+                            )
+                            item {
+                                Button(
+                                    text = myButton.text.toString(),
+                                    modifier = GlanceModifier.fillMaxWidth(),
+                                    onClick = actionStartActivity<MainActivity>(),
+                                )
+                            }
+
+                        }
                     }
+
                     item {
                         Button(
-                            text = "Button2",
+                            text = "XButton2",
                             modifier = GlanceModifier.fillMaxWidth(),
                             onClick = actionStartActivity<MainActivity>()
                         )
