@@ -2,4 +2,5 @@
 <resources>
     <item name="recyclerView" type="id" />
     <item name="articleButton" type="id" />
+    <item name="appwidget_text" type="id" />
 </resources>

@@ -24,6 +24,42 @@
             </intent-filter>
         </activity>
 
+        <!-- Register the AppWidgetProvider -->
+        <receiver
+            android:name=".WidgetApp"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/news_app_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name="GlanceButtonWidgetReceiver"
+            android:enabled="@bool/glance_appwidget_available"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/app_widget_buttons_glance" />
+        </receiver>
+
+        <!-- Register the RemoteViewsService -->
+        <service
+            android:name=".WidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <!-- Register the com.thirdgate.hackernews.WidgetUpdateService -->
+        <service
+            android:name=".WidgetUpdateService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+
     </application>
     <uses-permission android:name="android.permission.INTERNET" />
 </manifest>

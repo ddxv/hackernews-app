@@ -1,11 +1,14 @@
 <resources>
-    <string name="app_name">Hacker News Widget</string>
+    <string name="app_name">Hacker News and Widget</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">Popular Articles</string>
     <string name="second_fragment_label">New Articles</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
+    <string name="glances_button_title">Items collection</string>
+    <string name="radio_button1">Radio Button 1</string>
+    <string name="radio_button2">Radio Button 2</string>
 
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
@@ -43,4 +46,9 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+    <string name="buttons_glance_widget_description">my buttons glance description</string>
+    <string name="button">this is button text</string>
+    <string name="check_box">check box eg string</string>
+    <string name="switch_element">eg string switch eleemn</string>
+    <string name="buttons_title">eg widget_buttons title!</string>
 </resources>
