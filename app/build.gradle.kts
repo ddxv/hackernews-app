@@ -57,6 +57,7 @@ dependencies {
     //implementation("androidx.glance:glance-appwidget:1.0.0-rc01")
     //implementation("androidx.activity:activity-compose:1.6.1")
     implementation("androidx.glance:glance-appwidget:1.0.0-alpha05")
+    implementation("androidx.work:work-runtime-ktx:2.8.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")

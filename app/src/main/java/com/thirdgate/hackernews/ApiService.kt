@@ -41,8 +41,10 @@ class ApiService {
                 if (!response.isSuccessful) throw IOException("Unexpected code $response")
                 val bodyString =
                     response.body?.string() ?: throw IOException("Response body is null")
-                var myMap: Map<String, Map<String, Any>> = gson.fromJson(bodyString, type)
-                myMap
+                var myMap: Map<Int, Map<String, Any>> = gson.fromJson(bodyString, type)
+                // Convert outer keys to strings
+                var myMapString: Map<String, Map<String, Any>> = myMap.mapKeys { it.key.toString() }
+                myMapString
             }
         }
     }

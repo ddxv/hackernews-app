@@ -7,10 +7,12 @@ import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.thirdgate.hackernews.databinding.ActivityMainBinding
+import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
@@ -21,9 +23,12 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        viewModel.fetchArticles(apiService, "top")
-        viewModel.fetchArticles(apiService, "best")
-        viewModel.fetchArticles(apiService, "new")
+        lifecycleScope.launch {
+            viewModel.fetchArticles("top")
+            viewModel.fetchArticles("best")
+            viewModel.fetchArticles("new")
+        }
+
 
 
         setAppTheme()

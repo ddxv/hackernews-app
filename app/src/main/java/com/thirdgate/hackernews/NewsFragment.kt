@@ -71,13 +71,15 @@ class NewsFragment : Fragment() {
         }
 
         articlesLiveData.observe(viewLifecycleOwner) { articles ->
-            for (article in articles.values) {
-                if (article is Map<*, *>) {
-                    @Suppress("UNCHECKED_CAST")
-                    adapter.articles.add(article as Map<String, Any>)
+            articles?.let {
+                for (article in it.values) {
+                    if (article is Map<*, *>) {
+                        @Suppress("UNCHECKED_CAST")
+                        adapter.articles.add(article as Map<String, Any>)
+                    }
                 }
+                adapter.notifyDataSetChanged()
             }
-            adapter.notifyDataSetChanged()
         }
 
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -88,19 +90,19 @@ class NewsFragment : Fragment() {
                         "top" -> {
                             val nextPage = viewModel.topArticlePage.value?.plus(1)
                             viewModel.topArticlePage.value = nextPage
-                            viewModel.fetchArticles(apiService, articleType, nextPage!!)
+                            viewModel.fetchArticles(articleType, nextPage!!)
                         }
 
                         "new" -> {
                             val nextPage = viewModel.newArticlePage.value?.plus(1)
                             viewModel.newArticlePage.value = nextPage
-                            viewModel.fetchArticles(apiService, articleType, nextPage!!)
+                            viewModel.fetchArticles(articleType, nextPage!!)
                         }
 
                         "best" -> {
                             val nextPage = viewModel.bestArticlePage.value?.plus(1)
                             viewModel.bestArticlePage.value = nextPage
-                            viewModel.fetchArticles(apiService, articleType, nextPage!!)
+                            viewModel.fetchArticles(articleType, nextPage!!)
                         }
                     }
                 }
