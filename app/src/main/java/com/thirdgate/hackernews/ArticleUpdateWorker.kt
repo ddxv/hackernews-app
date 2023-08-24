@@ -1,8 +1,11 @@
 package com.thirdgate.hackernews
 
 import ApiService
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.widget.RemoteViews
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
@@ -19,19 +22,39 @@ class ArticleUpdateWorker(appContext: Context, workerParams: WorkerParameters) :
             ArticleFormatter.formatArticle(applicationContext, article as Map<String, Any>)
                 .toString()
         }
+        Log.i("UpdateWorkerWidget", "${formattedArticles.toString()}")
+
+        val sharedPreferences =
+            applicationContext.getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
+        sharedPreferences.edit().putStringSet("formattedArticles", formattedArticles.toSet())
+            .apply()
+
 
         // Create a RemoteViews object for the widget layout
         val views = RemoteViews(applicationContext.packageName, R.layout.widget_layout)
-        // ... (Use the RemoteViews API to populate the ListView in the widget with formattedArticles) ...
+        val intent = Intent(applicationContext, ArticlesWidgetService::class.java)
+        views.setRemoteAdapter(R.id.list_view, intent)
 
+        // Notify widget that its ListView data has changed
+        val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
+        val appWidgetIds = appWidgetManager.getAppWidgetIds(
+            ComponentName(
+                applicationContext,
+                ArticlesWidgetProvider::class.java
+            )
+        )
+        appWidgetIds.forEach { appWidgetId ->
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.list_view)
+        }
 
-        // Since the SharedViewModel now saves articles to SharedPreferences,
-        // we don't need to save them again here in the Worker.
-        // Instead, we simply notify that articles have been updated.
+        Log.i("UpdateWorker", "Notify Done")
+
         notifyArticlesUpdated(applicationContext)
+
 
         return Result.success()
     }
+
 
     private fun notifyArticlesUpdated(context: Context) {
         val intent = Intent("com.thirdgate.hackernews.ACTION_ARTICLES_UPDATED")
