@@ -28,7 +28,8 @@ class ArticleAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.article_item, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.old_article_item, parent, false)
         return ViewHolder(view)
     }
 
@@ -128,7 +129,7 @@ class ArticleAdapter(
         )
         separator.setBackgroundColor(accentColor)
         holder.articleContainer.addView(separator)
-        
+
         holder.articleContainer.addView(articleButton) // Add the formatted article button
 
     }

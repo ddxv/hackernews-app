@@ -30,18 +30,5 @@ at https://developer.android.com/guide/topics/appwidgets/advanced#build-accurate
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <include
-        layout="@layout/item_checkboxes"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
-    <include
-        layout="@layout/item_radio_buttons"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <include
-        layout="@layout/item_switches"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 </LinearLayout>

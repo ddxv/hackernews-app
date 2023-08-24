@@ -18,8 +18,6 @@ package com.thirdgate.hackernews
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Build
-import android.widget.RemoteViews
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,21 +27,15 @@ import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.LocalContext
 import androidx.glance.action.ActionParameters
-import androidx.glance.action.actionParametersOf
 import androidx.glance.action.actionStartActivity
-import androidx.glance.appwidget.AndroidRemoteViews
-import androidx.glance.appwidget.CheckBox
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
-import androidx.glance.appwidget.Switch
 import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.action.ToggleableStateKey
-import androidx.glance.appwidget.action.actionRunCallback
 import androidx.glance.appwidget.appWidgetBackground
 import androidx.glance.appwidget.lazy.LazyColumn
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.background
-import androidx.glance.currentState
 import androidx.glance.layout.Column
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
@@ -87,56 +79,25 @@ class GlanceButtonWidget : GlanceAppWidget() {
                 LazyColumn {
                     item {
                         Button(
-                            text = "Button",
+                            text = "Button1",
                             modifier = GlanceModifier.fillMaxWidth(),
                             onClick = actionStartActivity<MainActivity>()
                         )
                     }
                     item {
-                        CheckBox(
-                            text = "Checkbox",
-                            checked = currentState(key = CheckboxKey) ?: false,
-                            onCheckedChange = actionRunCallback<CompoundButtonAction>(
-                                actionParametersOf(SelectedKey to CheckboxKey.name)
-                            )
+                        Button(
+                            text = "Button2",
+                            modifier = GlanceModifier.fillMaxWidth(),
+                            onClick = actionStartActivity<MainActivity>()
                         )
                     }
-                    item {
-                        Switch(
-                            text = "Switch",
-                            checked = currentState(key = SwitchKey) ?: false,
-                            onCheckedChange = actionRunCallback<CompoundButtonAction>(
-                                actionParametersOf(SelectedKey to SwitchKey.name)
-                            )
-                        )
-                    }
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        item {
-                            // Radio buttons are not implemented yet in Glance, using the interop
-                            // composable to use the RemoteView + XML
-                            AndroidRemoteViews(
-                                remoteViews = RemoteViews(
-                                    LocalContext.current.packageName,
-                                    R.layout.glances_item_radio_buttons
-                                ).apply {
-                                    // This code will check the item_radio_button2 in the
-                                    // item_radio_group RadioGroup
-                                    setRadioGroupChecked(
-                                        R.id.item_radio_group,
-                                        R.id.item_radio_button2
-                                    )
-                                }
-                            )
-                        }
-                    }
+
                 }
             }
         }
     }
 }
 
-private val CheckboxKey = booleanPreferencesKey("checkbox")
-private val SwitchKey = booleanPreferencesKey("switch")
 private val SelectedKey = ActionParameters.Key<String>("key")
 
 class CompoundButtonAction : ActionCallback {
