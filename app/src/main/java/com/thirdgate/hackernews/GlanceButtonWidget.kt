@@ -20,21 +20,24 @@ import ApiService
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.glance.Button
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.LocalContext
-import androidx.glance.action.actionStartActivity
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.appWidgetBackground
+import androidx.glance.appwidget.background
 import androidx.glance.appwidget.lazy.LazyColumn
+import androidx.glance.appwidget.lazy.itemsIndexed
 import androidx.glance.appwidget.provideContent
+import androidx.glance.layout.Alignment
 import androidx.glance.layout.Column
+import androidx.glance.layout.Row
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.padding
@@ -46,27 +49,36 @@ import androidx.glance.text.TextStyle
 object GlanceButtonWidget : GlanceAppWidget() {
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
+        val articleType = "top"
         val repository = ArticlesRepository(ApiService(), context)
-        val topArticlesMap = repository.loadArticlesFromPreferences("top")
-        provideContent { MyContent(context, topArticlesMap) }
-
+        val topArticlesMap = repository.loadArticlesFromPreferences(articleType)
+        provideContent { MyContent(context, topArticlesMap, articleType) }
     }
 
+
     @Composable
-    private fun MyContent(context: Context, topArticlesMap: Map<String, Map<String, Any>>) {
+    private fun MyContent(
+        context: Context,
+        topArticlesMap: Map<String, Map<String, Any>>,
+        articleType: String,
+    ) {
         GlanceTheme {
             Column(
                 modifier = GlanceModifier
                     .fillMaxSize()
-                    .padding(8.dp)
+                    .padding(4.dp)
                     .appWidgetBackground()
+                    .background(
+                        day = GlanceTheme.colors.background.getColor(context),
+                        night = GlanceTheme.colors.onBackground.getColor(context)
+                    )
                     .appWidgetBackgroundCornerRadius()
             ) {
                 Text(
-                    text = LocalContext.current.getString(R.string.glances_button_title),
+                    text = LocalContext.current.getString(R.string.glances_button_title) + ": $articleType",
                     modifier = GlanceModifier
                         .fillMaxWidth()
-                        .padding(8.dp),
+                        .padding(6.dp),
                     style = TextStyle(
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp,
@@ -74,40 +86,61 @@ object GlanceButtonWidget : GlanceAppWidget() {
                     ),
                 )
 
-                LazyColumn {
+                LazyColumn(
+                    //verticalArrangement = Arrangement.spacedBy(8.dp)
+                    modifier = GlanceModifier.fillMaxSize()
 
-                    // Check if the map is not null
-                    topArticlesMap?.let { articles ->
-                        for ((key, value) in articles) {
-                            Log.i("looping_glances_widget", "$key = $value")
-                            var myButton = ArticleFormatter.makeArticleButton(
-                                value,
-                                context
-                            )
+                ) {
+                    val itemsList = topArticlesMap.values.toList()
+                    itemsIndexed(itemsList) { _, article ->
+                        Row(
+                            modifier = GlanceModifier.background(
+                                day = Color.White,
+                                night = Color.White
+                            ).fillMaxSize().padding(bottom = 8.dp),
+                            verticalAlignment = Alignment.Vertical.CenterVertically,
+                        ) {
+                            Row(
+                                modifier = GlanceModifier.background(
+                                    day = Color.LightGray,
+                                    night = Color.LightGray
+                                ).fillMaxSize().padding(vertical = 2.dp)
+                            ) {
 
-                            val webIntent: Intent =
-                                Intent(Intent.ACTION_VIEW, Uri.parse(value["url"].toString()))
-                            webIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            item {
+                                //Log.i("looping_glances_widget", "$key = $value")
+                                var myButton = ArticleFormatter.makeArticleButton(
+                                    article,
+                                    context
+                                )
+                                val webIntent =
+                                    Intent(Intent.ACTION_VIEW, Uri.parse(article["url"].toString()))
+                                webIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                                 Button(
                                     text = myButton.text.toString(),
                                     modifier = GlanceModifier.fillMaxWidth(),
-                                    //onClick = actionStartActivity<MainActivity>(),
                                     onClick = { context.startActivity(webIntent) },
                                 )
+                                Column(
+                                    modifier = GlanceModifier.padding(horizontal = 8.dp)
+                                ) {
+                                    Text(
+                                        text = "${article["rank"]}. ${article["title"]}",
+                                        modifier = GlanceModifier,
+                                        style = TextStyle(fontSize = 12.sp)
+                                    )
+                                    Text(
+                                        text = "${article["score"]} points by: ${article["by"]} | ${article["descendants"]} comments",
+                                        modifier = GlanceModifier,
+                                        style = TextStyle(fontSize = 10.sp)
+                                    )
+//                                Spacer(
+//                                    modifier = GlanceModifier.height(4.dp)
+//                                        .background(day = Color.White, night = Color.White)
+//                                )
+                                }
                             }
-
                         }
                     }
-
-                    item {
-                        Button(
-                            text = "XButton2",
-                            modifier = GlanceModifier.fillMaxWidth(),
-                            onClick = actionStartActivity<MainActivity>()
-                        )
-                    }
-
                 }
             }
         }

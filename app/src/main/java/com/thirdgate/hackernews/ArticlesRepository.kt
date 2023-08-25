@@ -30,28 +30,14 @@ class ArticlesRepository(private val apiService: ApiService, private val context
         val jsonString = sharedPreferences.getString(articleType, null)
 
         val map = mutableMapOf<String, Map<String, Any>>()
-        if (jsonString != null) {
-            var jsonObject = JSONObject(jsonString)
-            jsonObject.keys().forEach { key ->
-                val innerJsonObject = jsonObject.getJSONObject(key)
-                val innerMap = mutableMapOf<String, Any>()
-                innerJsonObject.keys().forEach { innerKey ->
-                    innerMap[innerKey] = innerJsonObject[innerKey]
-                }
-                map[key] = innerMap
+        var jsonObject = JSONObject(jsonString)
+        jsonObject.keys().forEach { key ->
+            val innerJsonObject = jsonObject.getJSONObject(key)
+            val innerMap = mutableMapOf<String, Any>()
+            innerJsonObject.keys().forEach { innerKey ->
+                innerMap[innerKey] = innerJsonObject[innerKey]
             }
-        } else {
-            val jsonString = sharedPreferences.getString(articleType, null)
-            var jsonObject = JSONObject(jsonString)
-            val map = mutableMapOf<String, Map<String, Any>>()
-            jsonObject.keys().forEach { key ->
-                val innerJsonObject = jsonObject.getJSONObject(key)
-                val innerMap = mutableMapOf<String, Any>()
-                innerJsonObject.keys().forEach { innerKey ->
-                    innerMap[innerKey] = innerJsonObject[innerKey]
-                }
-                map[key] = innerMap
-            }
+            map[key] = innerMap
         }
         return map
     }

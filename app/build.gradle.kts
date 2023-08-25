@@ -47,10 +47,18 @@ android {
 
 }
 
+
+
 dependencies {
+    val composeBom = platform("androidx.compose:compose-bom:2023.08.00")
+    implementation(composeBom)
     implementation("androidx.core:core-ktx:1.10.1")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+
     implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("com.google.android.material:material:1.9.0")
+    implementation("androidx.compose.material:material:1.5.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.0")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.0")
