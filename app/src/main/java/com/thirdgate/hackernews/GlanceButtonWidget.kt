@@ -17,27 +17,21 @@
 package com.thirdgate.hackernews
 
 import ApiService
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.glance.Button
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.LocalContext
-import androidx.glance.action.ActionParameters
 import androidx.glance.action.actionStartActivity
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
-import androidx.glance.appwidget.action.ActionCallback
-import androidx.glance.appwidget.action.ToggleableStateKey
 import androidx.glance.appwidget.appWidgetBackground
 import androidx.glance.appwidget.lazy.LazyColumn
-import androidx.glance.appwidget.state.updateAppWidgetState
-import androidx.glance.background
+import androidx.glance.appwidget.provideContent
 import androidx.glance.layout.Column
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
@@ -46,27 +40,23 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 
-/**
- * Glance widget that showcases how to use:
- * - Actions
- * - Compound buttons
- * - Buttons
- * - AndroidRemoteView
- */
-class GlanceButtonWidget : GlanceAppWidget() {
+object GlanceButtonWidget : GlanceAppWidget() {
 
+    override suspend fun provideGlance(context: Context, id: GlanceId) {
+        val repository = ArticlesRepository(ApiService(), context)
+        val topArticlesMap = repository.loadArticlesFromPreferences("top")
+        provideContent { MyContent(context, topArticlesMap) }
 
-    @SuppressLint("RemoteViewLayout")
+    }
+
     @Composable
-    override fun Content() {
-        val context = LocalContext.current.applicationContext
+    private fun MyContent(context: Context, topArticlesMap: Map<String, Map<String, Any>>) {
         GlanceTheme {
             Column(
                 modifier = GlanceModifier
                     .fillMaxSize()
                     .padding(8.dp)
                     .appWidgetBackground()
-                    .background(GlanceTheme.colors.background)
                     .appWidgetBackgroundCornerRadius()
             ) {
                 Text(
@@ -80,9 +70,6 @@ class GlanceButtonWidget : GlanceAppWidget() {
                         color = GlanceTheme.colors.primary
                     ),
                 )
-                val repository = ArticlesRepository(ApiService(), context)
-
-                val topArticlesMap = repository.loadArticlesFromPreferences("top")
 
                 LazyColumn {
 
@@ -119,27 +106,8 @@ class GlanceButtonWidget : GlanceAppWidget() {
     }
 }
 
-private val SelectedKey = ActionParameters.Key<String>("key")
-
-class CompoundButtonAction : ActionCallback {
-    override suspend fun onAction(
-        context: Context,
-        glanceId: GlanceId,
-        parameters: ActionParameters
-    ) {
-        // The framework automatically sets the value of the toggled action (true/false)
-        // Retrieve it using the ToggleableStateKey
-        val toggled = parameters[ToggleableStateKey] ?: false
-        updateAppWidgetState(context, glanceId) { prefs ->
-            // Get which button the action came from
-            val key = booleanPreferencesKey(parameters[SelectedKey] ?: return@updateAppWidgetState)
-            // Update the state
-            prefs[key] = toggled
-        }
-        GlanceButtonWidget().update(context, glanceId)
-    }
-}
 
 class GlanceButtonWidgetReceiver : GlanceAppWidgetReceiver() {
-    override val glanceAppWidget: GlanceAppWidget = GlanceButtonWidget()
+    override val glanceAppWidget: GlanceAppWidget
+        get() = GlanceButtonWidget
 }

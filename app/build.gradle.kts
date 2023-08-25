@@ -13,7 +13,7 @@ android {
     defaultConfig {
         applicationId = "com.thirdgate.hackernews"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 2
         versionName = "1.0"
 
@@ -35,13 +35,14 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+
     }
     buildFeatures {
         viewBinding = true
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.1"
+        kotlinCompilerExtensionVersion = "1.5.2"
     }
 
 }
@@ -54,9 +55,10 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.0")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.0")
     implementation("androidx.compose.ui:ui:1.5.0")
-    //implementation("androidx.glance:glance-appwidget:1.0.0-rc01")
+    implementation("androidx.glance:glance-appwidget:1.0.0-rc01")
+    implementation("androidx.glance:glance:1.0.0-rc01")
     //implementation("androidx.activity:activity-compose:1.6.1")
-    implementation("androidx.glance:glance-appwidget:1.0.0-alpha05")
+//    implementation("androidx.glance:glance-appwidget:1.0.0-alpha05")
     implementation("androidx.work:work-runtime-ktx:2.8.1")
     implementation("androidx.compose.foundation:foundation-layout-android:1.5.0")
     testImplementation("junit:junit:4.13.2")
@@ -66,7 +68,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
-    implementation("com.google.code.gson:gson:2.8.9") // Check for the latest version
+    implementation("com.google.code.gson:gson:2.10.1") // Check for the latest version
 
     // Import the Firebase BoM
 
