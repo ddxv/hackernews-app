@@ -40,9 +40,7 @@ class ArticlesRepository(private val apiService: ApiService, private val context
                 }
                 map[key] = innerMap
             }
-            // ... rest of your code
         } else {
-            ApiService().getArticlesBlocking(articleType)
             val jsonString = sharedPreferences.getString(articleType, null)
             var jsonObject = JSONObject(jsonString)
             val map = mutableMapOf<String, Map<String, Any>>()

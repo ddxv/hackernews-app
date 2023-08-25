@@ -21,7 +21,7 @@ object ArticleFormatter {
 
         context.theme.resolveAttribute(android.R.attr.textColorSecondary, typedValue, true)
         val otherTextColor = typedValue.data
-        val rank = article["rank"] as? String ?: ""
+        val rank = article["rank"]?.toString()?.replace(".0", "") ?: ""
         val title = article["title"] as? String ?: ""
         val domain = article["domain"] as? String ?: ""
         val score = article["score"]?.toString()?.replace(".0", "") ?: ""
