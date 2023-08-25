@@ -36,14 +36,14 @@ object ArticleFormatter {
         spannable.setSpan(
             ForegroundColorSpan(titleTextColor),
             0,
-            title.length,
+            title.length + rank.length + 2,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
 
         // Set the rest of the text to another color (e.g., gray)
         spannable.setSpan(
             ForegroundColorSpan(otherTextColor),
-            title.length,
+            title.length + rank.length + 2,
             spannable.length,
             Spannable.SPAN_INCLUSIVE_INCLUSIVE
         )
@@ -51,7 +51,7 @@ object ArticleFormatter {
         // Set the rest of the text to a smaller size
         spannable.setSpan(
             RelativeSizeSpan(0.8f),
-            title.length,
+            title.length + rank.length + 2,
             spannable.length,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )

@@ -18,6 +18,8 @@ package com.thirdgate.hackernews
 
 import ApiService
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
@@ -39,6 +41,7 @@ import androidx.glance.layout.padding
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
+
 
 object GlanceButtonWidget : GlanceAppWidget() {
 
@@ -81,11 +84,16 @@ object GlanceButtonWidget : GlanceAppWidget() {
                                 value,
                                 context
                             )
+
+                            val webIntent: Intent =
+                                Intent(Intent.ACTION_VIEW, Uri.parse(value["url"].toString()))
+                            webIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                             item {
                                 Button(
                                     text = myButton.text.toString(),
                                     modifier = GlanceModifier.fillMaxWidth(),
-                                    onClick = actionStartActivity<MainActivity>(),
+                                    //onClick = actionStartActivity<MainActivity>(),
+                                    onClick = { context.startActivity(webIntent) },
                                 )
                             }
 
