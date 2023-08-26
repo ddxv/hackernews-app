@@ -21,9 +21,9 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        viewModel.fetchArticles("top")
-        viewModel.fetchArticles("best")
-        viewModel.fetchArticles("new")
+        viewModel.loadArticlesInSharedViewModel("top")
+        viewModel.loadArticlesInSharedViewModel("best")
+        viewModel.loadArticlesInSharedViewModel("new")
 
 
 

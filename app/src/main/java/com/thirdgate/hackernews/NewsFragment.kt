@@ -92,19 +92,19 @@ class NewsFragment : Fragment() {
                         "top" -> {
                             val nextPage = viewModel.topArticlePage.value?.plus(1)
                             viewModel.topArticlePage.value = nextPage
-                            viewModel.fetchArticles(articleType, nextPage!!)
+                            viewModel.loadArticlesInSharedViewModel(articleType, nextPage!!)
                         }
 
                         "new" -> {
                             val nextPage = viewModel.newArticlePage.value?.plus(1)
                             viewModel.newArticlePage.value = nextPage
-                            viewModel.fetchArticles(articleType, nextPage!!)
+                            viewModel.loadArticlesInSharedViewModel(articleType, nextPage!!)
                         }
 
                         "best" -> {
                             val nextPage = viewModel.bestArticlePage.value?.plus(1)
                             viewModel.bestArticlePage.value = nextPage
-                            viewModel.fetchArticles(articleType, nextPage!!)
+                            viewModel.loadArticlesInSharedViewModel(articleType, nextPage!!)
                         }
                     }
                 }
