@@ -54,7 +54,7 @@ dependencies {
     implementation(composeBom)
     implementation("androidx.core:core-ktx:1.10.1")
     debugImplementation("androidx.compose.ui:ui-tooling")
-
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("com.google.android.material:material:1.9.0")

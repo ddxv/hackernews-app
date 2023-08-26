@@ -42,6 +42,8 @@ class NewsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
         val articleType: String = arguments?.getString("articleType") ?: "top"
         Log.i("NewsFragment", "ArticleType: $articleType")
         apiService = ApiService()  // Initialize ApiService here
@@ -70,6 +72,12 @@ class NewsFragment : Fragment() {
             "new" -> viewModel.newArticles
             "best" -> viewModel.bestArticles
             else -> viewModel.topArticles
+        }
+
+        val swipeRefreshLayout = binding.swipeRefreshLayout
+        swipeRefreshLayout.setOnRefreshListener {
+            viewModel.loadArticlesInSharedViewModel(articleType)
+            swipeRefreshLayout.isRefreshing = false
         }
 
         articlesLiveData.observe(viewLifecycleOwner) { articles ->
