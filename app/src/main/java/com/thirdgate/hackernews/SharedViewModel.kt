@@ -1,6 +1,5 @@
 package com.thirdgate.hackernews
 
-import ApiService
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
@@ -10,14 +9,19 @@ import kotlinx.coroutines.launch
 
 class SharedViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository = ArticlesRepository(ApiService(), application)
+    private val repository = ArticlesRepository
 
-    val topArticles = MutableLiveData<Map<String, Any>>()
-    val bestArticles = MutableLiveData<Map<String, Any>>()
-    val newArticles = MutableLiveData<Map<String, Any>>()
+
+    val topArticles = MutableLiveData<ArticleData>()
+    val bestArticles = MutableLiveData<ArticleData>()
+    val newArticles = MutableLiveData<ArticleData>()
+
     val topArticlePage = MutableLiveData<Int>().apply { value = 1 }
     val bestArticlePage = MutableLiveData<Int>().apply { value = 1 }
     val newArticlePage = MutableLiveData<Int>().apply { value = 1 }
+
+    //val Context.dataStore by dataStore("article_data.pb", ArticlesRepository.mySerializer)
+
 
 //    init {
 //        // Load initial data from SharedPreferences when ViewModel is created
@@ -25,7 +29,7 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
 //    }
 
     fun loadArticlesInSharedViewModel(articleType: String, page: Int = 1) {
-        var data: Map<String, Any>
+        var data: ArticleData
         // Use coroutine to fetch data asynchronously
         viewModelScope.launch {
             try {
@@ -34,59 +38,56 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
             } catch (e: Exception) {
                 Log.i(
                     "SharedViewModel.fetchArticles",
-                    "repository.FetchArticles(API) failed, will try loading from local"
+                    "repository.FetchArticles(API) failed with: $e"
                 )
-                loadArticleTypeFromPreferences(articleType)
+                //loadArticleTypeFromPreferences(articleType)
                 return@launch
             }
             when (articleType) {
                 "top" -> {
-                    topArticles.value = data
-                    repository.saveArticlesToPreferences("top", data)
+                    topArticles.postValue(data)
+                    //repository.saveArticlesToFile("top", data)
+                    //dataStore.data
                 }
 
                 "new" -> {
-                    newArticles.value = data
-                    repository.saveArticlesToPreferences("new", data)
+                    newArticles.postValue(data)
+                    //repository.saveArticlesToFile("new", data)
                 }
 
                 "best" -> {
-                    bestArticles.value = data
-                    repository.saveArticlesToPreferences("best", data)
+                    bestArticles.postValue(data)
+                    //repository.saveArticlesToFile("best", data)
                 }
             }
         }
     }
 
-    private fun loadArticleTypeFromPreferences(articleType: String) {
-        var data: Map<String, Map<String, Any>> = mutableMapOf()
-        try {
-            data = repository.loadArticlesFromPreferences(articleType)
-        } catch (e: Exception) {
-            Log.i(
-                "SharedViewModel.loadArticleFromPreference",
-                "Failed, loading articleType $articleType with error $e"
-            )
-            return
-        }
-        when (articleType) {
-            "top" -> {
-                topArticles.value = data
-            }
-
-            "new" -> {
-                newArticles.value = data
-            }
-
-            "best" -> {
-                bestArticles.value = data
-            }
-        }
-    }
-
-//    private fun loadInitialDataFromPreferences() {
-//        topArticles.value = repository.loadArticlesFromPreferences("top")
-//        newArticles.value = repository.loadArticlesFromPreferences("new")
-//        bestArticles.value = repository.loadArticlesFromPreferences("best")
+//    private fun loadArticleTypeFromPreferences(articleType: String) {
+//        var data: ArticleData
+//        context.dataStore.data.first().showCompleted
+//        try {
+//            val exampleCounterFlow: Flow<Int> = context.settingsDataStore.data
+//                .map { settings ->
+//                    // The exampleCounter property is generated from the schema.
+//                    settings.exampleCounter
+//                }
+//
+//        }
+//        when (articleType) {
+//            "top" -> {
+//                topArticles.postValue(data)
+//            }
+//
+//            "new" -> {
+//                newArticles.postValue(data)
+//            }
+//
+//            "best" -> {
+//                bestArticles.postValue(data)
+//            }
+//        }
 //    }
+
+
 }

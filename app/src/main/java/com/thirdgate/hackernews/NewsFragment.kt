@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.thirdgate.hackernews.databinding.FragmentNewsBinding
 
 /**
- * A simple [Fragment] subclass as the second destination in the navigation.
+ * A simple [Fragment] to display the list of articles
  */
 
 class NewsFragment : Fragment() {
@@ -58,7 +58,7 @@ class NewsFragment : Fragment() {
 
         val recyclerView = binding.recyclerView
         val adapter = ArticleAdapter(mutableListOf()) { article ->
-            val url = article["url"] as? String
+            val url = article.url as? String
             url?.let {
                 val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(it))
                 startActivity(browserIntent)
@@ -80,15 +80,27 @@ class NewsFragment : Fragment() {
             swipeRefreshLayout.isRefreshing = false
         }
 
-        articlesLiveData.observe(viewLifecycleOwner) { articles ->
-            articles?.let {
-                for (article in it.values) {
-                    if (article is Map<*, *>) {
-                        @Suppress("UNCHECKED_CAST")
-                        adapter.articles.add(article as Map<String, Any>)
+
+
+
+
+        articlesLiveData.observe(viewLifecycleOwner) { articleData ->
+            when (articleData) {
+                is ArticleData.Loading -> {
+                    // Show loading spinner
+                }
+
+                is ArticleData.Available -> {
+                    // Update the adapter's data
+                    val articles = articleData.articles[articleType]
+                    articles?.let {
+                        adapter.updateData(it)
                     }
                 }
-                adapter.notifyDataSetChanged()
+
+                is ArticleData.Unavailable -> {
+                    // Show error message
+                }
             }
         }
 

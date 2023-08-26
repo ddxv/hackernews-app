@@ -13,7 +13,7 @@ import android.view.Gravity
 import android.widget.Button
 
 object ArticleFormatter {
-    fun formatArticle(context: Context, article: Map<String, Any>): SpannableString {
+    fun formatArticle(context: Context, article: ArticleData.ArticleInfo): SpannableString {
         // ... (same logic as in createArticlesView to create the SpannableString) ...
         val typedValue = TypedValue()
         context.theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true)
@@ -21,12 +21,12 @@ object ArticleFormatter {
 
         context.theme.resolveAttribute(android.R.attr.textColorSecondary, typedValue, true)
         val otherTextColor = typedValue.data
-        val rank = article["rank"]?.toString()?.replace(".0", "") ?: ""
-        val title = article["title"] as? String ?: ""
-        val domain = article["domain"] as? String ?: ""
-        val score = article["score"]?.toString()?.replace(".0", "") ?: ""
-        val descendants = article["descendants"]?.toString()?.replace(".0", "") ?: ""
-        val by = article["by"] as? String ?: ""
+        val rank = article.rank.toString().replace(".0", "") ?: ""
+        val title = article.title as? String ?: ""
+        val domain = article.domain as? String ?: ""
+        val score = article.score.toString()?.replace(".0", "") ?: ""
+        val descendants = article.descendants.toString().replace(".0", "") ?: ""
+        val by = article.by as? String ?: ""
 
         val formattedArticle = """$rank. $title ($domain)
     |$score points by: $by | $descendants comments
@@ -59,7 +59,7 @@ object ArticleFormatter {
         return spannable
     }
 
-    fun makeArticleButton(article: Map<String, Any>, context: Context): Button {
+    fun makeArticleButton(article: ArticleData.ArticleInfo, context: Context): Button {
         val typedValue = TypedValue()
 
         context.theme.resolveAttribute(R.attr.backgroundSecondary, typedValue, true)
@@ -90,7 +90,7 @@ object ArticleFormatter {
 
 
         articleButton.setOnClickListener {
-            val url = article["url"] as? String
+            val url = article.url as? String
             url?.let {
                 val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(it))
                 context.startActivity(browserIntent)

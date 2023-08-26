@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    kotlin("plugin.serialization") version "1.9.10"
 
     // Add the Google services Gradle plugin
     id("com.google.gms.google-services")
@@ -12,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.thirdgate.hackernews"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 2
         versionName = "1.0"
@@ -54,6 +55,7 @@ dependencies {
     implementation(composeBom)
     implementation("androidx.core:core-ktx:1.10.1")
     debugImplementation("androidx.compose.ui:ui-tooling")
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.compose.ui:ui-tooling-preview")
@@ -65,6 +67,7 @@ dependencies {
     implementation("androidx.compose.ui:ui:1.5.0")
     implementation("androidx.glance:glance-appwidget:1.0.0-rc01")
     implementation("androidx.glance:glance:1.0.0-rc01")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
     //implementation("androidx.activity:activity-compose:1.6.1")
 //    implementation("androidx.glance:glance-appwidget:1.0.0-alpha05")
     implementation("androidx.work:work-runtime-ktx:2.8.1")
@@ -72,7 +75,7 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-
+    implementation("androidx.datastore:datastore:1.0.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 

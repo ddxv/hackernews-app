@@ -43,7 +43,7 @@ class ApiService {
         }
     }
 
-    suspend fun getArticles(articleType: String, page: Int = 1): Map<String, Any> {
+    suspend fun getArticles(articleType: String, page: Int = 1): Map<String, Map<String, Any>> {
         val url = "$myBaseUrl/list/$articleType?page=$page"
         Log.i("ApiService", "Calling url: $url")
         return withContext(Dispatchers.IO) {
