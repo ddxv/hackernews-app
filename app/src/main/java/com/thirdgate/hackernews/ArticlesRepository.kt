@@ -3,6 +3,8 @@ package com.thirdgate.hackernews
 import ApiService
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.Serializer
@@ -14,23 +16,27 @@ import java.io.OutputStream
 
 object ArticlesRepository {
 
-    // From doc for Proto DataStore: https://developer.android.com/topic/libraries/architecture/datastore
     val Context.dataStore: DataStore<ArticleData> by dataStore(
         fileName = "article_data.pb",
         serializer = MySerializer
     )
 
-
-    // From both examples, doesn't match Google docs
-    //val Context.dataStore by dataStore("article_data.pb", mySerializer)
-
-    //val articleTypeData
-
     private val apiService = ApiService()
+
+    // Create MutableState internally
+    private val _topArticles = mutableStateOf<ArticleData>(ArticleData.Loading)
+    private val _bestArticles = mutableStateOf<ArticleData>(ArticleData.Loading)
+    private val _newArticles = mutableStateOf<ArticleData>(ArticleData.Loading)
+
+    // Expose read-only State
+    val topArticles: State<ArticleData> = _topArticles
+    val bestArticles: State<ArticleData> = _bestArticles
+    val newArticles: State<ArticleData> = _newArticles
 
     suspend fun fetchArticles(articleType: String, page: Int = 1): ArticleData {
         val articles: Map<String, Map<String, Any>> = apiService.getArticles(articleType, page)
         Log.i("ArticlesRepository", "ApiService returned: articles {${articles}}")
+
 
         val articleList = articles.map { (id, articleMap) ->
             ArticleData.ArticleInfo(
@@ -43,48 +49,23 @@ object ArticlesRepository {
                 score = (articleMap["score"] as? Double ?: -1.0).toInt(),
                 rank = (articleMap["rank"] as? Double ?: -1.0).toInt(),
                 descendants = (articleMap["descendants"] as? Double ?: -1.0).toInt()
-                // map other fields as required
             )
-        }
 
+
+        }
 
         val myArticleData: Map<String, List<ArticleData.ArticleInfo>> =
             mapOf(articleType to articleList)
 
+        when (articleType) {
+            "top" -> _topArticles.value = ArticleData.Available(myArticleData)
+            "new" -> _newArticles.value = ArticleData.Available(myArticleData)
+            "best" -> _bestArticles.value = ArticleData.Available(myArticleData)
+        }
+
         return ArticleData.Available(myArticleData)
     }
 
-
-//    suspend fun saveArticlesToFile(articleType: String, data: ArticleData) {
-//        val key = stringPreferencesKey(articleType)
-//        val jsonString = Json.encodeToString(mySerializer, data)
-//        dataStore.edit { preferences ->
-//            preferences[key] = jsonString
-//        }
-//    }
-//
-//    fun loadArticlesFromFile(): Flow<ArticleData> {
-//        return articleTypeData.map { jsonString ->
-//            val map = mutableMapOf<String, Map<String, Any>>()
-//            try {
-//                val jsonObject = JSONObject(jsonString)
-//                jsonObject.keys().forEach { key ->
-//                    val innerJsonObject = jsonObject.getJSONObject(key)
-//                    val innerMap = mutableMapOf<String, Any>()
-//                    innerJsonObject.keys().forEach { innerKey ->
-//                        innerMap[innerKey] = innerJsonObject[innerKey]
-//                    }
-//                    map[key] = innerMap
-//                }
-//            } catch (e: JSONException) {
-//                Log.e(
-//                    "Repository.loadArticlesFromPreferences",
-//                    "Failed to parse JSON for articleType"
-//                )
-//            }
-//            map
-//        }
-//    }
 
     /**
      * Custom serializer for ArticleData using Json.

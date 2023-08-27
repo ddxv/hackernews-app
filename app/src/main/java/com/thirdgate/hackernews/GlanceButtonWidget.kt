@@ -157,7 +157,6 @@ class GlanceButtonWidget : GlanceAppWidget() {
             )
 
             LazyColumn(
-                //verticalArrangement = Arrangement.spacedBy(8.dp)
                 modifier = GlanceModifier.fillMaxSize()
 
             ) {

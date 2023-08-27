@@ -1,61 +1,228 @@
 package com.thirdgate.hackernews
 
-import ApiService
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.os.bundleOf
-import androidx.navigation.findNavController
-import androidx.navigation.ui.NavigationUI
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.thirdgate.hackernews.databinding.ActivityMainBinding
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 
 
-class MainActivity : AppCompatActivity() {
-
-    private lateinit var binding: ActivityMainBinding
-    private val apiService = ApiService()
-    private val viewModel: SharedViewModel by viewModels()
+class MainActivity : ComponentActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        viewModel.loadArticlesInSharedViewModel("top")
-        viewModel.loadArticlesInSharedViewModel("best")
-        viewModel.loadArticlesInSharedViewModel("new")
-
-
 
         setAppTheme()
         super.onCreate(savedInstanceState)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)  // Make sure to set the content view first
-
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-
-        NavigationUI.setupWithNavController(bottomNavigationView, navController)
-        bottomNavigationView.setOnItemSelectedListener { item ->
-            val bundle = when (item.itemId) {
-                R.id.topNews -> bundleOf("articleType" to "top")
-                R.id.latestNews -> bundleOf("articleType" to "new")
-                R.id.bestNews -> bundleOf("articleType" to "best")
-                // Add other cases as needed
-                else -> null
-            }
-            if (bundle != null) {
-                navController.navigate(R.id.NewsFragment, bundle)
-                true
-            } else {
-                false
-            }
+        // Fetch the articles
+        lifecycleScope.launch {
+            ArticlesRepository.fetchArticles("top")
+            ArticlesRepository.fetchArticles("best")
+            ArticlesRepository.fetchArticles("new")
         }
 
-        setSupportActionBar(binding.toolbar)
 
 
+        setContent {
+            MyApp {
+                NewsScreen()
+            }
+        }
+    }
+
+    @Composable
+    fun MyApp(content: @Composable () -> Unit) {
+        MaterialTheme {
+            Surface {
+                content()
+            }
+        }
+    }
+
+    @Composable
+    fun NewsScreen() {
+        val topArticles = ArticlesRepository.topArticles.value
+        val bestArticles = ArticlesRepository.bestArticles.value
+        val newArticles = ArticlesRepository.newArticles.value
+
+        var selectedTab by remember { mutableStateOf(0) }
+
+        var showMenu by remember { mutableStateOf(false) }
+
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(text = "News")
+                    },
+                    actions = {
+                        IconButton(onClick = { showMenu = true }) {
+                            Icon(Icons.Default.MoreVert, contentDescription = null)
+                        }
+                        DropdownMenu(
+                            expanded = showMenu,
+                            onDismissRequest = { showMenu = false }
+                        ) {
+                            DropdownMenuItem(onClick = {
+                                // handle menu item click
+                                showMenu = false
+                            }) {
+                                Text("Option 1")
+                            }
+                            DropdownMenuItem(onClick = {
+                                // handle menu item click
+                                showMenu = false
+                            }) {
+                                Text("Option 2")
+                            }
+                            // ... other menu items
+                        }
+                    }
+                )
+            },
+            bottomBar = {
+                BottomNavigation {
+                    BottomNavigationItem(
+                        icon = { Icon(Icons.Default.Home, contentDescription = null) },
+                        label = { Text("Top") },
+                        selected = selectedTab == 0,
+                        onClick = { selectedTab = 0 }
+                    )
+                    BottomNavigationItem(
+                        icon = { Icon(Icons.Default.Star, contentDescription = null) },
+                        label = { Text("Best") },
+                        selected = selectedTab == 1,
+                        onClick = { selectedTab = 1 }
+                    )
+                    BottomNavigationItem(
+                        icon = { Icon(Icons.Default.List, contentDescription = null) },
+                        label = { Text("New") },
+                        selected = selectedTab == 2,
+                        onClick = { selectedTab = 2 }
+                    )
+                }
+            }
+        ) { padding ->
+            Column(
+                modifier = Modifier
+                    .padding(padding)
+            ) {
+
+                when (selectedTab) {
+                    0 -> ArticleList(articles = getArticles(topArticles, "top"))
+                    1 -> ArticleList(articles = getArticles(bestArticles, "best"))
+                    2 -> ArticleList(articles = getArticles(newArticles, "new"))
+                }
+            }
+        }
+    }
+
+    fun getArticles(articleData: ArticleData, type: String): List<ArticleData.ArticleInfo> {
+        return when (articleData) {
+            is ArticleData.Available -> articleData.articles[type] ?: emptyList()
+            else -> emptyList()
+        }
+    }
+
+    @Composable
+    fun ArticleList(articles: List<ArticleData.ArticleInfo>) {
+        val context = LocalContext.current
+        LazyColumn {
+            items(articles) { article ->
+                ArticleView(
+                    article = article,
+                    onTitleClick = {
+                        val url = article.url as? String ?: ""
+                        val context = context
+                        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                        context.startActivity(browserIntent)
+                    },
+                    onCommentClick = {
+                        val commentUrl = article.commentUrl as? String ?: ""
+                        val context = context
+                        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(commentUrl))
+                        context.startActivity(browserIntent)
+                    }
+                )
+            }
+        }
+    }
+
+    @Composable
+    fun ArticleView(
+        article: ArticleData.ArticleInfo,
+        onTitleClick: () -> Unit,
+        onCommentClick: () -> Unit
+    ) {
+        val rank = article.rank.toString().replace(".0", "") ?: ""
+        val title = article.title as? String ?: ""
+        val domain = article.domain as? String ?: ""
+        val score = article.score.toString()?.replace(".0", "") ?: ""
+        val descendants = article.descendants.toString().replace(".0", "") ?: ""
+        val by = article.by as? String ?: ""
+
+        Column {
+            Row(
+                modifier = Modifier
+                    .clickable(onClick = onTitleClick)
+                    .padding(8.dp)
+            ) {
+                Text(
+                    text = "$rank. $title ($domain)",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .clickable(onClick = onCommentClick)
+                    .padding(8.dp)
+            ) {
+                Text(
+                    text = "$score points by: $by | $descendants comments",
+                    fontSize = 16.sp,
+                    color = Color.Gray
+                )
+            }
+        }
     }
 
 
