@@ -1,5 +1,6 @@
 package com.thirdgate.hackernews
 
+import ThemeManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -30,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
+import com.thirdgate.hackernews.ui.theme.MyAppTheme
 import kotlinx.coroutines.launch
 
 
@@ -51,8 +53,10 @@ class MainActivity : ComponentActivity() {
 
 
         setContent {
-            MyApp {
-                NewsScreen()
+            MyAppTheme {
+                MyApp {
+                    NewsScreen()
+                }
             }
         }
     }
@@ -258,48 +262,23 @@ class MainActivity : ComponentActivity() {
         return true
     }
 
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+        // Handle action bar item clicks here.
         when (item.itemId) {
             R.id.action_theme_default -> {
-                ThemeManager.setThemePreference("AppTheme", this)
-                recreate()
-                return true
-            }
-
-            R.id.action_theme_cream -> {
-                ThemeManager.setThemePreference("CreamTheme", this)
-                recreate()
-                return true
-            }
-
-            R.id.action_theme_earth -> {
-                ThemeManager.setThemePreference("EarthTheme", this)
+                ThemeManager.setThemePreference("Default", this)
                 recreate()
                 return true
             }
 
             R.id.action_theme_cyberpunk -> {
-                ThemeManager.setThemePreference("CyberpunkTheme", this)
+                ThemeManager.setThemePreference("Cyberpunk", this)
                 recreate()
                 return true
             }
 
-
-            R.id.action_theme_darcula -> {
-                ThemeManager.setThemePreference("DarculaTheme", this)
-                recreate()
-                return true
-            }
-
-
-            R.id.action_theme_solarized -> {
-                ThemeManager.setThemePreference("SolarizedGrayTheme", this)
-                recreate()
-                return true
-            }
+            // ... other themes
         }
         return super.onOptionsItemSelected(item)
     }
