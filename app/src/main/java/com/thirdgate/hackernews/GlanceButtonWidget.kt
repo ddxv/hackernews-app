@@ -111,13 +111,14 @@ class GlanceButtonWidget : GlanceAppWidget() {
                 }
 
                 is ArticleData.Unavailable -> {
-                    AppWidgetColumn(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text("Data not available")
-                        Button("Refresh", actionRunCallback<RefreshAction>())
-                    }
+                    ContentNotAvailable()
+//                    AppWidgetColumn(
+//                        verticalAlignment = Alignment.CenterVertically,
+//                        horizontalAlignment = Alignment.CenterHorizontally
+//                    ) {
+//                        Text("Data not available")
+//                        Button("Refresh", actionRunCallback<RefreshAction>())
+//                    }
                 }
             }
         }
@@ -198,7 +199,14 @@ class GlanceButtonWidget : GlanceAppWidget() {
                                 )
                                 Text(
                                     text = "${article.score} points by: ${article.by} | ${article.descendants} comments",
-                                    modifier = GlanceModifier,
+                                    modifier = GlanceModifier.clickable(
+                                        block = {
+                                            makeAClick(
+                                                context,
+                                                article.commentUrl
+                                            )
+                                        }
+                                    ),
                                     style = TextStyle(fontSize = 10.sp, textAlign = TextAlign.Left)
                                 )
                             }

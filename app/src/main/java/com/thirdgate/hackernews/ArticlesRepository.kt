@@ -37,6 +37,7 @@ object ArticlesRepository {
                 id = id,
                 title = articleMap["title"] as String,
                 url = articleMap["url"] as String,
+                commentUrl = "https://news.ycombinator.com/item?id=$id",
                 domain = articleMap["domain"] as String,
                 by = articleMap["by"] as String,
                 score = (articleMap["score"] as? Double ?: -1.0).toInt(),

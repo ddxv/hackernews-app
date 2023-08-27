@@ -21,6 +21,7 @@ sealed interface ArticleData {
         val title: String?,
         val by: String,
         val url: String,
+        val commentUrl: String,
         val domain: String,
         val score: Int,
         val descendants: Int,
