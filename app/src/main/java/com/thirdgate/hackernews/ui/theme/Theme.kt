@@ -1,7 +1,6 @@
 package com.thirdgate.hackernews.ui.theme
 
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
@@ -57,36 +56,17 @@ private val CyberpunkDarkColorPalette = darkColors(
 )
 
 @Composable
-fun MyAppTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    cyberpunkTheme: Boolean = false,
-    content: @Composable() () -> Unit
-) {
-    val colors = when {
-        darkTheme && cyberpunkTheme -> CyberpunkDarkColorPalette
-        !darkTheme && cyberpunkTheme -> CyberpunkLightColorPalette
-        darkTheme -> DarkColorPalette
+fun MyAppTheme(theme: String, content: @Composable() () -> Unit) {
+    val colors = when (theme) {
+        "Cyberpunk" -> CyberpunkDarkColorPalette
         else -> LightColorPalette
     }
 
-
-    @Composable
-    fun MyAppTheme(
-        darkTheme: Boolean = isSystemInDarkTheme(),
-        cyberpunkTheme: Boolean = false,
-        content: @Composable() () -> Unit
-    ) {
-        val colors = when {
-            darkTheme && cyberpunkTheme -> CyberpunkDarkColorPalette
-            !darkTheme && cyberpunkTheme -> CyberpunkLightColorPalette
-            darkTheme -> DarkColorPalette
-            else -> LightColorPalette
-        }
-
-        MaterialTheme(
-            colors = colors,
-            content = content
-        )
-    }
+    MaterialTheme(
+        colors = colors,
+        content = content
+    )
 }
+
+
 

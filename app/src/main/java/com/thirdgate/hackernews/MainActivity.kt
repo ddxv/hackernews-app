@@ -1,6 +1,5 @@
 package com.thirdgate.hackernews
 
-import ThemeManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -27,20 +26,21 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import com.thirdgate.hackernews.ui.theme.MyAppTheme
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.remember as remember1
 
 
 class MainActivity : ComponentActivity() {
 
 
+    var currentTheme: String = "Default"
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        setAppTheme()
         super.onCreate(savedInstanceState)
 
         // Fetch the articles
@@ -53,7 +53,7 @@ class MainActivity : ComponentActivity() {
 
 
         setContent {
-            MyAppTheme {
+            MyAppTheme(theme = currentTheme) {
                 MyApp {
                     NewsScreen()
                 }
@@ -76,13 +76,13 @@ class MainActivity : ComponentActivity() {
         val bestArticles = ArticlesRepository.bestArticles.value
         val newArticles = ArticlesRepository.newArticles.value
 
-        var topPage by remember { mutableStateOf(1) }
-        var bestPage by remember { mutableStateOf(1) }
-        var newPage by remember { mutableStateOf(1) }
+        var topPage by remember1 { mutableStateOf(1) }
+        var bestPage by remember1 { mutableStateOf(1) }
+        var newPage by remember1 { mutableStateOf(1) }
 
-        var selectedTab by remember { mutableStateOf(0) }
+        var selectedTab by remember1 { mutableStateOf(0) }
 
-        var showMenu by remember { mutableStateOf(false) }
+        var showMenu by remember1 { mutableStateOf(false) }
 
         var articleType: String
 
@@ -104,13 +104,13 @@ class MainActivity : ComponentActivity() {
                                 // handle menu item click
                                 showMenu = false
                             }) {
-                                Text("Option 1")
+                                Text("Default")
                             }
                             DropdownMenuItem(onClick = {
                                 // handle menu item click
                                 showMenu = false
                             }) {
-                                Text("Option 2")
+                                Text("Cyberpunk")
                             }
                             // ... other menu items
                         }
@@ -244,18 +244,6 @@ class MainActivity : ComponentActivity() {
     }
 
 
-    private fun setAppTheme() {
-        when (ThemeManager.getThemePreference(this)) {
-            "EarthTheme" -> setTheme(R.style.EarthTheme)
-            "CyberpunkTheme" -> setTheme(R.style.CyberpunkTheme)
-            "DarculaTheme" -> setTheme(R.style.DarculaTheme)
-            "CreamTheme" -> setTheme(R.style.CreamTheme)
-            "SolarizedGrayTheme" -> setTheme(R.style.SolarizedGrayTheme)
-            else -> setTheme(R.style.AppTheme)  // Default theme
-        }
-    }
-
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
@@ -267,14 +255,12 @@ class MainActivity : ComponentActivity() {
         // Handle action bar item clicks here.
         when (item.itemId) {
             R.id.action_theme_default -> {
-                ThemeManager.setThemePreference("Default", this)
-                recreate()
+                currentTheme = "Default"
                 return true
             }
 
             R.id.action_theme_cyberpunk -> {
-                ThemeManager.setThemePreference("Cyberpunk", this)
-                recreate()
+                currentTheme = "Cyberpunk"
                 return true
             }
 
@@ -282,6 +268,5 @@ class MainActivity : ComponentActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-
 
 }
