@@ -6,11 +6,14 @@ import android.graphics.Typeface
 import android.net.Uri
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.util.TypedValue
 import android.view.Gravity
-import android.widget.Button
+import android.view.View
+import android.widget.TextView
 
 object ArticleFormatter {
     fun formatArticle(context: Context, article: ArticleData.ArticleInfo): SpannableString {
@@ -56,10 +59,40 @@ object ArticleFormatter {
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
 
+        // Set the click listener for the rank and title
+        val url = article.url as? String ?: ""
+        val titleClickableSpan = object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                context.startActivity(browserIntent)
+            }
+        }
+        spannable.setSpan(
+            titleClickableSpan,
+            0,
+            title.length + rank.length + 2,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        // Set the click listener for the score, by, and comments
+        val commentUrl = article.commentUrl as? String ?: ""
+        val commentClickableSpan = object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(commentUrl))
+                context.startActivity(browserIntent)
+            }
+        }
+        spannable.setSpan(
+            commentClickableSpan,
+            title.length + rank.length + 2,
+            spannable.length,
+            Spannable.SPAN_INCLUSIVE_INCLUSIVE
+        )
+
         return spannable
     }
 
-    fun makeArticleButton(article: ArticleData.ArticleInfo, context: Context): Button {
+    fun makeArticleButton(article: ArticleData.ArticleInfo, context: Context): TextView {
         val typedValue = TypedValue()
 
         context.theme.resolveAttribute(R.attr.backgroundSecondary, typedValue, true)
@@ -68,20 +101,20 @@ object ArticleFormatter {
 
         val spannable = formatArticle(context, article)
 
-        val articleButton = Button(context)
-        articleButton.text = spannable
+        val articleTextView = TextView(context)
+        articleTextView.text = spannable
 
-        articleButton.setBackgroundColor(articleBgColor)
-        articleButton.isAllCaps = false
-        articleButton.setTypeface(null, Typeface.NORMAL)
-        articleButton.gravity = Gravity.LEFT
+        articleTextView.setBackgroundColor(articleBgColor)
+        articleTextView.isAllCaps = false
+        articleTextView.setTypeface(null, Typeface.NORMAL)
+        articleTextView.gravity = Gravity.LEFT
 
         // Indent the text
         val paddingStart = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP, 16f,
             context.resources.displayMetrics
         ).toInt()
-        articleButton.setPadding(
+        articleTextView.setPadding(
             paddingStart,
             0,
             0,
@@ -89,14 +122,17 @@ object ArticleFormatter {
         )  // Only adding padding to the start (left for LTR layouts)
 
 
-        articleButton.setOnClickListener {
+        articleTextView.setOnClickListener {
             val url = article.url as? String
             url?.let {
                 val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(it))
                 context.startActivity(browserIntent)
             }
         }
-        return articleButton
+        // IMPORTANT: You need to set the movement method to make the clickable spans work
+        articleTextView.movementMethod = LinkMovementMethod.getInstance()
+
+        return articleTextView
     }
 
 }
