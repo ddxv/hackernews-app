@@ -64,7 +64,7 @@ class GlanceButtonWidget : GlanceAppWidget() {
 
     }
 
-    class UpdateWeatherAction : ActionCallback {
+    class RefreshAction : ActionCallback {
         override suspend fun onAction(
             context: Context,
             glanceId: GlanceId,
@@ -82,7 +82,7 @@ class GlanceButtonWidget : GlanceAppWidget() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text("Data not available")
-            Button("Refresh", actionRunCallback<UpdateWeatherAction>())
+            Button("Refresh", actionRunCallback<RefreshAction>())
         }
     }
 
@@ -116,7 +116,7 @@ class GlanceButtonWidget : GlanceAppWidget() {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text("Data not available")
-                        Button("Refresh", actionRunCallback<UpdateWeatherAction>())
+                        Button("Refresh", actionRunCallback<RefreshAction>())
                     }
                 }
             }

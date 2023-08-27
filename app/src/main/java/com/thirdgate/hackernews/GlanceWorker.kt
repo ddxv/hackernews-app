@@ -37,10 +37,10 @@ class GlanceWorker(
         private val uniqueWorkName = GlanceWorker::class.java.simpleName
 
         /**
-         * Enqueues a new worker to refresh weather data only if not enqueued already
+         * Enqueues a new worker to refresh article data only if not enqueued already
          *
          * Note: if you would like to have different workers per widget instance you could provide
-         * the unique name based on some criteria (e.g selected weather location).
+         * the unique name based on some criteria
          *
          * @param force set to true to replace any ongoing work and expedite the request
          */
@@ -84,7 +84,7 @@ class GlanceWorker(
 
             Result.success()
         } catch (e: Exception) {
-            //setWidgetState(glanceIds, WeatherInfo.Unavailable(e.message.orEmpty()))
+            setWidgetState(glanceIds, ArticleData.Unavailable(e.message.orEmpty()))
             if (runAttemptCount < 10) {
                 // Exponential backoff strategy will avoid the request to repeat
                 // too fast in case of failures.
