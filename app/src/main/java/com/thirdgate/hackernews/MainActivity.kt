@@ -1,18 +1,12 @@
 package com.thirdgate.hackernews
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.DropdownMenu
@@ -35,11 +29,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 
@@ -159,69 +148,6 @@ class MainActivity : ComponentActivity() {
         return when (articleData) {
             is ArticleData.Available -> articleData.articles[type] ?: emptyList()
             else -> emptyList()
-        }
-    }
-
-    @Composable
-    fun ArticleList(articles: List<ArticleData.ArticleInfo>) {
-        val context = LocalContext.current
-        LazyColumn {
-            items(articles) { article ->
-                ArticleView(
-                    article = article,
-                    onTitleClick = {
-                        val url = article.url as? String ?: ""
-                        val context = context
-                        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                        context.startActivity(browserIntent)
-                    },
-                    onCommentClick = {
-                        val commentUrl = article.commentUrl as? String ?: ""
-                        val context = context
-                        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(commentUrl))
-                        context.startActivity(browserIntent)
-                    }
-                )
-            }
-        }
-    }
-
-    @Composable
-    fun ArticleView(
-        article: ArticleData.ArticleInfo,
-        onTitleClick: () -> Unit,
-        onCommentClick: () -> Unit
-    ) {
-        val rank = article.rank.toString().replace(".0", "") ?: ""
-        val title = article.title as? String ?: ""
-        val domain = article.domain as? String ?: ""
-        val score = article.score.toString()?.replace(".0", "") ?: ""
-        val descendants = article.descendants.toString().replace(".0", "") ?: ""
-        val by = article.by as? String ?: ""
-
-        Column {
-            Row(
-                modifier = Modifier
-                    .clickable(onClick = onTitleClick)
-                    .padding(8.dp)
-            ) {
-                Text(
-                    text = "$rank. $title ($domain)",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp
-                )
-            }
-            Row(
-                modifier = Modifier
-                    .clickable(onClick = onCommentClick)
-                    .padding(8.dp)
-            ) {
-                Text(
-                    text = "$score points by: $by | $descendants comments",
-                    fontSize = 16.sp,
-                    color = Color.Gray
-                )
-            }
         }
     }
 
