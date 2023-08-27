@@ -131,21 +131,6 @@
         <item name="android:tint">?android:attr/colorAccent</item>
     </style>
 
-    <!--    THEMES from themes.xml in app widget project-->
-    <!-- Base application theme. -->
-    <style name="Theme.AppWidget" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/defaultPrimary</item>
-        <item name="colorPrimaryVariant">@color/defaultPrimary</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/colorSecondary</item>
-        <item name="colorSecondaryVariant">@color/colorSecondary</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
-    </style>
 
     <style name="Theme.AppWidget.AppWidgetContainerParent" parent="Theme.Material3.DynamicColors.DayNight">
         <!-- Radius of the outer bound of widgets to make the rounded corners -->

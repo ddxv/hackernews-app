@@ -1,5 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <item name="articleButton" type="id" />
-    <item name="appwidget_text" type="id" />
-</resources>
+<resources></resources>
