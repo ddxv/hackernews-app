@@ -13,5 +13,7 @@ dependencyResolutionManagement {
     }
 }
 
+
+
 rootProject.name = "Hacker News Widget"
 include(":app")

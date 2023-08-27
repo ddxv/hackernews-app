@@ -124,7 +124,7 @@ fun ArticleView(
             Text(
                 text = "$score points by: $by | $descendants comments",
                 fontSize = 16.sp,
-                color = MaterialTheme.colors.primaryVariant
+                color = MaterialTheme.colors.primary
             )
         }
     }

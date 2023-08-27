@@ -55,23 +55,20 @@ dependencies {
     implementation(composeBom)
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.compose.ui:ui:1.5.0")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.activity:activity-compose:1.7.2")
-    //implementation("androidx.compose.runtime:runtime-livedata:1.7.2")
+
 
     // Android Studio Preview support
-    implementation("androidx.compose.ui:ui-tooling-preview")
     debugImplementation("androidx.compose.ui:ui-tooling")
+    implementation("androidx.compose.ui:ui-tooling-preview")
 
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
-    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
+    // Material
     implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.compose.material:material:1.5.0")
+    //implementation("androidx.compose.material3:material3:1.1.1")
+
+
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.0")
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.0")
     implementation("androidx.glance:glance-appwidget:1.0.0-rc01")
     implementation("androidx.glance:glance:1.0.0-rc01")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
