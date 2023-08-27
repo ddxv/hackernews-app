@@ -16,7 +16,7 @@ import android.view.View
 import android.widget.TextView
 
 object ArticleFormatter {
-    fun formatArticle(context: Context, article: ArticleData.ArticleInfo): SpannableString {
+    private fun formatArticle(context: Context, article: ArticleData.ArticleInfo): SpannableString {
         // ... (same logic as in createArticlesView to create the SpannableString) ...
         val typedValue = TypedValue()
         context.theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true)
@@ -24,11 +24,11 @@ object ArticleFormatter {
 
         context.theme.resolveAttribute(android.R.attr.textColorSecondary, typedValue, true)
         val otherTextColor = typedValue.data
-        val rank = article.rank.toString().replace(".0", "") ?: ""
-        val title = article.title as? String ?: ""
+        val rank = article.rank.toString().replace(".0", "")
+        val title = article.title ?: ""
         val domain = article.domain as? String ?: ""
-        val score = article.score.toString()?.replace(".0", "") ?: ""
-        val descendants = article.descendants.toString().replace(".0", "") ?: ""
+        val score = article.score.toString().replace(".0", "")
+        val descendants = article.descendants.toString().replace(".0", "")
         val by = article.by as? String ?: ""
 
         val formattedArticle = """$rank. $title ($domain)

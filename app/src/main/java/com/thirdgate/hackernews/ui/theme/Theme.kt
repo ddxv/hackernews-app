@@ -22,7 +22,7 @@ private val LightColorPalette = lightColors(
 
 
 @Composable
-fun MyAppTheme(theme: String, content: @Composable() () -> Unit) {
+fun MyAppTheme(theme: String, content: @Composable () -> Unit) {
 
 
     val colors = when (theme) {

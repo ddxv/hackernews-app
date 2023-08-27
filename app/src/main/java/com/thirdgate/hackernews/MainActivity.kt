@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
             var currentTheme by remember { mutableStateOf("Default") }
             MyAppTheme(theme = currentTheme) {
                 MyApp {
-                    NewsScreen(currentTheme, onThemeChanged = { currentTheme = it })
+                    NewsScreen(onThemeChanged = { currentTheme = it })
                 }
             }
         }
@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun NewsScreen(currentTheme: String, onThemeChanged: (String) -> Unit) {
+    fun NewsScreen(onThemeChanged: (String) -> Unit) {
         val topArticles = ArticlesRepository.topArticles.value
         val bestArticles = ArticlesRepository.bestArticles.value
         val newArticles = ArticlesRepository.newArticles.value
@@ -242,7 +242,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    fun getArticles(articleData: ArticleData, type: String): List<ArticleData.ArticleInfo> {
+    private fun getArticles(articleData: ArticleData, type: String): List<ArticleData.ArticleInfo> {
         return when (articleData) {
             is ArticleData.Available -> articleData.articles[type] ?: emptyList()
             else -> emptyList()

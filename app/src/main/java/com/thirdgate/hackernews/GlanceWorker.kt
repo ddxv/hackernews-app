@@ -53,7 +53,7 @@ class GlanceWorker(
 
             // Replace any enqueued work and expedite the request
             if (force) {
-                workPolicy = ExistingPeriodicWorkPolicy.REPLACE
+                workPolicy = ExistingPeriodicWorkPolicy.UPDATE
             }
 
             manager.enqueueUniquePeriodicWork(

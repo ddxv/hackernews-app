@@ -112,13 +112,7 @@ class GlanceButtonWidget : GlanceAppWidget() {
 
                 is ArticleData.Unavailable -> {
                     ContentNotAvailable()
-//                    AppWidgetColumn(
-//                        verticalAlignment = Alignment.CenterVertically,
-//                        horizontalAlignment = Alignment.CenterHorizontally
-//                    ) {
-//                        Text("Data not available")
-//                        Button("Refresh", actionRunCallback<RefreshAction>())
-//                    }
+
                 }
             }
         }

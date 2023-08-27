@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 sealed interface ArticleData {
 
     @Serializable
-    object Loading : ArticleData
+    data object Loading : ArticleData
 
     @Serializable
     data class Available(val articles: Map<String, List<ArticleInfo>>) : ArticleData

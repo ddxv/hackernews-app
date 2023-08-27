@@ -65,13 +65,11 @@ fun ArticleList(
                     article = article,
                     onTitleClick = {
                         val url = article.url as? String ?: ""
-                        val context = context
                         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                         context.startActivity(browserIntent)
                     },
                     onCommentClick = {
                         val commentUrl = article.commentUrl as? String ?: ""
-                        val context = context
                         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(commentUrl))
                         context.startActivity(browserIntent)
                     }
@@ -99,11 +97,11 @@ fun ArticleView(
     onTitleClick: () -> Unit,
     onCommentClick: () -> Unit
 ) {
-    val rank = article.rank.toString().replace(".0", "") ?: ""
-    val title = article.title as? String ?: ""
+    val rank = article.rank.toString().replace(".0", "")
+    val title = article.title ?: ""
     val domain = article.domain as? String ?: ""
-    val score = article.score.toString()?.replace(".0", "") ?: ""
-    val descendants = article.descendants.toString().replace(".0", "") ?: ""
+    val score = article.score.toString().replace(".0", "")
+    val descendants = article.descendants.toString().replace(".0", "")
     val by = article.by as? String ?: ""
 
     Column {

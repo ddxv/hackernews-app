@@ -1,3 +1,5 @@
+package com.thirdgate.hackernews
+
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -21,9 +23,9 @@ class ApiService {
         )   // maximum time to wait for data to be sent after the connection is established
         .build()
 
-    val gson = Gson()
-    val type = object : TypeToken<Map<Int, Any>>() {}.type
-    val myBaseUrl: String = "https://thirdgate.dev/api/articles"
+    private val gson = Gson()
+    private val type = object : TypeToken<Map<Int, Any>>() {}.type
+    private val myBaseUrl: String = "https://thirdgate.dev/api/articles"
 
 
     suspend fun getArticle(articleNum: String): Map<String, Any> {

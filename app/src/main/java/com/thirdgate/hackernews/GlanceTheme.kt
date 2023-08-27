@@ -16,13 +16,10 @@
 
 package com.thirdgate.hackernews
 
-import android.content.Context
-import android.util.TypedValue
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.compose.ui.graphics.Color
 import androidx.glance.unit.ColorProvider
 
 /**
@@ -86,12 +83,6 @@ data class ColorProviders(
     val inverseTextColorPrimary: ColorProvider,
     val inverseTextColorSecondary: ColorProvider,
 )
-
-fun Context.resolveColorAttr(attr: Int): Color {
-    val typedValue = TypedValue()
-    theme.resolveAttribute(attr, typedValue, true)
-    return Color(typedValue.data)
-}
 
 /**
  * Creates a set of color providers that represents a Material3 style dynamic color theme. On
