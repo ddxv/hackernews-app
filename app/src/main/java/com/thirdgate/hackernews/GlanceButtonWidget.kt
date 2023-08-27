@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.thirdgate.hackernews
 
 import android.content.Context
@@ -27,6 +11,8 @@ import androidx.compose.ui.unit.sp
 import androidx.glance.Button
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
+import androidx.glance.Image
+import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
 import androidx.glance.action.ActionParameters
 import androidx.glance.action.clickable
@@ -83,6 +69,16 @@ class GlanceButtonWidget : GlanceAppWidget() {
         ) {
             Text("Data not available")
             Button("Refresh", actionRunCallback<RefreshAction>())
+            //IconButton(onClick = { actionRunCallback<RefreshAction>() })
+            Image(
+                provider = ImageProvider(androidx.glance.appwidget.R.drawable.glance_loading_layout_background),
+                modifier = GlanceModifier.clickable(
+                    onClick = actionRunCallback<RefreshAction>()
+                ),
+                contentDescription = "Refresh"
+            )
+
+
         }
     }
 
@@ -149,7 +145,14 @@ class GlanceButtonWidget : GlanceAppWidget() {
                     color = GlanceTheme.colors.primary
                 ),
             )
-
+            Button("Refresh", actionRunCallback<RefreshAction>())
+            Image(
+                provider = ImageProvider(androidx.glance.appwidget.R.drawable.glance_loading_layout_background),
+                modifier = GlanceModifier.clickable(
+                    onClick = actionRunCallback<RefreshAction>()
+                ),
+                contentDescription = "Refresh"
+            )
             LazyColumn(
                 modifier = GlanceModifier.fillMaxSize()
 
