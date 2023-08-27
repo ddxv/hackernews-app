@@ -72,9 +72,15 @@ class MainActivity : ComponentActivity() {
         val bestArticles = ArticlesRepository.bestArticles.value
         val newArticles = ArticlesRepository.newArticles.value
 
+        var topPage by remember { mutableStateOf(1) }
+        var bestPage by remember { mutableStateOf(1) }
+        var newPage by remember { mutableStateOf(1) }
+
         var selectedTab by remember { mutableStateOf(0) }
 
         var showMenu by remember { mutableStateOf(false) }
+
+        var articleType: String
 
         Scaffold(
             topBar = {
@@ -134,11 +140,93 @@ class MainActivity : ComponentActivity() {
                 modifier = Modifier
                     .padding(padding)
             ) {
-
                 when (selectedTab) {
-                    0 -> ArticleList(articles = getArticles(topArticles, "top"))
-                    1 -> ArticleList(articles = getArticles(bestArticles, "best"))
-                    2 -> ArticleList(articles = getArticles(newArticles, "new"))
+                    0 -> {
+                        articleType = "top"
+                        when (topArticles) {
+                            is ArticleData.Loading -> {
+                                // Show a loading spinner
+                            }
+
+                            is ArticleData.Unavailable -> {
+                                // Show an error message
+                            }
+
+                            is ArticleData.Available -> {
+                                ArticleList(
+                                    articles = getArticles(topArticles, articleType),
+                                    onEndOfListReached = {
+                                        // Fetch more 'top' articles
+                                        lifecycleScope.launch {
+                                            topPage++
+                                            ArticlesRepository.fetchArticles(
+                                                articleType,
+                                                page = topPage
+                                            )
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                    }
+
+                    1 -> {
+                        articleType = "best"
+                        when (bestArticles) {
+                            is ArticleData.Loading -> {
+                                // Show a loading spinner
+                            }
+
+                            is ArticleData.Unavailable -> {
+                                // Show an error message
+                            }
+
+                            is ArticleData.Available -> {
+                                ArticleList(
+                                    articles = getArticles(bestArticles, articleType),
+                                    onEndOfListReached = {
+                                        // Fetch more 'best' articles
+                                        lifecycleScope.launch {
+                                            bestPage++
+                                            ArticlesRepository.fetchArticles(
+                                                articleType,
+                                                page = bestPage
+                                            )
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                    }
+
+                    2 -> {
+                        articleType = "new"
+                        when (newArticles) {
+                            is ArticleData.Loading -> {
+                                // Show a loading spinner
+                            }
+
+                            is ArticleData.Unavailable -> {
+                                // Show an error message
+                            }
+
+                            is ArticleData.Available -> {
+                                ArticleList(
+                                    articles = getArticles(newArticles, articleType),
+                                    onEndOfListReached = {
+                                        // Fetch more 'new' articles
+                                        lifecycleScope.launch {
+                                            newPage++
+                                            ArticlesRepository.fetchArticles(
+                                                articleType,
+                                                page = newPage
+                                            )
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }

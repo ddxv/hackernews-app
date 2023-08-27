@@ -25,7 +25,5 @@ sealed interface ArticleData {
         val domain: String,
         val score: Int,
         val descendants: Int,
-
-        // any other fields that you need
     )
 }

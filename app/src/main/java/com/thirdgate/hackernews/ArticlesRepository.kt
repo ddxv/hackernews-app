@@ -33,12 +33,33 @@ object ArticlesRepository {
     val bestArticles: State<ArticleData> = _bestArticles
     val newArticles: State<ArticleData> = _newArticles
 
+    private val fetchedTopPages = mutableSetOf<Int>()
+    private val fetchedBestPages = mutableSetOf<Int>()
+    private val fetchedNewPages = mutableSetOf<Int>()
+
     suspend fun fetchArticles(articleType: String, page: Int = 1): ArticleData {
+        when (articleType) {
+            "top" -> {
+                if (fetchedTopPages.contains(page)) return topArticles.value
+                fetchedTopPages.add(page)
+            }
+
+            "best" -> {
+                if (fetchedBestPages.contains(page)) return bestArticles.value
+                fetchedBestPages.add(page)
+            }
+
+            "new" -> {
+                if (fetchedNewPages.contains(page)) return newArticles.value
+                fetchedNewPages.add(page)
+            }
+        }
+
+
         val articles: Map<String, Map<String, Any>> = apiService.getArticles(articleType, page)
         Log.i("ArticlesRepository", "ApiService returned: articles {${articles}}")
 
-
-        val articleList = articles.map { (id, articleMap) ->
+        val fetchedArticleList: List<ArticleData.ArticleInfo> = articles.map { (id, articleMap) ->
             ArticleData.ArticleInfo(
                 id = id,
                 title = articleMap["title"] as String,
@@ -50,22 +71,42 @@ object ArticlesRepository {
                 rank = (articleMap["rank"] as? Double ?: -1.0).toInt(),
                 descendants = (articleMap["descendants"] as? Double ?: -1.0).toInt()
             )
-
-
         }
+
+        updateArticles(articleType, fetchedArticleList)
 
         val myArticleData: Map<String, List<ArticleData.ArticleInfo>> =
-            mapOf(articleType to articleList)
-
-        when (articleType) {
-            "top" -> _topArticles.value = ArticleData.Available(myArticleData)
-            "new" -> _newArticles.value = ArticleData.Available(myArticleData)
-            "best" -> _bestArticles.value = ArticleData.Available(myArticleData)
-        }
+            mapOf(articleType to fetchedArticleList)
 
         return ArticleData.Available(myArticleData)
     }
 
+    private fun updateArticles(
+        articleType: String,
+        fetchedArticleList: List<ArticleData.ArticleInfo>
+    ) {
+        val currentArticles = when (articleType) {
+            "top" -> (topArticles.value as? ArticleData.Available)?.articles?.get("top")
+                ?: emptyList()
+
+            "best" -> (bestArticles.value as? ArticleData.Available)?.articles?.get("best")
+                ?: emptyList()
+
+            "new" -> (newArticles.value as? ArticleData.Available)?.articles?.get("new")
+                ?: emptyList()
+
+            else -> emptyList()
+        }
+
+        val newArticlesSet = currentArticles + fetchedArticleList
+        val myArticleData = mapOf(articleType to newArticlesSet)
+
+        when (articleType) {
+            "top" -> _topArticles.value = ArticleData.Available(myArticleData)
+            "best" -> _bestArticles.value = ArticleData.Available(myArticleData)
+            "new" -> _newArticles.value = ArticleData.Available(myArticleData)
+        }
+    }
 
     /**
      * Custom serializer for ArticleData using Json.

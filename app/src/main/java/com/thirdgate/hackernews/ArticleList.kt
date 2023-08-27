@@ -9,17 +9,21 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,6 +32,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 
@@ -35,11 +41,13 @@ import kotlinx.coroutines.launch
 @Composable
 fun ArticleList(
     articles: List<ArticleData.ArticleInfo>,
+    onEndOfListReached: () -> Unit
 ) {
     val context = LocalContext.current
     val refreshScope = rememberCoroutineScope()
     var refreshing by remember { mutableStateOf(false) }
-    var itemCount by remember { mutableStateOf(15) }
+    var itemCount by remember { mutableIntStateOf(15) }
+    val lazyListState = rememberLazyListState()
 
     fun refresh() = refreshScope.launch {
         refreshing = true
@@ -51,7 +59,7 @@ fun ArticleList(
     val state = rememberPullRefreshState(refreshing, ::refresh)
 
     Box(Modifier.pullRefresh(state)) {
-        LazyColumn {
+        LazyColumn(state = lazyListState) {
             items(articles) { article ->
                 ArticleView(
                     article = article,
@@ -72,6 +80,16 @@ fun ArticleList(
         }
         PullRefreshIndicator(refreshing, state, Modifier.align(Alignment.TopCenter))
 
+    }
+    // Check if the end of the list has been reached
+    LaunchedEffect(lazyListState) {
+        snapshotFlow { lazyListState.layoutInfo.visibleItemsInfo }
+            .map { it.lastOrNull() }
+            .collectLatest { lastVisibleItem ->
+                if (lastVisibleItem != null && lastVisibleItem.index == articles.size - 1) {
+                    onEndOfListReached()
+                }
+            }
     }
 }
 
