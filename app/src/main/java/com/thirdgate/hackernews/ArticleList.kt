@@ -2,6 +2,7 @@ package com.thirdgate.hackernews
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,7 +29,10 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
@@ -104,27 +108,42 @@ fun ArticleView(
     val descendants = article.descendants.toString().replace(".0", "")
     val by = article.by as? String ?: ""
 
-    Column {
+    Column(modifier = Modifier.padding(8.dp)) {
         Row(
             modifier = Modifier
+                .background(color = MaterialTheme.colors.background)
                 .clickable(onClick = onTitleClick)
-                .padding(8.dp)
         ) {
             Text(
-                text = "$rank. $title ($domain)",
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
-                color = MaterialTheme.colors.onBackground
+                buildAnnotatedString {
+                    withStyle(
+                        style = SpanStyle(
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 18.sp,
+                            color = MaterialTheme.colors.onBackground
+                        )
+                    ) {
+                        append("$rank. $title")
+                    }
+                    withStyle(
+                        style = SpanStyle(
+                            fontSize = 14.sp,
+                            color = MaterialTheme.colors.onSurface
+                        )
+                    ) {
+                        append(" ($domain)")
+                    }
+                }
             )
         }
         Row(
             modifier = Modifier
+                .background(color = MaterialTheme.colors.background)
                 .clickable(onClick = onCommentClick)
-                .padding(8.dp)
         ) {
             Text(
                 text = "$score points by: $by | $descendants comments",
-                fontSize = 16.sp,
+                fontSize = 14.sp,
                 color = MaterialTheme.colors.onSurface
             )
         }
