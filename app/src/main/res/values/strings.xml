@@ -4,12 +4,12 @@
     <!-- Strings used for fragments for navigation -->
     <string name="glances_button_title">Hacker News</string>
 
-    <string name="buttons_glance_widget_description">Description from inside widget info</string>
+    <string name="glance_widget_description">Description from glance_widget_info.xml</string>
     <string name="button">this is button text</string>
     <string name="check_box">check box eg string</string>
     <string name="switch_element">eg string switch eleemn</string>
-    <string name="buttons_title">PreviewTitle</string>
-    <string name="buttons_title2">SEEJUSTEXAMPLE</string>
+    <string name="glance_widget_preview_title">HackerNews Articles</string>
+    <string name="glance_widget_preview_text">Article: 1</string>
 
     <!--    THEME NAMES-->
     <string name="cyberpunk_dark">Cyberpunk Dark</string>

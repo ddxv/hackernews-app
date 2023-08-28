@@ -21,6 +21,15 @@
             </intent-filter>
         </activity>
 
+        <!--        <activity-->
+        <!--            android:name=".GlanceWidgetConfigurationActivity"-->
+        <!--            android:exported="true">-->
+        <!--            <intent-filter>-->
+        <!--                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />-->
+        <!--            </intent-filter>-->
+        <!--        </activity>-->
+
+
         <!-- Register the AppWidgetProvider -->
 
         <receiver
