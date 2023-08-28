@@ -12,6 +12,8 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import java.io.InputStream
 import java.io.OutputStream
+import java.time.Duration
+import java.time.Instant
 
 object ArticlesRepository {
 
@@ -68,7 +70,8 @@ object ArticlesRepository {
                 by = articleMap["by"] as String,
                 score = (articleMap["score"] as? Double ?: -1.0).toInt(),
                 rank = (articleMap["rank"] as? Double ?: -1.0).toInt(),
-                descendants = (articleMap["descendants"] as? Double ?: -1.0).toInt()
+                descendants = (articleMap["descendants"] as? Double ?: -1.0).toInt(),
+                time = (articleMap["time"] as? Double ?: -1.0).toInt(),
             )
         }
 
@@ -78,6 +81,37 @@ object ArticlesRepository {
             mapOf(articleType to fetchedArticleList)
 
         return ArticleData.Available(myArticleData)
+    }
+
+    fun convertEpochToRelativeTime(epochSeconds: Long): String {
+        val currentInstant = Instant.now()
+        val epochInstant = Instant.ofEpochSecond(epochSeconds)
+        val timeDifference = Duration.between(epochInstant, currentInstant)
+
+        val days = timeDifference.toDays()
+        if (days > 0) {
+            if (days < 2) {
+                return "$days day ago"
+            } else {
+                return "$days days ago"
+            }
+        }
+
+        val hours = timeDifference.toHours()
+        if (hours > 0) {
+            if (hours < 2) {
+                return "$hours hour ago"
+            } else {
+                return "$hours hours ago"
+            }
+        }
+
+        val minutes = timeDifference.toMinutes()
+        if (minutes < 2) {
+            return "$minutes minute ago"
+        } else {
+            return "$minutes minutes ago"
+        }
     }
 
     private fun updateArticles(

@@ -107,6 +107,7 @@ fun ArticleView(
     val score = article.score.toString().replace(".0", "")
     val descendants = article.descendants.toString().replace(".0", "")
     val by = article.by as? String ?: ""
+    val relativeTime = article.relativeTime as? String ?: ""
 
     Column(modifier = Modifier.padding(8.dp)) {
         Row(
@@ -142,7 +143,7 @@ fun ArticleView(
                 .clickable(onClick = onCommentClick)
         ) {
             Text(
-                text = "$score points by: $by | $descendants comments",
+                text = "$score points by: $by $relativeTime | $descendants comments",
                 fontSize = 14.sp,
                 color = MaterialTheme.colors.onSurface
             )

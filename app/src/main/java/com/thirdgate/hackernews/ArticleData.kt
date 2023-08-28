@@ -1,5 +1,6 @@
 package com.thirdgate.hackernews
 
+import com.thirdgate.hackernews.ArticlesRepository.convertEpochToRelativeTime
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -25,5 +26,9 @@ sealed interface ArticleData {
         val domain: String,
         val score: Int,
         val descendants: Int,
-    )
+        val time: Int,
+    ) {
+        val relativeTime: String
+            get() = convertEpochToRelativeTime(time.toLong())
+    }
 }
