@@ -5,16 +5,17 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.glance.Button
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
+import androidx.glance.GlanceTheme
 import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
 import androidx.glance.action.ActionParameters
+import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.CircularProgressIndicator
 import androidx.glance.appwidget.GlanceAppWidget
@@ -50,17 +51,6 @@ class GlanceButtonWidget : GlanceAppWidget() {
 
     }
 
-    class RefreshAction : ActionCallback {
-        override suspend fun onAction(
-            context: Context,
-            glanceId: GlanceId,
-            parameters: ActionParameters
-        ) {
-            // Force the worker to refresh
-            GlanceWorker.enqueue(context = context, force = true)
-        }
-    }
-
     @Composable
     private fun ContentNotAvailable() {
         AppWidgetColumn(
@@ -89,29 +79,29 @@ class GlanceButtonWidget : GlanceAppWidget() {
     ) {
         val articleData = currentState<ArticleData>()
 
-        GlanceTheme {
-            when (articleData) {
-                ArticleData.Loading -> {
-                    AppWidgetBox(contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator()
-                    }
-                }
-
-                is ArticleData.Available -> {
-                    MyActualContent(
-                        context = context,
-                        articleType = articleType,
-                        articleData = articleData
-                    )
-
-                }
-
-                is ArticleData.Unavailable -> {
-                    ContentNotAvailable()
-
+        //GlanceTheme {
+        when (articleData) {
+            ArticleData.Loading -> {
+                AppWidgetBox(contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
                 }
             }
+
+            is ArticleData.Available -> {
+                MyActualContent(
+                    context = context,
+                    articleType = articleType,
+                    articleData = articleData
+                )
+
+            }
+
+            is ArticleData.Unavailable -> {
+                ContentNotAvailable()
+
+            }
         }
+        //}
     }
 
     @Composable
@@ -120,7 +110,7 @@ class GlanceButtonWidget : GlanceAppWidget() {
         articleType: String,
         articleData: ArticleData.Available
     ) {
-        GlanceTheme {
+        GlanceTheme(colors = MyGlanceTheme.colors) {
 
         }
         Column(
@@ -145,14 +135,21 @@ class GlanceButtonWidget : GlanceAppWidget() {
                     color = GlanceTheme.colors.primary
                 ),
             )
-            Button("Refresh", actionRunCallback<RefreshAction>())
             Image(
-                provider = ImageProvider(androidx.glance.appwidget.R.drawable.glance_loading_layout_background),
+                provider = ImageProvider(R.drawable.round_settings_24),
+                modifier = GlanceModifier.clickable(
+                    onClick = actionStartActivity<GlanceWidgetConfigurationActivity>()
+                ),
+                contentDescription = "Settings"
+            )
+            Image(
+                provider = ImageProvider(R.drawable.round_refresh_24),
                 modifier = GlanceModifier.clickable(
                     onClick = actionRunCallback<RefreshAction>()
                 ),
                 contentDescription = "Refresh"
             )
+
             LazyColumn(
                 modifier = GlanceModifier.fillMaxSize()
 
@@ -162,15 +159,15 @@ class GlanceButtonWidget : GlanceAppWidget() {
                 itemsIndexed(itemsList) { _, article ->
                     Row(
                         modifier = GlanceModifier.background(
-                            day = Color.White,
-                            night = Color.White
+                            day = GlanceTheme.colors.primaryContainer.getColor(context),
+                            night = GlanceTheme.colors.primaryContainer.getColor(context)
                         ).fillMaxSize().padding(bottom = 8.dp),
                         verticalAlignment = Alignment.Vertical.CenterVertically,
                     ) {
                         Row(
                             modifier = GlanceModifier.background(
-                                day = Color.LightGray,
-                                night = Color.LightGray
+                                day = GlanceTheme.colors.background.getColor(context),
+                                night = GlanceTheme.colors.background.getColor(context),
                             ).fillMaxSize().padding(vertical = 2.dp)
                         ) {
                             Log.i("looping_glances_widget", "title: ${article.title}")
@@ -191,7 +188,11 @@ class GlanceButtonWidget : GlanceAppWidget() {
                                             )
                                         }
                                     ),
-                                    style = TextStyle(fontSize = 12.sp, textAlign = TextAlign.Left)
+                                    style = TextStyle(
+                                        fontSize = 12.sp,
+                                        textAlign = TextAlign.Left,
+                                        color = GlanceTheme.colors.primary
+                                    )
                                 )
                                 Text(
                                     text = "${article.score} points by: ${article.by} | ${article.descendants} comments",
@@ -219,4 +220,15 @@ fun makeAClick(context: Context, url: String) {
         Intent(Intent.ACTION_VIEW, Uri.parse(url))
     webIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     context.startActivity(webIntent)
+}
+
+class RefreshAction : ActionCallback {
+    override suspend fun onAction(
+        context: Context,
+        glanceId: GlanceId,
+        parameters: ActionParameters
+    ) {
+        // Force the worker to refresh
+        GlanceWorker.enqueue(context = context, force = true)
+    }
 }

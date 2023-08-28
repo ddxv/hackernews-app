@@ -1,7 +1,6 @@
 package com.thirdgate.hackernews
 
 import android.content.Intent
-import android.graphics.drawable.Icon
 import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -12,12 +11,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Refresh
-import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -34,7 +29,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
@@ -119,7 +113,8 @@ fun ArticleView(
             Text(
                 text = "$rank. $title ($domain)",
                 fontWeight = FontWeight.Bold,
-                fontSize = 18.sp
+                fontSize = 18.sp,
+                color = MaterialTheme.colors.onBackground
             )
         }
         Row(
@@ -130,19 +125,9 @@ fun ArticleView(
             Text(
                 text = "$score points by: $by | $descendants comments",
                 fontSize = 16.sp,
-                color = MaterialTheme.colors.primary
+                color = MaterialTheme.colors.onSurface
             )
         }
     }
 }
-
-
-@Preview
-@Composable
-fun MyTest() {
-    //Icon(Icons.Rounded.Refresh)
-    //Icons.Rounded.Refresh
-    Icon(Icons.Rounded.Refresh, contentDescription="hi")
-}
-
 

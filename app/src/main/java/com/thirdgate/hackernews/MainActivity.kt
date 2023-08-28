@@ -39,6 +39,9 @@ class MainActivity : ComponentActivity() {
 
         super.onCreate(savedInstanceState)
 
+        // Hide the status bar
+        actionBar?.hide()
+
         // Fetch the articles
         lifecycleScope.launch {
             ArticlesRepository.fetchArticles("top")
@@ -84,17 +87,16 @@ class MainActivity : ComponentActivity() {
         var articleType: String
 
         val themes = listOf(
-            getString(R.string.default_theme),
-            getString(R.string.cyberpunk_dark),
-            getString(R.string.cyberpunk_light),
+            getString(R.string.hacker_news_orange_light),
+            getString(R.string.hacker_news_orange_dark),
             getString(R.string.darcula),
+            getString(R.string.cyberpunk_light),
+            getString(R.string.cyberpunk_dark),
             getString(R.string.lavender_light),
             getString(R.string.lavender_dark),
             getString(R.string.crystal_blue),
             getString(R.string.solarized_light),
             getString(R.string.solarized_dark),
-            getString(R.string.hacker_news_orange_light),
-            getString(R.string.hacker_news_orange_dark)
         )
         Scaffold(
             topBar = {
@@ -102,6 +104,8 @@ class MainActivity : ComponentActivity() {
                     title = {
                         Text(text = "News")
                     },
+                    backgroundColor = MaterialTheme.colors.primary,
+                    contentColor = MaterialTheme.colors.onPrimary,
                     actions = {
                         //var showMenu by remember1 { mutableStateOf(false) }
                         IconButton(onClick = { showMenu = true }) {
@@ -124,7 +128,10 @@ class MainActivity : ComponentActivity() {
                 )
             },
             bottomBar = {
-                BottomNavigation {
+                BottomNavigation(
+                    backgroundColor = MaterialTheme.colors.primary,
+                    contentColor = MaterialTheme.colors.onPrimary,
+                ) {
                     BottomNavigationItem(
                         icon = { Icon(Icons.Default.Home, contentDescription = null) },
                         label = { Text("Top") },
