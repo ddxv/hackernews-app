@@ -58,16 +58,7 @@ fun appWidgetBackgroundModifier() = GlanceModifier
     .padding(8.dp)
     .appWidgetBackground()
     .background(GlanceTheme.colors.background)
-    .appWidgetBackgroundCornerRadius()
 
-fun GlanceModifier.appWidgetBackgroundCornerRadius(): GlanceModifier {
-    if (Build.VERSION.SDK_INT >= 31) {
-        cornerRadius(android.R.dimen.system_app_widget_background_radius)
-    } else {
-        cornerRadius(6.dp)
-    }
-    return this
-}
 
 fun GlanceModifier.appWidgetInnerCornerRadius(): GlanceModifier {
     if (Build.VERSION.SDK_INT >= 31) {

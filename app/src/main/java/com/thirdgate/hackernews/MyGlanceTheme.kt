@@ -1,9 +1,11 @@
 package com.thirdgate.hackernews
 
 import androidx.glance.material.ColorProviders
-import com.thirdgate.hackernews.ui.theme.CrystalBlueColorPalette
+import com.thirdgate.hackernews.ui.theme.HackerNewsOrangeLightColorPalette
 
 
 object MyGlanceTheme {
-    val colors = ColorProviders(CrystalBlueColorPalette())
+    val colors = ColorProviders(
+        colors = HackerNewsOrangeLightColorPalette()
+    )
 }

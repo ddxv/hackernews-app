@@ -15,7 +15,6 @@ import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
 import androidx.glance.action.ActionParameters
-import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.CircularProgressIndicator
 import androidx.glance.appwidget.GlanceAppWidget
@@ -23,6 +22,7 @@ import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.action.actionRunCallback
 import androidx.glance.appwidget.appWidgetBackground
 import androidx.glance.appwidget.background
+import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.lazy.LazyColumn
 import androidx.glance.appwidget.lazy.itemsIndexed
 import androidx.glance.appwidget.provideContent
@@ -47,7 +47,11 @@ class GlanceButtonWidget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         val articleType = "top"
 
-        provideContent { MyContent(context, articleType) }
+        provideContent {
+            GlanceTheme(colors = MyGlanceTheme.colors) {
+                MyContent(context, articleType)
+            }
+        }
 
     }
 
@@ -59,7 +63,6 @@ class GlanceButtonWidget : GlanceAppWidget() {
         ) {
             Text("Data not available")
             Button("Refresh", actionRunCallback<RefreshAction>())
-            //IconButton(onClick = { actionRunCallback<RefreshAction>() })
             Image(
                 provider = ImageProvider(androidx.glance.appwidget.R.drawable.glance_loading_layout_background),
                 modifier = GlanceModifier.clickable(
@@ -79,7 +82,6 @@ class GlanceButtonWidget : GlanceAppWidget() {
     ) {
         val articleData = currentState<ArticleData>()
 
-        //GlanceTheme {
         when (articleData) {
             ArticleData.Loading -> {
                 AppWidgetBox(contentAlignment = Alignment.Center) {
@@ -110,45 +112,47 @@ class GlanceButtonWidget : GlanceAppWidget() {
         articleType: String,
         articleData: ArticleData.Available
     ) {
-        GlanceTheme(colors = MyGlanceTheme.colors) {
-
-        }
         Column(
             modifier = GlanceModifier
                 .fillMaxSize()
-                .padding(4.dp)
-                .appWidgetBackground()
+                .appWidgetBackground().cornerRadius(8.dp)
                 .background(
-                    day = GlanceTheme.colors.background.getColor(context),
-                    night = GlanceTheme.colors.onBackground.getColor(context)
+                    day = GlanceTheme.colors.primary.getColor(context),
+                    night = GlanceTheme.colors.primary.getColor(context)
                 )
-                .appWidgetBackgroundCornerRadius()
         ) {
-            Text(
-                text = LocalContext.current.getString(R.string.glances_button_title) + ": ${articleType.replaceFirstChar { it.uppercase() }} Articles",
-                modifier = GlanceModifier
-                    .fillMaxWidth()
-                    .padding(6.dp),
-                style = TextStyle(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    color = GlanceTheme.colors.primary
-                ),
-            )
-            Image(
-                provider = ImageProvider(R.drawable.round_settings_24),
-                modifier = GlanceModifier.clickable(
-                    onClick = actionStartActivity<GlanceWidgetConfigurationActivity>()
-                ),
-                contentDescription = "Settings"
-            )
-            Image(
-                provider = ImageProvider(R.drawable.round_refresh_24),
-                modifier = GlanceModifier.clickable(
-                    onClick = actionRunCallback<RefreshAction>()
-                ),
-                contentDescription = "Refresh"
-            )
+            Row(
+                modifier = GlanceModifier.background(
+                    day = GlanceTheme.colors.primary.getColor(
+                        context
+                    ), night = GlanceTheme.colors.primary.getColor(context)
+                ).padding(4.dp).fillMaxWidth()
+            ) {
+                Text(
+                    text = LocalContext.current.getString(R.string.glances_button_title) + ": ${articleType.replaceFirstChar { it.uppercase() }}",
+                    modifier = GlanceModifier.defaultWeight(),
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
+                        color = GlanceTheme.colors.onPrimary
+                    ),
+                )
+//                Image(
+//                    provider = ImageProvider(R.drawable.round_settings_24),
+//                    modifier = GlanceModifier.clickable(
+//                        onClick = actionStartActivity<GlanceWidgetConfigurationActivity>()
+//                    ),
+//                    contentDescription = "Settings"
+//                )
+                //Spacer(modifier = GlanceModifier.defaultWeight())
+                Image(
+                    provider = ImageProvider(R.drawable.round_refresh_24),
+                    modifier = GlanceModifier.clickable(
+                        onClick = actionRunCallback<RefreshAction>()
+                    ),
+                    contentDescription = "Refresh"
+                )
+            }
 
             LazyColumn(
                 modifier = GlanceModifier.fillMaxSize()
@@ -159,8 +163,8 @@ class GlanceButtonWidget : GlanceAppWidget() {
                 itemsIndexed(itemsList) { _, article ->
                     Row(
                         modifier = GlanceModifier.background(
-                            day = GlanceTheme.colors.primaryContainer.getColor(context),
-                            night = GlanceTheme.colors.primaryContainer.getColor(context)
+                            day = GlanceTheme.colors.background.getColor(context),
+                            night = GlanceTheme.colors.background.getColor(context)
                         ).fillMaxSize().padding(bottom = 8.dp),
                         verticalAlignment = Alignment.Vertical.CenterVertically,
                     ) {
@@ -191,7 +195,7 @@ class GlanceButtonWidget : GlanceAppWidget() {
                                     style = TextStyle(
                                         fontSize = 12.sp,
                                         textAlign = TextAlign.Left,
-                                        color = GlanceTheme.colors.primary
+                                        color = GlanceTheme.colors.onBackground
                                     )
                                 )
                                 Text(
@@ -204,7 +208,11 @@ class GlanceButtonWidget : GlanceAppWidget() {
                                             )
                                         }
                                     ),
-                                    style = TextStyle(fontSize = 10.sp, textAlign = TextAlign.Left)
+                                    style = TextStyle(
+                                        fontSize = 10.sp,
+                                        textAlign = TextAlign.Left,
+                                        color = GlanceTheme.colors.onSurface
+                                    )
                                 )
                             }
                         }
