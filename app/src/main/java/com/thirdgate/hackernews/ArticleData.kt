@@ -31,4 +31,9 @@ sealed interface ArticleData {
         val relativeTime: String
             get() = convertEpochToRelativeTime(time.toLong())
     }
+
+    
 }
+
+
+

@@ -59,17 +59,30 @@ class GlanceWorker(
     override suspend fun doWork(): Result {
         val manager = GlanceAppWidgetManager(context)
         val glanceIds = manager.getGlanceIds(GlanceButtonWidget::class.java)
+        val myTheme: String = "default"
         return try {
             // Update state to indicate loading
-            setWidgetState(glanceIds, ArticleData.Loading)
+
+            setWidgetState(glanceIds, WidgetInfo(articleData = ArticleData.Loading))
             // Update state with new data
-            setWidgetState(glanceIds, ArticlesRepository.fetchArticles("top", page = 1))
-
-
+            setWidgetState(
+                glanceIds,
+                WidgetInfo(
+                    articleData = ArticlesRepository.fetchArticles("top", page = 1),
+                    themeId = myTheme
+                )
+            )
 
             Result.success()
         } catch (e: Exception) {
-            setWidgetState(glanceIds, ArticleData.Unavailable(e.message.orEmpty()))
+            //setWidgetState(glanceIds, ArticleData.Unavailable(e.message.orEmpty()))
+            setWidgetState(
+                glanceIds,
+                WidgetInfo(
+                    articleData = ArticleData.Unavailable(e.message.orEmpty()),
+                    themeId = myTheme
+                )
+            )
             if (runAttemptCount < 10) {
                 // Exponential backoff strategy will avoid the request to repeat
                 // too fast in case of failures.
@@ -83,7 +96,7 @@ class GlanceWorker(
     /**
      * Update the state of all widgets and then force update UI
      */
-    private suspend fun setWidgetState(glanceIds: List<GlanceId>, newState: ArticleData) {
+    private suspend fun setWidgetState(glanceIds: List<GlanceId>, newState: WidgetInfo) {
         glanceIds.forEach { glanceId ->
             updateAppWidgetState(
                 context = context,

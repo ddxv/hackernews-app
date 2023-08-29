@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import androidx.compose.material.Colors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,10 +34,13 @@ import androidx.glance.layout.Row
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.padding
+import androidx.glance.material.ColorProviders
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
+import com.thirdgate.hackernews.ui.theme.HackerNewsOrangeDarkColorPalette
+import com.thirdgate.hackernews.ui.theme.HackerNewsOrangeLightColorPalette
 
 
 class GlanceButtonWidget : GlanceAppWidget() {
@@ -45,15 +49,12 @@ class GlanceButtonWidget : GlanceAppWidget() {
 
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val articleType = "top"
 
         provideContent {
-            GlanceTheme(colors = MyGlanceTheme.colors) {
-                MyContent(context, articleType)
-            }
+            MyContent(context)
         }
-
     }
+
 
     @Composable
     private fun ContentNotAvailable() {
@@ -78,32 +79,43 @@ class GlanceButtonWidget : GlanceAppWidget() {
     @Composable
     private fun MyContent(
         context: Context,
-        articleType: String,
     ) {
-        val articleData = currentState<ArticleData>()
+        val widgetInfo = currentState<WidgetInfo>()
+        val articleData = widgetInfo.articleData
+        val themeId = widgetInfo.themeId
+        val articleType = widgetInfo.articleType
 
-        when (articleData) {
-            ArticleData.Loading -> {
-                AppWidgetBox(contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
+
+        val myColors: Colors = when (themeId) {
+            "hackernewsdark" -> HackerNewsOrangeDarkColorPalette()
+            else -> HackerNewsOrangeLightColorPalette() // Replace with your default color palette
+        }
+
+
+        GlanceTheme(colors = ColorProviders(myColors)) {
+
+            when (articleData) {
+                ArticleData.Loading -> {
+                    AppWidgetBox(contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
+                }
+
+                is ArticleData.Available -> {
+                    MyActualContent(
+                        context = context,
+                        articleType = articleType,
+                        articleData = articleData
+                    )
+
+                }
+
+                is ArticleData.Unavailable -> {
+                    ContentNotAvailable()
+
                 }
             }
-
-            is ArticleData.Available -> {
-                MyActualContent(
-                    context = context,
-                    articleType = articleType,
-                    articleData = articleData
-                )
-
-            }
-
-            is ArticleData.Unavailable -> {
-                ContentNotAvailable()
-
-            }
         }
-        //}
     }
 
     @Composable
