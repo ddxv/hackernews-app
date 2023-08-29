@@ -1,8 +1,10 @@
 package com.thirdgate.hackernews
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
@@ -27,6 +29,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.lifecycleScope
 import com.thirdgate.hackernews.ui.theme.MyAppTheme
 import kotlinx.coroutines.launch
@@ -84,7 +87,7 @@ class MainActivity : ComponentActivity() {
 
         var showMenu by remember { mutableStateOf(false) }
 
-        var articleType: String
+        val context = LocalContext.current
 
         val themes = listOf(
             getString(R.string.hacker_news_orange_light),
@@ -98,31 +101,52 @@ class MainActivity : ComponentActivity() {
             getString(R.string.solarized_light),
             getString(R.string.solarized_dark),
         )
+
+        val articleType = when (selectedTab) {
+            0 -> "top"
+            1 -> "best"
+            2 -> "new"
+            else -> "top"
+        }
+
         Scaffold(
             topBar = {
                 TopAppBar(
                     title = {
-                        Text(text = "News")
+                        Text(text = "Hacker News: " + articleType.replaceFirstChar { it.uppercase() })
                     },
                     backgroundColor = MaterialTheme.colors.primary,
                     contentColor = MaterialTheme.colors.onPrimary,
                     actions = {
-                        //var showMenu by remember1 { mutableStateOf(false) }
                         IconButton(onClick = { showMenu = true }) {
-                            Icon(Icons.Default.MoreVert, contentDescription = null)
+                            Icon(Icons.Default.MoreVert, contentDescription = "Settings")
                         }
                         DropdownMenu(
                             expanded = showMenu,
                             onDismissRequest = { showMenu = false }
                         ) {
                             themes.forEach { theme ->
-                                DropdownMenuItem(onClick = {
-                                    onThemeChanged(theme)
-                                    showMenu = false
-                                }) {
-                                    Text(theme)
+                                DropdownMenuItem(
+                                    onClick = {
+                                        onThemeChanged(theme)
+                                        showMenu = false
+                                    },
+                                    modifier = Modifier.background(color = MaterialTheme.colors.background)
+                                ) {
+                                    Text(theme, color = MaterialTheme.colors.onBackground)
                                 }
                             }
+                            DropdownMenuItem(
+                                onClick = {
+                                    startActivity(
+                                        Intent(
+                                            context,
+                                            AboutActivity::class.java
+                                        )
+                                    )
+                                },
+                                modifier = Modifier.background(color = MaterialTheme.colors.background)
+                            ) { Text("About App", color = MaterialTheme.colors.onBackground) }
                         }
                     }
                 )
@@ -159,7 +183,6 @@ class MainActivity : ComponentActivity() {
             ) {
                 when (selectedTab) {
                     0 -> {
-                        articleType = "top"
                         when (topArticles) {
                             is ArticleData.Loading -> {
                                 // Show a loading spinner
@@ -188,7 +211,6 @@ class MainActivity : ComponentActivity() {
                     }
 
                     1 -> {
-                        articleType = "best"
                         when (bestArticles) {
                             is ArticleData.Loading -> {
                                 // Show a loading spinner
@@ -217,7 +239,6 @@ class MainActivity : ComponentActivity() {
                     }
 
                     2 -> {
-                        articleType = "new"
                         when (newArticles) {
                             is ArticleData.Loading -> {
                                 // Show a loading spinner
