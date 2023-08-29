@@ -1,5 +1,6 @@
 package com.thirdgate.hackernews
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -24,6 +25,7 @@ import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.lifecycleScope
+import com.thirdgate.hackernews.ArticlesRepository.fetchTheme
 import com.thirdgate.hackernews.ui.theme.MyAppTheme
 import kotlinx.coroutines.launch
 
@@ -45,6 +48,10 @@ class MainActivity : ComponentActivity() {
         // Hide the status bar
         actionBar?.hide()
 
+        var readTheme: String = "Default"
+
+        val context: Context = this
+
         // Fetch the articles
         lifecycleScope.launch {
             ArticlesRepository.fetchArticles("top")
@@ -53,12 +60,19 @@ class MainActivity : ComponentActivity() {
         }
 
 
-
         setContent {
             var currentTheme by remember { mutableStateOf("Default") }
+            LaunchedEffect(key1 = Unit) {
+                currentTheme = fetchTheme(context)
+            }
             MyAppTheme(theme = currentTheme) {
                 MyApp {
-                    NewsScreen(onThemeChanged = { currentTheme = it })
+                    NewsScreen(onThemeChanged = { theme ->
+                        currentTheme = theme
+                        lifecycleScope.launch {
+                            ArticlesRepository.writeTheme(context, theme)
+                        }
+                    })
                 }
             }
         }
@@ -129,6 +143,9 @@ class MainActivity : ComponentActivity() {
                                 DropdownMenuItem(
                                     onClick = {
                                         onThemeChanged(theme)
+                                        lifecycleScope.launch {
+                                            ArticlesRepository.writeTheme(context, theme)
+                                        }
                                         showMenu = false
                                     },
                                     modifier = Modifier.background(color = MaterialTheme.colors.background)

@@ -8,6 +8,8 @@ import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.Serializer
 import androidx.datastore.dataStore
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import java.io.InputStream
@@ -17,8 +19,8 @@ import java.time.Instant
 
 object ArticlesRepository {
 
-    val Context.dataStore: DataStore<ArticleData> by dataStore(
-        fileName = "article_data.pb",
+    val Context.dataStore: DataStore<AppInfo> by dataStore(
+        fileName = "article_data",
         serializer = MySerializer
     )
 
@@ -37,6 +39,31 @@ object ArticlesRepository {
     private val fetchedTopPages = mutableSetOf<Int>()
     private val fetchedBestPages = mutableSetOf<Int>()
     private val fetchedNewPages = mutableSetOf<Int>()
+
+    suspend fun fetchTheme(context: Context): String {
+        var myTheme = "default"
+        context.dataStore.data
+            .map { settings -> settings.themeId }
+            .firstOrNull()
+            ?.let { myTheme = it }
+        Log.i("ArticleRepository", "Read out theme: $myTheme")
+//        val themeId: Flow<String> = context.dataStore.data
+//            .map { settings ->
+//                // The exampleCounter property is generated from the proto schema.
+//                settings.themeId
+//            }
+//        val myTheme = themeId.toString()
+//        Log.i("ArticleRepository", "Read out theme: $themeId")
+        return myTheme
+    }
+
+    suspend fun writeTheme(context: Context, themeId: String) {
+        Log.i("ArticleRepository", "Write out theme: $themeId")
+        context.dataStore.updateData { currentSettings ->
+            AppInfo(articleData = currentSettings.articleData, themeId = themeId)
+        }
+    }
+
 
     suspend fun fetchArticles(articleType: String, page: Int = 1): ArticleData {
         when (articleType) {
@@ -144,13 +171,14 @@ object ArticlesRepository {
     /**
      * Custom serializer for ArticleData using Json.
      */
-    object MySerializer : Serializer<ArticleData> {
-        override val defaultValue = ArticleData.Loading
+    object MySerializer : Serializer<AppInfo> {
+        override val defaultValue = AppInfo(articleData = ArticleData.Loading, themeId = "default")
 
-        override suspend fun readFrom(input: InputStream): ArticleData {
+
+        override suspend fun readFrom(input: InputStream): AppInfo {
             return try {
                 Json.decodeFromString(
-                    ArticleData.serializer(),
+                    AppInfo.serializer(),
                     input.readBytes().decodeToString()
                 )
             } catch (exception: SerializationException) {
@@ -158,10 +186,10 @@ object ArticlesRepository {
             }
         }
 
-        override suspend fun writeTo(t: ArticleData, output: OutputStream) {
+        override suspend fun writeTo(t: AppInfo, output: OutputStream) {
             output.use {
                 it.write(
-                    Json.encodeToString(ArticleData.serializer(), t).encodeToByteArray()
+                    Json.encodeToString(AppInfo.serializer(), t).encodeToByteArray()
                 )
             }
         }
