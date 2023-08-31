@@ -63,8 +63,8 @@ dependencies {
 
     // Material
     implementation("androidx.compose.material:material:1.5.0")
-    implementation("com.google.android.material:material:1.9.0")
     //implementation("androidx.compose.material3:material3:1.1.1")
+    implementation("com.google.android.material:material:1.9.0")
 
     // Glance
     implementation("androidx.glance:glance-appwidget:1.0.0-rc01")

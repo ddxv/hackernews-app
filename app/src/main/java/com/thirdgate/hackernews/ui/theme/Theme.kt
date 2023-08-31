@@ -10,22 +10,22 @@ import com.thirdgate.hackernews.R
 @Composable
 fun MyAppTheme(theme: String, content: @Composable () -> Unit) {
 
+    val themes = mapOf(
+        stringResource(R.string.cyberpunk_dark) to CyberpunkDarkColorPalette(),
+        stringResource(R.string.cyberpunk_light) to CyberpunkLightColorPalette(),
+        stringResource(R.string.darcula) to DarculaColorPalette(),
+        stringResource(R.string.lavender_light) to LavenderLightColorPalette(),
+        stringResource(R.string.lavender_dark) to LavenderDarkColorPalette(),
+        stringResource(R.string.crystal_blue) to CrystalBlueColorPalette(),
+        stringResource(R.string.solarized_light) to SolarizedLightColorPalette(),
+        stringResource(R.string.solarized_dark) to SolarizedDarkColorPalette(),
+        stringResource(R.string.hacker_news_orange_light) to HackerNewsOrangeLightColorPalette(),
+        stringResource(R.string.hacker_news_orange_dark) to HackerNewsOrangeDarkColorPalette(),
+        stringResource(R.string.default_theme) to HackerNewsOrangeLightColorPalette(),
+    )
 
-    val colors = when (theme) {
-        stringResource(R.string.cyberpunk_dark) -> CyberpunkDarkColorPalette()
-        stringResource(R.string.cyberpunk_light) -> CyberpunkLightColorPalette()
-        stringResource(R.string.darcula) -> DarculaColorPalette()
-        stringResource(R.string.lavender_light) -> LavenderLightColorPalette()
-        stringResource(R.string.lavender_dark) -> LavenderDarkColorPalette()
-        stringResource(R.string.crystal_blue) -> CrystalBlueColorPalette()
-        stringResource(R.string.solarized_light) -> SolarizedLightColorPalette()
-        stringResource(R.string.solarized_dark) -> SolarizedDarkColorPalette()
-        stringResource(R.string.hacker_news_orange_light) -> HackerNewsOrangeLightColorPalette()
-        stringResource(R.string.hacker_news_orange_dark) -> HackerNewsOrangeDarkColorPalette()
-        stringResource(R.string.default_theme) -> HackerNewsOrangeLightColorPalette()
-        else -> HackerNewsOrangeLightColorPalette()
-    }
 
+    val colors = themes[theme] ?: HackerNewsOrangeLightColorPalette()
 
     MaterialTheme(
         colors = colors,

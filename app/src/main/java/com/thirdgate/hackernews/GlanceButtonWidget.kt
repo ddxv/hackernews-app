@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
-import androidx.compose.material.Colors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,17 +38,25 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
+import com.thirdgate.hackernews.ui.theme.CrystalBlueColorPalette
+import com.thirdgate.hackernews.ui.theme.CyberpunkDarkColorPalette
+import com.thirdgate.hackernews.ui.theme.CyberpunkLightColorPalette
+import com.thirdgate.hackernews.ui.theme.DarculaColorPalette
 import com.thirdgate.hackernews.ui.theme.HackerNewsOrangeDarkColorPalette
 import com.thirdgate.hackernews.ui.theme.HackerNewsOrangeLightColorPalette
+import com.thirdgate.hackernews.ui.theme.LavenderDarkColorPalette
+import com.thirdgate.hackernews.ui.theme.LavenderLightColorPalette
+import com.thirdgate.hackernews.ui.theme.SolarizedDarkColorPalette
+import com.thirdgate.hackernews.ui.theme.SolarizedLightColorPalette
 
 
 class GlanceButtonWidget : GlanceAppWidget() {
 
-    override val stateDefinition = GlanceButtonWidgetStateDefinition
-
+    override val stateDefinition = GlanceButtonWidgetStateDefinition()
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
 
+        Log.i("WidgetApp", "provideGlance started glanceId: $id")
         provideContent {
             MyContent(context)
         }
@@ -80,17 +87,30 @@ class GlanceButtonWidget : GlanceAppWidget() {
     private fun MyContent(
         context: Context,
     ) {
+        Log.i("WidgetApp", "MyContent started")
         val widgetInfo = currentState<WidgetInfo>()
         val articleData = widgetInfo.articleData
         val themeId = widgetInfo.themeId
         val articleType = widgetInfo.articleType
 
+        Log.i("WidgetApp", "MyContent started: themeId: $themeId")
 
-        val myColors: Colors = when (themeId) {
-            "hackernewsdark" -> HackerNewsOrangeDarkColorPalette()
-            else -> HackerNewsOrangeLightColorPalette() // Replace with your default color palette
-        }
+        val themes = mapOf(
+            LocalContext.current.getString(R.string.cyberpunk_dark) to CyberpunkDarkColorPalette(),
+            LocalContext.current.getString(R.string.cyberpunk_light) to CyberpunkLightColorPalette(),
+            LocalContext.current.getString(R.string.darcula) to DarculaColorPalette(),
+            LocalContext.current.getString(R.string.lavender_light) to LavenderLightColorPalette(),
+            LocalContext.current.getString(R.string.lavender_dark) to LavenderDarkColorPalette(),
+            LocalContext.current.getString(R.string.crystal_blue) to CrystalBlueColorPalette(),
+            LocalContext.current.getString(R.string.solarized_light) to SolarizedLightColorPalette(),
+            LocalContext.current.getString(R.string.solarized_dark) to SolarizedDarkColorPalette(),
+            LocalContext.current.getString(R.string.hacker_news_orange_light) to HackerNewsOrangeLightColorPalette(),
+            LocalContext.current.getString(R.string.hacker_news_orange_dark) to HackerNewsOrangeDarkColorPalette(),
+            LocalContext.current.getString(R.string.default_theme) to HackerNewsOrangeLightColorPalette(),
+        )
 
+
+        val myColors = themes[themeId] ?: HackerNewsOrangeLightColorPalette()
 
         GlanceTheme(colors = ColorProviders(myColors)) {
 
@@ -149,14 +169,6 @@ class GlanceButtonWidget : GlanceAppWidget() {
                         color = GlanceTheme.colors.onPrimary
                     ),
                 )
-//                Image(
-//                    provider = ImageProvider(R.drawable.round_settings_24),
-//                    modifier = GlanceModifier.clickable(
-//                        onClick = actionStartActivity<GlanceWidgetConfigurationActivity>()
-//                    ),
-//                    contentDescription = "Settings"
-//                )
-                //Spacer(modifier = GlanceModifier.defaultWeight())
                 Image(
                     provider = ImageProvider(R.drawable.round_refresh_24),
                     modifier = GlanceModifier.clickable(
@@ -186,7 +198,7 @@ class GlanceButtonWidget : GlanceAppWidget() {
                                 night = GlanceTheme.colors.background.getColor(context),
                             ).fillMaxSize().padding(vertical = 2.dp)
                         ) {
-                            Log.i("looping_glances_widget", "title: ${article.title}")
+                            //Log.i("looping_glances_widget", "title: ${article.title}")
                             val webIntent =
                                 Intent(Intent.ACTION_VIEW, Uri.parse(article.url))
                             webIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

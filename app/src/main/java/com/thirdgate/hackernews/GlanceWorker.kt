@@ -1,6 +1,7 @@
 package com.thirdgate.hackernews
 
 import android.content.Context
+import android.util.Log
 import androidx.glance.GlanceId
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
@@ -59,50 +60,96 @@ class GlanceWorker(
     override suspend fun doWork(): Result {
         val manager = GlanceAppWidgetManager(context)
         val glanceIds = manager.getGlanceIds(GlanceButtonWidget::class.java)
-        val myTheme: String = "default"
-        return try {
-            // Update state to indicate loading
 
-            setWidgetState(glanceIds, WidgetInfo(articleData = ArticleData.Loading))
-            // Update state with new data
-            setWidgetState(
-                glanceIds,
-                WidgetInfo(
-                    articleData = ArticlesRepository.fetchArticles("top", page = 1),
-                    themeId = myTheme
-                )
-            )
+        val r: Result = Result.failure()
 
-            Result.success()
-        } catch (e: Exception) {
-            //setWidgetState(glanceIds, ArticleData.Unavailable(e.message.orEmpty()))
-            setWidgetState(
-                glanceIds,
-                WidgetInfo(
-                    articleData = ArticleData.Unavailable(e.message.orEmpty()),
-                    themeId = myTheme
+        // Update state with new data
+        glanceIds.forEach { glanceId ->
+            try {
+                Log.i(
+                    "GlanceWidgetWorker",
+                    "Looptime: Outside StateDefinition: this.glanceId: $glanceId"
                 )
-            )
-            if (runAttemptCount < 10) {
-                // Exponential backoff strategy will avoid the request to repeat
-                // too fast in case of failures.
-                Result.retry()
-            } else {
-                Result.failure()
+                updateAppWidgetState(
+                    context = context,
+                    definition = GlanceButtonWidgetStateDefinition(),
+                    glanceId = glanceId,
+                    updateState = { widgetInfo ->
+                        WidgetInfo(
+                            articleData = ArticleData.Loading,
+                            widgetGlanceId = widgetInfo.widgetGlanceId,
+                            articleType = widgetInfo.articleType,
+                            themeId = widgetInfo.themeId
+                        )
+                    }
+                )
+                GlanceButtonWidget().update(context, glanceId)
+                updateAppWidgetState(
+                    context = context,
+                    glanceId = glanceId,
+                    definition = GlanceButtonWidgetStateDefinition()
+                ) { widgetInfo ->
+                    Log.i(
+                        "GlanceWidgetWorker",
+                        "Looptime: WokerFound: this.glanceId: $glanceId: (ds.glanceId:${widgetInfo.widgetGlanceId})"
+                    )
+                    WidgetInfo(
+                        articleData = ArticlesRepository.fetchArticles(
+                            widgetInfo.articleType,
+                            page = 1
+                        ),
+                        widgetGlanceId = widgetInfo.widgetGlanceId,
+                        articleType = widgetInfo.articleType,
+                        themeId = widgetInfo.themeId
+                    )
+                }
+                GlanceButtonWidget().update(context, glanceId)
+                val r = Result.success()
+            } catch (e: Exception) {
+                Log.i(
+                    "GlanceWidgetWorker",
+                    "Looptime: Outside StateDefinition: this.glanceId: $glanceId"
+                )
+                updateAppWidgetState(
+                    context = context,
+                    definition = GlanceButtonWidgetStateDefinition(),
+                    glanceId = glanceId,
+                    updateState = { widgetInfo ->
+                        WidgetInfo(
+                            articleData = ArticleData.Unavailable(e.message.orEmpty()),
+                            widgetGlanceId = widgetInfo.widgetGlanceId,
+                            articleType = widgetInfo.articleType,
+                            themeId = widgetInfo.themeId
+                        )
+                    }
+                )
+                GlanceButtonWidget().update(context, glanceId)
+                if (runAttemptCount < 10) {
+                    // Exponential backoff strategy will avoid the request to repeat
+                    // too fast in case of failures.
+                    val r = Result.retry()
+                } else {
+                    val r = Result.failure()
+                }
             }
         }
+        return r
     }
+
 
     /**
      * Update the state of all widgets and then force update UI
      */
-    private suspend fun setWidgetState(glanceIds: List<GlanceId>, newState: WidgetInfo) {
+    private suspend fun updateAllAppWidgetStates(
+        glanceIds: List<GlanceId>,
+        newWidgetInfo: WidgetInfo
+    ) {
         glanceIds.forEach { glanceId ->
             updateAppWidgetState(
                 context = context,
-                definition = GlanceButtonWidgetStateDefinition,
+                definition = GlanceButtonWidgetStateDefinition(),
                 glanceId = glanceId,
-                updateState = { newState }
+                updateState = { newWidgetInfo }
             )
         }
         GlanceButtonWidget().updateAll(context)
