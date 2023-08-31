@@ -91,7 +91,7 @@ class GlanceWorker(
                 ) { widgetInfo ->
                     Log.i(
                         "GlanceWidgetWorker",
-                        "Looptime: WokerFound: this.glanceId: $glanceId: (ds.glanceId:${widgetInfo.widgetGlanceId})"
+                        "LoopWidgets: glanceId: $glanceId, Fetch articles "
                     )
                     WidgetInfo(
                         articleData = ArticlesRepository.fetchArticles(

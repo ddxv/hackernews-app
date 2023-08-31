@@ -255,7 +255,10 @@ fun FinishButton(
                     definition = GlanceButtonWidgetStateDefinition(),
                     updateState = { widgetInfo ->
                         WidgetInfo(
-                            articleData = widgetInfo.articleData,
+                            articleData = ArticlesRepository.fetchArticles(
+                                widgetInfo.articleType,
+                                page = 1
+                            ),
                             themeId = themeChoice,
                             articleType = articleType,
                             widgetGlanceId = glanceWidgetId.toString()

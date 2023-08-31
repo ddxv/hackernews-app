@@ -66,6 +66,7 @@ object ArticlesRepository {
 
 
     suspend fun fetchArticles(articleType: String, page: Int = 1): ArticleData {
+        Log.i("ArticlesRepository", "Fetching articleType=$articleType")
         when (articleType) {
             "top" -> {
                 if (fetchedTopPages.contains(page)) return topArticles.value

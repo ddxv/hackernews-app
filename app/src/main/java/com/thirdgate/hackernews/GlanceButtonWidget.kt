@@ -56,9 +56,9 @@ class GlanceButtonWidget : GlanceAppWidget() {
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
 
-        Log.i("WidgetApp", "provideGlance started glanceId: $id")
+        Log.i("GlanceButtonWidget", "provideGlance started glanceId: $id")
         provideContent {
-            MyContent(context)
+            MyContent(context, id)
         }
     }
 
@@ -86,14 +86,16 @@ class GlanceButtonWidget : GlanceAppWidget() {
     @Composable
     private fun MyContent(
         context: Context,
+        id: GlanceId
     ) {
-        Log.i("WidgetApp", "MyContent started")
         val widgetInfo = currentState<WidgetInfo>()
         val articleData = widgetInfo.articleData
         val themeId = widgetInfo.themeId
         val articleType = widgetInfo.articleType
+        // Shouldn't use, just for checking
+        val _wiGI = widgetInfo.widgetGlanceId
 
-        Log.i("WidgetApp", "MyContent started: themeId: $themeId")
+        Log.i("GlanceButtonWidget", "Widget: $id  MyContent: themeId: $themeId wiGlanceID: $_wiGI ")
 
         val themes = mapOf(
             LocalContext.current.getString(R.string.cyberpunk_dark) to CyberpunkDarkColorPalette(),
@@ -113,15 +115,25 @@ class GlanceButtonWidget : GlanceAppWidget() {
         val myColors = themes[themeId] ?: HackerNewsOrangeLightColorPalette()
 
         GlanceTheme(colors = ColorProviders(myColors)) {
-
             when (articleData) {
                 ArticleData.Loading -> {
+                    Log.i("GlanceButtonWidget", "Widget: $id ArticleData.Loading")
                     AppWidgetBox(contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator()
+                        Column {
+                            Image(
+                                provider = ImageProvider(R.drawable.round_refresh_24),
+                                modifier = GlanceModifier.clickable(
+                                    onClick = actionRunCallback<RefreshAction>()
+                                ).padding(8.dp),
+                                contentDescription = "Refresh"
+                            )
+                            CircularProgressIndicator()
+                        }
                     }
                 }
 
                 is ArticleData.Available -> {
+                    Log.i("GlanceButtonWidget", "Widget $id ArticleData.Available")
                     MyActualContent(
                         context = context,
                         articleType = articleType,
@@ -131,8 +143,8 @@ class GlanceButtonWidget : GlanceAppWidget() {
                 }
 
                 is ArticleData.Unavailable -> {
+                    Log.i("GlanceButtonWidget", "Widget $id ArticleData.UnAvailable")
                     ContentNotAvailable()
-
                 }
             }
         }

@@ -24,7 +24,6 @@ class GlanceButtonWidgetStateDefinition : GlanceStateDefinition<WidgetInfo> {
      *
      * If you need different state/data for each instance, create a store using the provided fileKey
      */
-    //private val Context.datastore by getDataStore(Context)
 
     override suspend fun getDataStore(context: Context, fileKey: String) =
         DataStoreFactory.create(
