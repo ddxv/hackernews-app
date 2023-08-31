@@ -10,32 +10,7 @@ at https://developer.android.com/guide/topics/appwidgets/advanced#build-accurate
     android:orientation="vertical"
     android:theme="@style/Theme.AppWidget.AppWidgetContainer">
 
+    <include layout="@layout/glance_widget_initial_layout" />
 
-    <TextView
-        android:id="@+id/glance_widget_preview_faketext1"
-        style="?android:attr/textAppearanceLarge"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginStart="8dp"
-        android:minHeight="@dimen/widget_element_min_length"
-        android:text="@string/glance_widget_preview_title"
-        android:textColor="?android:attr/textColorPrimary" />
-
-    <TextView
-        android:id="@+id/glance_widget_preview_faketext2"
-        style="?android:attr/textAppearanceLarge"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginStart="8dp"
-        android:minHeight="@dimen/widget_element_min_length"
-        android:text="@string/glance_widget_preview_text"
-        android:textColor="?android:attr/textColorPrimary" />
-
-    <ListView
-        android:id="@+id/buttons_list_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
 </LinearLayout>
