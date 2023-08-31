@@ -20,7 +20,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
+
         <activity
             android:name=".AboutActivity"
             android:exported="true" />
@@ -37,9 +37,9 @@
         <!-- Register the AppWidgetProvider -->
 
         <receiver
-            android:name="GlanceButtonWidgetReceiver"
+            android:name=".GlanceButtonWidgetReceiver"
             android:enabled="@bool/glance_appwidget_available"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -51,7 +51,7 @@
 
         <receiver
             android:name=".RefreshAction"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="androidx.glance.action.APPWIDGET_UPDATE" />
             </intent-filter>

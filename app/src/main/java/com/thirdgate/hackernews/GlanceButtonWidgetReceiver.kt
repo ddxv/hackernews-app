@@ -20,7 +20,7 @@ class GlanceButtonWidgetReceiver : GlanceAppWidgetReceiver() {
      */
     override fun onEnabled(context: Context) {
         super.onEnabled(context)
-        GlanceWorker.enqueue(context)
+        GlanceWorker.enqueue(context, force = true)
     }
 
     /**

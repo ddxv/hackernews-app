@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.glance.Button
+import androidx.glance.ColorFilter
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
@@ -186,7 +187,9 @@ class GlanceButtonWidget : GlanceAppWidget() {
                     modifier = GlanceModifier.clickable(
                         onClick = actionRunCallback<RefreshAction>()
                     ),
-                    contentDescription = "Refresh"
+                    contentDescription = "Refresh",
+                    colorFilter = ColorFilter.tint(GlanceTheme.colors.onPrimary)
+
                 )
             }
 

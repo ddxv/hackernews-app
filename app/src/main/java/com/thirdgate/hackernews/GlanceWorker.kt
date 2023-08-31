@@ -37,6 +37,8 @@ class GlanceWorker(
             )
             var workPolicy = ExistingPeriodicWorkPolicy.KEEP
 
+            Log.i("GlanceWorker", "Enqueued...")
+
             // Replace any enqueued work and expedite the request
             if (force) {
                 workPolicy = ExistingPeriodicWorkPolicy.UPDATE
@@ -47,6 +49,7 @@ class GlanceWorker(
                 workPolicy,
                 requestBuilder.build()
             )
+            Log.i("GlanceWorker", "Enqueued finished")
         }
 
         /**

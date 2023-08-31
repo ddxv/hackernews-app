@@ -1,5 +1,4 @@
 <!--
-This widget_buttons is used by both _preview and _info!
   -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/Widget.AppWidget.AppWidget.Container"
@@ -15,6 +14,7 @@ This widget_buttons is used by both _preview and _info!
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="8dp"
+        android:background="@color/colorError"
         android:minHeight="@dimen/widget_element_min_length"
         android:text="@string/glance_widget_preview_title"
         android:textColor="?android:attr/textColorPrimary" />
