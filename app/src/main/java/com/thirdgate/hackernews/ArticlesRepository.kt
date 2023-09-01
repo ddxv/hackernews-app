@@ -27,18 +27,18 @@ object ArticlesRepository {
     private val apiService = ApiService()
 
     // Create MutableState internally
-    private val _topArticles = mutableStateOf<ArticleData>(ArticleData.Loading)
-    private val _bestArticles = mutableStateOf<ArticleData>(ArticleData.Loading)
-    private val _newArticles = mutableStateOf<ArticleData>(ArticleData.Loading)
+    private var _topArticles = mutableStateOf<ArticleData>(ArticleData.Loading)
+    private var _bestArticles = mutableStateOf<ArticleData>(ArticleData.Loading)
+    private var _newArticles = mutableStateOf<ArticleData>(ArticleData.Loading)
 
     // Expose read-only State
     val topArticles: State<ArticleData> = _topArticles
     val bestArticles: State<ArticleData> = _bestArticles
     val newArticles: State<ArticleData> = _newArticles
 
-    private val fetchedTopPages = mutableSetOf<Int>()
-    private val fetchedBestPages = mutableSetOf<Int>()
-    private val fetchedNewPages = mutableSetOf<Int>()
+    private var fetchedTopPages = mutableSetOf<Int>()
+    private var fetchedBestPages = mutableSetOf<Int>()
+    private var fetchedNewPages = mutableSetOf<Int>()
 
     suspend fun fetchTheme(context: Context): String {
         var myTheme = "default"
@@ -67,20 +67,43 @@ object ArticlesRepository {
 
     suspend fun fetchArticles(articleType: String, page: Int = 1): ArticleData {
         Log.i("ArticlesRepository", "Fetching articleType=$articleType")
-        when (articleType) {
-            "top" -> {
-                if (fetchedTopPages.contains(page)) return topArticles.value
-                fetchedTopPages.add(page)
-            }
 
-            "best" -> {
-                if (fetchedBestPages.contains(page)) return bestArticles.value
-                fetchedBestPages.add(page)
-            }
+        if (page == 1) {
+            when (articleType) {
+                "top" -> {
+                    fetchedTopPages = mutableSetOf<Int>()
+                    _topArticles.value = ArticleData.Loading
+                    fetchedTopPages.add(page)
+                }
 
-            "new" -> {
-                if (fetchedNewPages.contains(page)) return newArticles.value
-                fetchedNewPages.add(page)
+                "best" -> {
+                    fetchedBestPages = mutableSetOf<Int>()
+                    _bestArticles.value = ArticleData.Loading
+                    fetchedBestPages.add(page)
+                }
+
+                "new" -> {
+                    fetchedNewPages = mutableSetOf<Int>()
+                    _newArticles.value = ArticleData.Loading
+                    fetchedNewPages.add(page)
+                }
+            }
+        } else {
+            when (articleType) {
+                "top" -> {
+                    if (fetchedTopPages.contains(page)) return topArticles.value
+                    fetchedTopPages.add(page)
+                }
+
+                "best" -> {
+                    if (fetchedBestPages.contains(page)) return bestArticles.value
+                    fetchedBestPages.add(page)
+                }
+
+                "new" -> {
+                    if (fetchedNewPages.contains(page)) return newArticles.value
+                    fetchedNewPages.add(page)
+                }
             }
         }
 

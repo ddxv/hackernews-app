@@ -3,13 +3,18 @@ package com.thirdgate.hackernews
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
@@ -30,8 +35,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import com.thirdgate.hackernews.ArticlesRepository.fetchTheme
 import com.thirdgate.hackernews.ui.theme.MyAppTheme
@@ -202,11 +209,32 @@ class MainActivity : ComponentActivity() {
                     0 -> {
                         when (topArticles) {
                             is ArticleData.Loading -> {
-                                // Show a loading spinner
+                                Log.i("MainActivity", "Content Loading")
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier.fillMaxSize()
+                                ) {
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Top, // or Arrangement.Center, Arrangement.Bottom
+                                        modifier = Modifier.align(Alignment.Center)
+                                    ) {
+                                        CircularProgressIndicator(modifier = Modifier.padding(40.dp))
+                                        Text("Data loading... pull to refresh")
+                                    }
+                                }
                             }
 
                             is ArticleData.Unavailable -> {
                                 // Show an error message
+                                Log.i("MainActivity", "Content UnAvailable")
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                                {
+                                    Text("Data unavailable...")
+                                }
                             }
 
                             is ArticleData.Available -> {
@@ -230,11 +258,33 @@ class MainActivity : ComponentActivity() {
                     1 -> {
                         when (bestArticles) {
                             is ArticleData.Loading -> {
-                                // Show a loading spinner
+
+                                Log.i("MainActivity", "Content Loading")
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier.fillMaxSize()
+                                ) {
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Top, // or Arrangement.Center, Arrangement.Bottom
+                                        modifier = Modifier.align(Alignment.Center)
+                                    ) {
+                                        CircularProgressIndicator(modifier = Modifier.padding(40.dp))
+                                        Text("Data loading... pull to refresh")
+                                    }
+                                }
                             }
 
                             is ArticleData.Unavailable -> {
                                 // Show an error message
+                                Log.i("MainActivity", "Content UnAvailable")
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                                {
+                                    Text("Data unavailable...")
+                                }
                             }
 
                             is ArticleData.Available -> {
@@ -258,14 +308,35 @@ class MainActivity : ComponentActivity() {
                     2 -> {
                         when (newArticles) {
                             is ArticleData.Loading -> {
-                                // Show a loading spinner
+                                Log.i("MainActivity", "Content Loading")
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier.fillMaxSize()
+                                ) {
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Top, // or Arrangement.Center, Arrangement.Bottom
+                                        modifier = Modifier.align(Alignment.Center)
+                                    ) {
+                                        CircularProgressIndicator(modifier = Modifier.padding(40.dp))
+                                        Text("Data loading... pull to refresh")
+                                    }
+                                }
                             }
 
                             is ArticleData.Unavailable -> {
-                                // Show an error message
+                                Log.i("MainActivity", "Content UnAvailable")
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                                {
+                                    Text("Data unavailable...")
+                                }
                             }
 
                             is ArticleData.Available -> {
+                                Log.i("MainActivity", "Content Aavailable")
                                 ArticleList(
                                     articles = getArticles(newArticles, articleType),
                                     onEndOfListReached = {
