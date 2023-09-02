@@ -10,28 +10,11 @@ import androidx.glance.appwidget.appWidgetBackground
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.background
 import androidx.glance.layout.Alignment
-import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.ColumnScope
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.padding
 
-/**
- * Provide a Box composable using the system parameters for app widgets background with rounded
- * corners and background color.
- */
-@Composable
-fun AppWidgetBox(
-    modifier: GlanceModifier = GlanceModifier,
-    contentAlignment: Alignment = Alignment.TopStart,
-    content: @Composable () -> Unit
-) {
-    Box(
-        modifier = appWidgetBackgroundModifier().then(modifier),
-        contentAlignment = contentAlignment,
-        content = content
-    )
-}
 
 /**
  * Provide a Column composable using the system parameters for app widgets background with rounded

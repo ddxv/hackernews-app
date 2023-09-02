@@ -107,31 +107,36 @@ object ArticlesRepository {
             }
         }
 
+        try {
+            val articles: Map<String, Map<String, Any>> =
+                apiService.getArticles(articleType, page)
+            Log.i("ArticlesRepository", "ApiService returned: articles {${articles}}")
 
-        val articles: Map<String, Map<String, Any>> = apiService.getArticles(articleType, page)
-        Log.i("ArticlesRepository", "ApiService returned: articles {${articles}}")
+            val fetchedArticleList: List<ArticleData.ArticleInfo> =
+                articles.map { (id, articleMap) ->
+                    ArticleData.ArticleInfo(
+                        id = id,
+                        title = articleMap["title"] as String,
+                        url = articleMap["url"] as String,
+                        commentUrl = "https://news.ycombinator.com/item?id=$id",
+                        domain = articleMap["domain"] as String,
+                        by = articleMap["by"] as String,
+                        score = (articleMap["score"] as? Double ?: -1.0).toInt(),
+                        rank = (articleMap["rank"] as? Double ?: -1.0).toInt(),
+                        descendants = (articleMap["descendants"] as? Double ?: -1.0).toInt(),
+                        time = (articleMap["time"] as? Double ?: -1.0).toInt(),
+                    )
+                }
 
-        val fetchedArticleList: List<ArticleData.ArticleInfo> = articles.map { (id, articleMap) ->
-            ArticleData.ArticleInfo(
-                id = id,
-                title = articleMap["title"] as String,
-                url = articleMap["url"] as String,
-                commentUrl = "https://news.ycombinator.com/item?id=$id",
-                domain = articleMap["domain"] as String,
-                by = articleMap["by"] as String,
-                score = (articleMap["score"] as? Double ?: -1.0).toInt(),
-                rank = (articleMap["rank"] as? Double ?: -1.0).toInt(),
-                descendants = (articleMap["descendants"] as? Double ?: -1.0).toInt(),
-                time = (articleMap["time"] as? Double ?: -1.0).toInt(),
-            )
+            updateArticles(articleType, fetchedArticleList)
+
+            val myArticleData: Map<String, List<ArticleData.ArticleInfo>> =
+                mapOf(articleType to fetchedArticleList)
+
+            return ArticleData.Available(myArticleData)
+        } catch (e: Exception) {
+            return ArticleData.Unavailable(e.message.orEmpty())
         }
-
-        updateArticles(articleType, fetchedArticleList)
-
-        val myArticleData: Map<String, List<ArticleData.ArticleInfo>> =
-            mapOf(articleType to fetchedArticleList)
-
-        return ArticleData.Available(myArticleData)
     }
 
     fun convertEpochToRelativeTime(epochSeconds: Long): String {

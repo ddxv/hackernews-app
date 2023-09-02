@@ -16,6 +16,7 @@ import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
 import androidx.glance.action.ActionParameters
+import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.CircularProgressIndicator
 import androidx.glance.appwidget.GlanceAppWidget
@@ -29,6 +30,7 @@ import androidx.glance.appwidget.lazy.itemsIndexed
 import androidx.glance.appwidget.provideContent
 import androidx.glance.currentState
 import androidx.glance.layout.Alignment
+import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.Row
 import androidx.glance.layout.fillMaxSize
@@ -65,26 +67,6 @@ class GlanceButtonWidget : GlanceAppWidget() {
 
 
     @Composable
-    private fun ContentNotAvailable() {
-        AppWidgetColumn(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text("Data not available")
-            Button("Refresh", actionRunCallback<RefreshAction>())
-            Image(
-                provider = ImageProvider(androidx.glance.appwidget.R.drawable.glance_loading_layout_background),
-                modifier = GlanceModifier.clickable(
-                    onClick = actionRunCallback<RefreshAction>()
-                ),
-                contentDescription = "Refresh"
-            )
-
-
-        }
-    }
-
-    @Composable
     private fun MyContent(
         context: Context,
         id: GlanceId
@@ -94,9 +76,8 @@ class GlanceButtonWidget : GlanceAppWidget() {
         val themeId = widgetInfo.themeId
         val articleType = widgetInfo.articleType
         // Shouldn't use, just for checking
-        val _wiGI = widgetInfo.widgetGlanceId
 
-        Log.i("GlanceButtonWidget", "Widget: $id  MyContent: themeId: $themeId wiGlanceID: $_wiGI ")
+        Log.i("GlanceButtonWidget", "Widget: $id  MyContent: themeId: $themeId ")
 
         val themes = mapOf(
             LocalContext.current.getString(R.string.cyberpunk_dark) to CyberpunkDarkColorPalette(),
@@ -116,36 +97,102 @@ class GlanceButtonWidget : GlanceAppWidget() {
         val myColors = themes[themeId] ?: HackerNewsOrangeLightColorPalette()
 
         GlanceTheme(colors = ColorProviders(myColors)) {
-            when (articleData) {
-                ArticleData.Loading -> {
-                    Log.i("GlanceButtonWidget", "Widget: $id ArticleData.Loading")
-                    AppWidgetBox(contentAlignment = Alignment.Center) {
-                        Column {
-                            Image(
-                                provider = ImageProvider(R.drawable.round_refresh_24),
-                                modifier = GlanceModifier.clickable(
-                                    onClick = actionRunCallback<RefreshAction>()
-                                ).padding(8.dp),
-                                contentDescription = "Refresh"
-                            )
-                            CircularProgressIndicator()
+            Column(
+                modifier = GlanceModifier
+                    .fillMaxSize()
+                    .appWidgetBackground().cornerRadius(8.dp)
+                    .background(
+                        day = GlanceTheme.colors.primary.getColor(context),
+                        night = GlanceTheme.colors.primary.getColor(context)
+                    ).clickable(
+                        onClick = actionStartActivity<MainActivity>()
+                    )
+            ) {
+                Row(
+                    modifier = GlanceModifier.background(
+                        day = GlanceTheme.colors.primary.getColor(
+                            context
+                        ), night = GlanceTheme.colors.primary.getColor(context)
+                    ).padding(4.dp).fillMaxWidth()
+                ) {
+                    Text(
+                        text = LocalContext.current.getString(R.string.glances_button_title) + ": ${articleType.replaceFirstChar { it.uppercase() }}",
+                        modifier = GlanceModifier.defaultWeight(),
+                        style = TextStyle(
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 18.sp,
+                            color = GlanceTheme.colors.onPrimary
+                        ),
+                    )
+                    Image(
+                        provider = ImageProvider(R.drawable.round_refresh_24),
+                        modifier = GlanceModifier.clickable(
+                            onClick = actionRunCallback<RefreshAction>()
+                        ),
+                        contentDescription = "Refresh",
+                        colorFilter = ColorFilter.tint(GlanceTheme.colors.onPrimary)
+
+                    )
+                }
+
+
+                when (articleData) {
+                    ArticleData.Loading -> {
+                        Log.i("GlanceButtonWidget", "Widget: $id ArticleData.Loading")
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = GlanceModifier.background(
+                                day = GlanceTheme.colors.background.getColor(context),
+                                night = GlanceTheme.colors.background.getColor(context)
+                            ).fillMaxSize()
+                        )
+                        {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                CircularProgressIndicator()
+                                Text(
+                                    "Data loading ...", style = TextStyle(
+                                        fontSize = 12.sp,
+                                        textAlign = TextAlign.Center,
+                                        color = GlanceTheme.colors.onBackground
+                                    ), modifier = GlanceModifier.padding(20.dp)
+                                )
+                                Button("Refresh", actionRunCallback<RefreshAction>())
+                            }
                         }
                     }
-                }
 
-                is ArticleData.Available -> {
-                    Log.i("GlanceButtonWidget", "Widget $id ArticleData.Available")
-                    MyActualContent(
-                        context = context,
-                        articleType = articleType,
-                        articleData = articleData
-                    )
+                    is ArticleData.Available -> {
+                        Log.i("GlanceButtonWidget", "Widget $id ArticleData.Available")
+                        MyActualContent(
+                            context = context,
+                            articleType = articleType,
+                            articleData = articleData
+                        )
 
-                }
+                    }
 
-                is ArticleData.Unavailable -> {
-                    Log.i("GlanceButtonWidget", "Widget $id ArticleData.UnAvailable")
-                    ContentNotAvailable()
+                    is ArticleData.Unavailable -> {
+                        Log.i("GlanceButtonWidget", "Widget $id ArticleData.UnAvailable")
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = GlanceModifier.background(
+                                day = GlanceTheme.colors.background.getColor(context),
+                                night = GlanceTheme.colors.background.getColor(context)
+                            ).fillMaxSize()
+                        )
+                        {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text(
+                                    "Data not available", style = TextStyle(
+                                        fontSize = 12.sp,
+                                        textAlign = TextAlign.Center,
+                                        color = GlanceTheme.colors.onBackground
+                                    ), modifier = GlanceModifier.padding(20.dp)
+                                )
+                                Button("Refresh", actionRunCallback<RefreshAction>())
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -157,103 +204,66 @@ class GlanceButtonWidget : GlanceAppWidget() {
         articleType: String,
         articleData: ArticleData.Available
     ) {
-        Column(
-            modifier = GlanceModifier
-                .fillMaxSize()
-                .appWidgetBackground().cornerRadius(8.dp)
-                .background(
-                    day = GlanceTheme.colors.primary.getColor(context),
-                    night = GlanceTheme.colors.primary.getColor(context)
-                )
+        LazyColumn(
+            modifier = GlanceModifier.fillMaxSize()
+
         ) {
-            Row(
-                modifier = GlanceModifier.background(
-                    day = GlanceTheme.colors.primary.getColor(
-                        context
-                    ), night = GlanceTheme.colors.primary.getColor(context)
-                ).padding(4.dp).fillMaxWidth()
-            ) {
-                Text(
-                    text = LocalContext.current.getString(R.string.glances_button_title) + ": ${articleType.replaceFirstChar { it.uppercase() }}",
-                    modifier = GlanceModifier.defaultWeight(),
-                    style = TextStyle(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp,
-                        color = GlanceTheme.colors.onPrimary
-                    ),
-                )
-                Image(
-                    provider = ImageProvider(R.drawable.round_refresh_24),
-                    modifier = GlanceModifier.clickable(
-                        onClick = actionRunCallback<RefreshAction>()
-                    ),
-                    contentDescription = "Refresh",
-                    colorFilter = ColorFilter.tint(GlanceTheme.colors.onPrimary)
-
-                )
-            }
-
-            LazyColumn(
-                modifier = GlanceModifier.fillMaxSize()
-
-            ) {
-                val myData = articleData.articles[articleType] ?: return@LazyColumn
-                val itemsList = myData.toList()
-                itemsIndexed(itemsList) { _, article ->
+            val myData = articleData.articles[articleType] ?: return@LazyColumn
+            val itemsList = myData.toList()
+            itemsIndexed(itemsList) { _, article ->
+                Row(
+                    modifier = GlanceModifier.background(
+                        day = GlanceTheme.colors.background.getColor(context),
+                        night = GlanceTheme.colors.background.getColor(context)
+                    ).fillMaxSize().padding(bottom = 8.dp),
+                    verticalAlignment = Alignment.Vertical.CenterVertically,
+                ) {
                     Row(
                         modifier = GlanceModifier.background(
                             day = GlanceTheme.colors.background.getColor(context),
-                            night = GlanceTheme.colors.background.getColor(context)
-                        ).fillMaxSize().padding(bottom = 8.dp),
-                        verticalAlignment = Alignment.Vertical.CenterVertically,
+                            night = GlanceTheme.colors.background.getColor(context),
+                        ).fillMaxSize().padding(vertical = 2.dp)
                     ) {
-                        Row(
-                            modifier = GlanceModifier.background(
-                                day = GlanceTheme.colors.background.getColor(context),
-                                night = GlanceTheme.colors.background.getColor(context),
-                            ).fillMaxSize().padding(vertical = 2.dp)
-                        ) {
-                            //Log.i("looping_glances_widget", "title: ${article.title}")
-                            val webIntent =
-                                Intent(Intent.ACTION_VIEW, Uri.parse(article.url))
-                            webIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            Column(
-                                modifier = GlanceModifier.padding(horizontal = 8.dp)
+                        //Log.i("looping_glances_widget", "title: ${article.title}")
+                        val webIntent =
+                            Intent(Intent.ACTION_VIEW, Uri.parse(article.url))
+                        webIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        Column(
+                            modifier = GlanceModifier.padding(horizontal = 8.dp)
 
-                            ) {
-                                Text(
-                                    text = "${article.rank}. ${article.title}",
-                                    modifier = GlanceModifier.clickable(
-                                        block = {
-                                            makeAClick(
-                                                context,
-                                                article.url
-                                            )
-                                        }
-                                    ),
-                                    style = TextStyle(
-                                        fontSize = 12.sp,
-                                        textAlign = TextAlign.Left,
-                                        color = GlanceTheme.colors.onBackground
-                                    )
+                        ) {
+                            Text(
+                                text = "${article.rank}. ${article.title}",
+                                modifier = GlanceModifier.clickable(
+                                    block = {
+                                        makeAClick(
+                                            context,
+                                            article.url
+                                        )
+                                    }
+                                ),
+                                style = TextStyle(
+                                    fontSize = 12.sp,
+                                    textAlign = TextAlign.Left,
+                                    color = GlanceTheme.colors.onBackground
                                 )
-                                Text(
-                                    text = "${article.score} points by: ${article.by} | ${article.descendants} comments",
-                                    modifier = GlanceModifier.clickable(
-                                        block = {
-                                            makeAClick(
-                                                context,
-                                                article.commentUrl
-                                            )
-                                        }
-                                    ),
-                                    style = TextStyle(
-                                        fontSize = 10.sp,
-                                        textAlign = TextAlign.Left,
-                                        color = GlanceTheme.colors.onSurface
-                                    )
+                            )
+                            Text(
+                                text = "${article.score} points by: ${article.by} | ${article.descendants} comments",
+                                modifier = GlanceModifier.clickable(
+                                    block = {
+                                        makeAClick(
+                                            context,
+                                            article.commentUrl
+                                        )
+                                    }
+                                ),
+                                style = TextStyle(
+                                    fontSize = 10.sp,
+                                    textAlign = TextAlign.Left,
+                                    color = GlanceTheme.colors.onSurface
                                 )
-                            }
+                            )
                         }
                     }
                 }

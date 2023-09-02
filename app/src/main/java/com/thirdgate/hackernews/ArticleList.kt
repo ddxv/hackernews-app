@@ -120,7 +120,7 @@ fun ArticleView(
                     withStyle(
                         style = SpanStyle(
                             fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp,
+                            fontSize = 14.sp,
                             color = MaterialTheme.colors.onBackground
                         )
                     ) {
@@ -128,7 +128,7 @@ fun ArticleView(
                     }
                     withStyle(
                         style = SpanStyle(
-                            fontSize = 14.sp,
+                            fontSize = 12.sp,
                             color = MaterialTheme.colors.onSurface
                         )
                     ) {
@@ -144,7 +144,7 @@ fun ArticleView(
         ) {
             Text(
                 text = "$score points by: $by $relativeTime | $descendants comments",
-                fontSize = 14.sp,
+                fontSize = 12.sp,
                 color = MaterialTheme.colors.onSurface
             )
         }
