@@ -75,7 +75,25 @@ class GlanceButtonWidget : GlanceAppWidget() {
         val articleData = widgetInfo.articleData
         val themeId = widgetInfo.themeId
         val articleType = widgetInfo.articleType
-        // Shouldn't use, just for checking
+
+        val chosenFontSize = widgetInfo.widgetFontSize
+        var smallFontSize = 10
+        var regularFontSize = 12
+        var largeFontSize = 18
+
+        when (chosenFontSize) {
+            "small" -> {
+                largeFontSize -= 2
+                regularFontSize -= 2
+                smallFontSize -= 2
+            }
+
+            "large" -> {
+                largeFontSize += 2
+                regularFontSize += 2
+                smallFontSize += 2
+            }
+        }
 
         Log.i("GlanceButtonWidget", "Widget: $id  MyContent: themeId: $themeId ")
 
@@ -120,7 +138,7 @@ class GlanceButtonWidget : GlanceAppWidget() {
                         modifier = GlanceModifier.defaultWeight(),
                         style = TextStyle(
                             fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp,
+                            fontSize = largeFontSize.sp,
                             color = GlanceTheme.colors.onPrimary
                         ),
                     )
@@ -151,7 +169,7 @@ class GlanceButtonWidget : GlanceAppWidget() {
                                 CircularProgressIndicator()
                                 Text(
                                     "Data loading ...", style = TextStyle(
-                                        fontSize = 12.sp,
+                                        fontSize = regularFontSize.sp,
                                         textAlign = TextAlign.Center,
                                         color = GlanceTheme.colors.onBackground
                                     ), modifier = GlanceModifier.padding(20.dp)
@@ -166,7 +184,9 @@ class GlanceButtonWidget : GlanceAppWidget() {
                         MyActualContent(
                             context = context,
                             articleType = articleType,
-                            articleData = articleData
+                            articleData = articleData,
+                            regularFontSize,
+                            smallFontSize
                         )
 
                     }
@@ -184,7 +204,7 @@ class GlanceButtonWidget : GlanceAppWidget() {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text(
                                     "Data not available", style = TextStyle(
-                                        fontSize = 12.sp,
+                                        fontSize = regularFontSize.sp,
                                         textAlign = TextAlign.Center,
                                         color = GlanceTheme.colors.onBackground
                                     ), modifier = GlanceModifier.padding(20.dp)
@@ -202,7 +222,9 @@ class GlanceButtonWidget : GlanceAppWidget() {
     private fun MyActualContent(
         context: Context,
         articleType: String,
-        articleData: ArticleData.Available
+        articleData: ArticleData.Available,
+        regularFontSize: Int,
+        smallFontSize: Int
     ) {
         LazyColumn(
             modifier = GlanceModifier.fillMaxSize()
@@ -243,7 +265,7 @@ class GlanceButtonWidget : GlanceAppWidget() {
                                     }
                                 ),
                                 style = TextStyle(
-                                    fontSize = 12.sp,
+                                    fontSize = regularFontSize.sp,
                                     textAlign = TextAlign.Left,
                                     color = GlanceTheme.colors.onBackground
                                 )
@@ -259,7 +281,7 @@ class GlanceButtonWidget : GlanceAppWidget() {
                                     }
                                 ),
                                 style = TextStyle(
-                                    fontSize = 10.sp,
+                                    fontSize = smallFontSize.sp,
                                     textAlign = TextAlign.Left,
                                     color = GlanceTheme.colors.onSurface
                                 )

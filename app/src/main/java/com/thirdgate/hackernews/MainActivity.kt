@@ -155,7 +155,7 @@ class MainActivity : ComponentActivity() {
                                         }
                                         showMenu = false
                                     },
-                                    modifier = Modifier.background(color = MaterialTheme.colors.background)
+                                    modifier = Modifier.background(color = MaterialTheme.colors.background),
                                 ) {
                                     Text(theme, color = MaterialTheme.colors.onBackground)
                                 }

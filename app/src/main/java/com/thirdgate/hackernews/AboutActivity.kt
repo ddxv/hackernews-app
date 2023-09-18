@@ -78,11 +78,26 @@ fun AboutPage() {
         Text("About Developer", fontSize = 18.sp)
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            "jamesoclaire.com",
+            "thirdgate.dev",
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp,
             modifier = Modifier.clickable {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.jamesoclaire.com"))
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://thirdgate.dev"))
+                currentContext.value.startActivity(intent)
+            }
+        )
+        Spacer(modifier = Modifier.height(48.dp))
+        Text("Privacy Policy", fontSize = 18.sp)
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            "thirdgate.dev/privacypolicy.html",
+            fontWeight = FontWeight.Bold,
+            fontSize = 18.sp,
+            modifier = Modifier.clickable {
+                val intent = Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://thirdgate.dev/privacypolicy.html")
+                )
                 currentContext.value.startActivity(intent)
             }
         )

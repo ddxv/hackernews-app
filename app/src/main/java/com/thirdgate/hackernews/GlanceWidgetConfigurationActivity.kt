@@ -111,15 +111,17 @@ fun ConfigurationScreen(
     val context = LocalContext.current
     val defaultTheme = stringResource(R.string.hacker_news_orange_light)
     var themeChoice: String by remember { mutableStateOf(defaultTheme) }
+    var fontSizeChoice: String by remember { mutableStateOf("medium") }
     var articleType by remember { mutableStateOf("top") }
 
     Column {
-        Text("Hi: GlanceId: $glanceWidgetId")
-        Text("Config:")
+        Text("Widget Settings:")
         ArticleGroup(selectedType = articleType,
             onSelectedChanged = { selected -> articleType = selected })
         ThemeGroup(selectedTheme = themeChoice,
             onSelectedChanged = { selected -> themeChoice = selected })
+        FontSizeGroup(selectedFontSize = fontSizeChoice,
+            onSelectedChanged = { selected -> fontSizeChoice = selected })
 
         Row {
             FinishButton(
@@ -128,12 +130,57 @@ fun ConfigurationScreen(
                 glanceWidgetId = glanceWidgetId,
                 finishActivity = finishActivity,
                 themeChoice = themeChoice,
-                articleType = articleType
+                articleType = articleType,
+                fontSizeChoice = fontSizeChoice
             )
         }
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+fun FontSizeGroup(
+    selectedFontSize: String = "medium",
+    onSelectedChanged: (String) -> Unit = {}
+) {
+    var selectedFontSize by remember { mutableStateOf(selectedFontSize) }
+    val fontSizeOptions: List<String> = listOf("small", "medium", "large")
+
+    Column(modifier = Modifier.padding(8.dp)) {
+        Card(
+            backgroundColor = MaterialTheme.colors.secondary,
+            modifier = Modifier.padding(8.dp)
+        ) {
+            Column(Modifier.padding(8.dp)) {
+                Row() {
+                    Text(
+                        "Select Font Size:",
+                        modifier = Modifier.padding(8.dp),
+                        color = MaterialTheme.colors.onSecondary,
+                        fontSize = 18.sp
+                    )
+                }
+                Row {
+                    fontSizeOptions.forEach { item ->
+                        Button(
+                            onClick = {
+                                selectedFontSize = item
+                                onSelectedChanged(item)
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = if (selectedFontSize == item) MaterialTheme.colors.primary else MaterialTheme.colors.background,
+                                contentColor = if (selectedFontSize == item) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onBackground
+                            ),
+                            modifier = Modifier.padding(horizontal = 8.dp)
+                        ) {
+                            Text(item.replaceFirstChar { it.uppercase() })
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
@@ -243,7 +290,8 @@ fun FinishButton(
     glanceWidgetId: GlanceId,
     finishActivity: (Int) -> Unit,
     themeChoice: String,
-    articleType: String
+    articleType: String,
+    fontSizeChoice: String
 ) {
     val scope = rememberCoroutineScope()
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -261,7 +309,8 @@ fun FinishButton(
                             ),
                             themeId = themeChoice,
                             articleType = articleType,
-                            widgetGlanceId = glanceWidgetId.toString()
+                            widgetGlanceId = glanceWidgetId.toString(),
+                            widgetFontSize = fontSizeChoice
                         )
                     }
                 )
