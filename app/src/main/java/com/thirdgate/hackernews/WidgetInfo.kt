@@ -8,6 +8,7 @@ data class WidgetInfo(
     val articleType: String = "top",
     val articleData: ArticleData,
     val widgetGlanceId: String,
-    val widgetFontSize: String = "medium"
+    val widgetFontSize: String = "medium",
+    val widgetBrowser: String = "inapp"
 )
 

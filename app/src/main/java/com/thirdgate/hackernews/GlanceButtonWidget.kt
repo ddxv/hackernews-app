@@ -77,6 +77,7 @@ class GlanceButtonWidget : GlanceAppWidget() {
         val articleType = widgetInfo.articleType
 
         val chosenFontSize = widgetInfo.widgetFontSize
+        val chosenBrowser = widgetInfo.widgetBrowser
         var smallFontSize = 10
         var regularFontSize = 12
         var largeFontSize = 18
@@ -186,7 +187,8 @@ class GlanceButtonWidget : GlanceAppWidget() {
                             articleType = articleType,
                             articleData = articleData,
                             regularFontSize,
-                            smallFontSize
+                            smallFontSize,
+                            chosenBrowser
                         )
 
                     }
@@ -224,7 +226,8 @@ class GlanceButtonWidget : GlanceAppWidget() {
         articleType: String,
         articleData: ArticleData.Available,
         regularFontSize: Int,
-        smallFontSize: Int
+        smallFontSize: Int,
+        chosenBrowser: String
     ) {
         LazyColumn(
             modifier = GlanceModifier.fillMaxSize()
@@ -246,10 +249,8 @@ class GlanceButtonWidget : GlanceAppWidget() {
                             night = GlanceTheme.colors.background.getColor(context),
                         ).fillMaxSize().padding(vertical = 2.dp)
                     ) {
-                        //Log.i("looping_glances_widget", "title: ${article.title}")
-                        val webIntent =
-                            Intent(Intent.ACTION_VIEW, Uri.parse(article.url))
-                        webIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+
                         Column(
                             modifier = GlanceModifier.padding(horizontal = 8.dp)
 
@@ -260,7 +261,7 @@ class GlanceButtonWidget : GlanceAppWidget() {
                                     block = {
                                         makeAClick(
                                             context,
-                                            article.url
+                                            article.url, chosenBrowser
                                         )
                                     }
                                 ),
@@ -276,7 +277,7 @@ class GlanceButtonWidget : GlanceAppWidget() {
                                     block = {
                                         makeAClick(
                                             context,
-                                            article.commentUrl
+                                            article.commentUrl, chosenBrowser
                                         )
                                     }
                                 ),
@@ -294,10 +295,16 @@ class GlanceButtonWidget : GlanceAppWidget() {
     }
 }
 
-fun makeAClick(context: Context, url: String) {
-    val webIntent =
-        Intent(Intent.ACTION_VIEW, Uri.parse(url))
-    webIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+fun makeAClick(context: Context, url: String, chosenBrowser: String) {
+    var webIntent = Intent(context, WebViewActivity::class.java)
+    if (chosenBrowser == "inapp") {
+        webIntent = Intent(context, WebViewActivity::class.java)
+        webIntent.putExtra(WebViewActivity.EXTRA_URL, url)
+    } else {
+        webIntent =
+            Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        webIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    }
     context.startActivity(webIntent)
 }
 

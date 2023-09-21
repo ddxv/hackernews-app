@@ -113,6 +113,7 @@ fun ConfigurationScreen(
     var themeChoice: String by remember { mutableStateOf(defaultTheme) }
     var fontSizeChoice: String by remember { mutableStateOf("medium") }
     var articleType by remember { mutableStateOf("top") }
+    var browserChoice by remember { mutableStateOf("default") }
 
     Column {
         Text("Widget Settings:")
@@ -122,6 +123,9 @@ fun ConfigurationScreen(
             onSelectedChanged = { selected -> themeChoice = selected })
         FontSizeGroup(selectedFontSize = fontSizeChoice,
             onSelectedChanged = { selected -> fontSizeChoice = selected })
+        BrowserGroup(
+            selectedBrowser = browserChoice,
+            onSelectedChanged = { selected -> browserChoice = selected })
 
         Row {
             FinishButton(
@@ -131,8 +135,58 @@ fun ConfigurationScreen(
                 finishActivity = finishActivity,
                 themeChoice = themeChoice,
                 articleType = articleType,
-                fontSizeChoice = fontSizeChoice
+                fontSizeChoice = fontSizeChoice,
+                browserChoice = browserChoice
             )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun BrowserGroup(
+    selectedBrowser: String = "inapp",
+    onSelectedChanged: (String) -> Unit = {}
+) {
+    var selectedBrowser by remember { mutableStateOf(selectedBrowser) }
+
+    val browserOptions = listOf(
+        "HackerNews App Browser" to "inapp",
+        "Default Browser" to "system"
+    )
+
+    Column(modifier = Modifier.padding(8.dp)) {
+        Card(
+            backgroundColor = MaterialTheme.colors.secondary,
+            modifier = Modifier.padding(8.dp)
+        ) {
+            Column(Modifier.padding(8.dp)) {
+                Row() {
+                    Text(
+                        "Select Your Browser to Open:",
+                        modifier = Modifier.padding(8.dp),
+                        color = MaterialTheme.colors.onSecondary,
+                        fontSize = 18.sp
+                    )
+                }
+                Row {
+                    browserOptions.forEach { (item, identifier) ->
+                        Button(
+                            onClick = {
+                                selectedBrowser = identifier
+                                onSelectedChanged(identifier)
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = if (selectedBrowser == item) MaterialTheme.colors.primary else MaterialTheme.colors.background,
+                                contentColor = if (selectedBrowser == item) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onBackground
+                            ),
+                            modifier = Modifier.padding(horizontal = 8.dp)
+                        ) {
+                            Text(item)
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -291,7 +345,8 @@ fun FinishButton(
     finishActivity: (Int) -> Unit,
     themeChoice: String,
     articleType: String,
-    fontSizeChoice: String
+    fontSizeChoice: String,
+    browserChoice: String
 ) {
     val scope = rememberCoroutineScope()
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -310,7 +365,8 @@ fun FinishButton(
                             themeId = themeChoice,
                             articleType = articleType,
                             widgetGlanceId = glanceWidgetId.toString(),
-                            widgetFontSize = fontSizeChoice
+                            widgetFontSize = fontSizeChoice,
+                            widgetBrowser = browserChoice
                         )
                     }
                 )
