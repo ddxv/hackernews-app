@@ -357,9 +357,16 @@ class MainActivity : ComponentActivity() {
 
         // Fetch and update theme if it has changed
         lifecycleScope.launch {
-            val currentThemeFromDisk = ArticlesRepository.readTheme(this@MainActivity)
-            if (currentThemeFromDisk != currentTheme) {
+            //val currentThemeFromDisk = ArticlesRepository.readTheme(this@MainActivity)
+            val appSettings = this@MainActivity.dataStore.data.first()
+            val currentThemeFromDisk = appSettings.themeId
+            val currentBrowserPreferenceFromDisk = appSettings.browserPreference
+            val currentFontSizeFromDisk = appSettings.fontSizePreference
+
+            if (currentThemeFromDisk != currentTheme || currentFontSizeFromDisk != currentFontSize || currentBrowserPreferenceFromDisk != currentBrowserPreference) {
                 currentTheme = currentThemeFromDisk
+                currentFontSize = currentFontSizeFromDisk
+                currentBrowserPreference = currentBrowserPreferenceFromDisk
                 // This will trigger a re-composition of any Composable that reads currentTheme
             }
         }

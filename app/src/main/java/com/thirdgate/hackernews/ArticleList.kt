@@ -83,6 +83,7 @@ fun ArticleList(
                 // Default Browser
                 ArticleView(
                     article = article,
+                    chosenFontSize = fontSize,
                     onTitleClick = {
                         context.startActivity(browserIntent)
                     },
@@ -110,9 +111,30 @@ fun ArticleList(
 @Composable
 fun ArticleView(
     article: ArticleData.ArticleInfo,
+    chosenFontSize: String,
     onTitleClick: () -> Unit,
     onCommentClick: () -> Unit
 ) {
+
+    var smallFontSize = 12
+    var regularFontSize = 14
+    var largeFontSize = 18
+
+    when (chosenFontSize) {
+        "small" -> {
+            largeFontSize -= 2
+            regularFontSize -= 2
+            smallFontSize -= 2
+        }
+
+        "large" -> {
+            largeFontSize += 2
+            regularFontSize += 2
+            smallFontSize += 2
+        }
+    }
+
+
     val rank = article.rank.toString().replace(".0", "")
     val title = article.title ?: ""
     val domain = article.domain as? String ?: ""
@@ -132,7 +154,7 @@ fun ArticleView(
                     withStyle(
                         style = SpanStyle(
                             fontWeight = FontWeight.Bold,
-                            fontSize = 14.sp,
+                            fontSize = regularFontSize.sp,
                             color = MaterialTheme.colors.onBackground
                         )
                     ) {
@@ -140,7 +162,7 @@ fun ArticleView(
                     }
                     withStyle(
                         style = SpanStyle(
-                            fontSize = 12.sp,
+                            fontSize = smallFontSize.sp,
                             color = MaterialTheme.colors.onSurface
                         )
                     ) {
