@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class WidgetInfo(
-    val themeId: String = "default",
+    val themeId: String = "Hacker News Orange Light",
     val articleType: String = "top",
     val articleData: ArticleData,
     val widgetGlanceId: String,

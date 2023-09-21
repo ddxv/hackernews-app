@@ -53,7 +53,12 @@ object ArticlesRepository {
     suspend fun writeTheme(context: Context, themeId: String) {
         Log.i("ArticleRepository", "Write out theme: $themeId")
         context.dataStore.updateData { currentSettings ->
-            AppInfo(articleData = currentSettings.articleData, themeId = themeId)
+            AppInfo(
+                articleData = currentSettings.articleData,
+                themeId = themeId,
+                browserPreference = currentSettings.browserPreference,
+                fontSizePreference = currentSettings.fontSizePreference
+            )
         }
     }
 

@@ -71,6 +71,9 @@ dependencies {
     implementation("androidx.glance:glance-material:1.0.0-rc01")
     implementation("androidx.glance:glance:1.0.0-rc01")
 
+    // Glance - for remembering config
+    implementation("com.google.android.glance.tools:appwidget-configuration:0.2.2")
+
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 

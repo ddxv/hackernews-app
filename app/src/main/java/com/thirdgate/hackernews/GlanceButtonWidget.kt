@@ -75,9 +75,9 @@ class GlanceButtonWidget : GlanceAppWidget() {
         val articleData = widgetInfo.articleData
         val themeId = widgetInfo.themeId
         val articleType = widgetInfo.articleType
-
         val chosenFontSize = widgetInfo.widgetFontSize
         val chosenBrowser = widgetInfo.widgetBrowser
+
         var smallFontSize = 10
         var regularFontSize = 12
         var largeFontSize = 18
@@ -303,8 +303,8 @@ fun makeAClick(context: Context, url: String, chosenBrowser: String) {
     } else {
         webIntent =
             Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        webIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     }
+    webIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     context.startActivity(webIntent)
 }
 

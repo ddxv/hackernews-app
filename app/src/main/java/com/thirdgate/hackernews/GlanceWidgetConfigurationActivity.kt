@@ -15,13 +15,16 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,6 +40,7 @@ import androidx.glance.GlanceId
 import androidx.glance.LocalContext
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetManager
+import androidx.glance.appwidget.state.getAppWidgetState
 import androidx.glance.appwidget.state.updateAppWidgetState
 import com.thirdgate.hackernews.ui.theme.CrystalBlueColorPalette
 import com.thirdgate.hackernews.ui.theme.CyberpunkDarkColorPalette
@@ -51,11 +55,14 @@ import com.thirdgate.hackernews.ui.theme.SolarizedLightColorPalette
 import kotlinx.coroutines.launch
 
 class GlanceWidgetConfigurationActivity : ComponentActivity() {
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val context: Context = this
         val glanceWidgetId: GlanceId
+
 
         val appWidgetId = intent?.extras?.getInt(
             AppWidgetManager.EXTRA_APPWIDGET_ID,
@@ -77,6 +84,7 @@ class GlanceWidgetConfigurationActivity : ComponentActivity() {
         try {
             val glanceAppWidgetManager = GlanceAppWidgetManager(context)
             glanceWidgetId = glanceAppWidgetManager.getGlanceIdBy(appWidgetId)
+
 
             val glanceAppWidget: GlanceButtonWidget = GlanceButtonWidget()
             setContent {
@@ -107,40 +115,87 @@ fun ConfigurationScreen(
     glanceApp: GlanceButtonWidget,
     finishActivity: (Int) -> Unit
 ) {
-
     val context = LocalContext.current
-    val defaultTheme = stringResource(R.string.hacker_news_orange_light)
-    var themeChoice: String by remember { mutableStateOf(defaultTheme) }
-    var fontSizeChoice: String by remember { mutableStateOf("medium") }
-    var articleType by remember { mutableStateOf("top") }
-    var browserChoice by remember { mutableStateOf("default") }
 
-    Column {
-        Text("Widget Settings:")
-        ArticleGroup(selectedType = articleType,
-            onSelectedChanged = { selected -> articleType = selected })
-        ThemeGroup(selectedTheme = themeChoice,
-            onSelectedChanged = { selected -> themeChoice = selected })
-        FontSizeGroup(selectedFontSize = fontSizeChoice,
-            onSelectedChanged = { selected -> fontSizeChoice = selected })
-        BrowserGroup(
-            selectedBrowser = browserChoice,
-            onSelectedChanged = { selected -> browserChoice = selected })
+    var widgetInfo by remember {
+        mutableStateOf(
+            WidgetInfo(
+                articleData = ArticleData.Loading,
+                widgetGlanceId = glanceWidgetId.toString()
+            )
+        )
+    }
 
-        Row {
-            FinishButton(
-                context = context,
-                glanceApp = glanceApp,
-                glanceWidgetId = glanceWidgetId,
-                finishActivity = finishActivity,
-                themeChoice = themeChoice,
-                articleType = articleType,
-                fontSizeChoice = fontSizeChoice,
-                browserChoice = browserChoice
+    var isLoaded by remember { mutableStateOf(false) }  // <-- New loading state
+
+    LaunchedEffect(Unit) {
+        try {
+            widgetInfo = glanceApp.getAppWidgetState<WidgetInfo>(context, glanceWidgetId)
+            isLoaded = true  // <-- Update the state once data is loaded
+        } catch (e: Exception) {
+            Log.w("WidgetConfiguration", "crashed!")
+            widgetInfo = WidgetInfo(
+                articleData = ArticleData.Loading,
+                widgetGlanceId = glanceWidgetId.toString()
             )
         }
     }
+
+    // Based on the loading state, decide to display the UI or a loading spinner.
+    if (isLoaded) {
+        ConfigurationUI(widgetInfo, glanceApp, glanceWidgetId, finishActivity)
+    } else {
+        // Show a loading spinner or some placeholder here
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator() // Example loading spinner from Compose
+        }
+    }
 }
+
+@Composable
+fun ConfigurationUI(
+    widgetInfo: WidgetInfo,
+    glanceApp: GlanceButtonWidget,
+    glanceWidgetId: GlanceId,
+    finishActivity: (Int) -> Unit
+) {
+    val context = LocalContext.current
+
+
+    var themeChoice by remember { mutableStateOf(widgetInfo.themeId) }
+    var fontSizeChoice by remember { mutableStateOf(widgetInfo.widgetFontSize) }
+    var articleType by remember { mutableStateOf(widgetInfo.articleType) }
+    var browserChoice by remember { mutableStateOf(widgetInfo.widgetBrowser) }
+
+    LazyColumn {
+        items(1) {
+            Text("Widget Settings:")
+            ArticleGroup(selectedType = articleType,
+                onSelectedChanged = { selected -> articleType = selected })
+            ThemeGroup(selectedTheme = themeChoice,
+                onSelectedChanged = { selected -> themeChoice = selected })
+            FontSizeGroup(selectedFontSize = fontSizeChoice,
+                onSelectedChanged = { selected -> fontSizeChoice = selected })
+            BrowserGroup(
+                selectedBrowser = browserChoice,
+                onSelectedChanged = { selected -> browserChoice = selected })
+
+            Row {
+                FinishButton(
+                    context = context,
+                    glanceApp = glanceApp,
+                    glanceWidgetId = glanceWidgetId,
+                    finishActivity = finishActivity,
+                    themeChoice = themeChoice,
+                    articleType = articleType,
+                    fontSizeChoice = fontSizeChoice,
+                    browserChoice = browserChoice
+                )
+            }
+        }
+    }
+}
+
 
 @Preview(showBackground = true)
 @Composable
@@ -151,8 +206,8 @@ fun BrowserGroup(
     var selectedBrowser by remember { mutableStateOf(selectedBrowser) }
 
     val browserOptions = listOf(
+        "Default Browser" to "system",
         "HackerNews App Browser" to "inapp",
-        "Default Browser" to "system"
     )
 
     Column(modifier = Modifier.padding(8.dp)) {
@@ -177,8 +232,8 @@ fun BrowserGroup(
                                 onSelectedChanged(identifier)
                             },
                             colors = ButtonDefaults.buttonColors(
-                                backgroundColor = if (selectedBrowser == item) MaterialTheme.colors.primary else MaterialTheme.colors.background,
-                                contentColor = if (selectedBrowser == item) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onBackground
+                                backgroundColor = if (selectedBrowser == identifier) MaterialTheme.colors.primary else MaterialTheme.colors.background,
+                                contentColor = if (selectedBrowser == identifier) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onBackground
                             ),
                             modifier = Modifier.padding(horizontal = 8.dp)
                         ) {
@@ -282,13 +337,13 @@ fun ArticleGroup(
 }
 
 @OptIn(ExperimentalLayoutApi::class)
-@Preview(showBackground = true)
+//@Preview(showBackground = true)
 @Composable
 fun ThemeGroup(
-    selectedTheme: String = stringResource(R.string.hacker_news_orange_light),
+    selectedTheme: String,
     onSelectedChanged: (String) -> Unit = {}
 ) {
-    var selectedTheme by remember { mutableStateOf(selectedTheme) }
+    Log.i("WidgetConfiguration", "ITheme=$selectedTheme")
     val themes = mapOf(
         stringResource(R.string.hacker_news_orange_light) to HackerNewsOrangeLightColorPalette(),
         stringResource(R.string.hacker_news_orange_dark) to HackerNewsOrangeDarkColorPalette(),
@@ -317,9 +372,9 @@ fun ThemeGroup(
                 }
                 FlowRow {
                     themes.forEach { item ->
+                        Log.i("WidgetConfiguration", "ITheme=$selectedTheme == ${item.key}")
                         Button(
                             onClick = {
-                                selectedTheme = item.key
                                 onSelectedChanged(item.key)
                             },
                             colors = ButtonDefaults.buttonColors(
@@ -351,7 +406,10 @@ fun FinishButton(
     val scope = rememberCoroutineScope()
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Button(onClick = {
-            Log.i("WidgetConfig", "$glanceWidgetId: Finish button clicked")
+            Log.i(
+                "WidgetConfig",
+                "$glanceWidgetId: Finish button clicked, set theme to $themeChoice"
+            )
             scope.launch {
                 updateAppWidgetState(context = context,
                     glanceId = glanceWidgetId,
