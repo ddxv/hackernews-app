@@ -33,7 +33,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceId
@@ -197,13 +196,12 @@ fun ConfigurationUI(
 }
 
 
-@Preview(showBackground = true)
+//@Preview(showBackground = true)
 @Composable
 fun BrowserGroup(
-    selectedBrowser: String = "inapp",
+    selectedBrowser: String,
     onSelectedChanged: (String) -> Unit = {}
 ) {
-    var selectedBrowser by remember { mutableStateOf(selectedBrowser) }
 
     val browserOptions = listOf(
         "Default Browser" to "system",
@@ -212,28 +210,29 @@ fun BrowserGroup(
 
     Column(modifier = Modifier.padding(8.dp)) {
         Card(
-            backgroundColor = MaterialTheme.colors.secondary,
-            modifier = Modifier.padding(8.dp)
+            backgroundColor = MaterialTheme.colors.background,
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxSize()
         ) {
             Column(Modifier.padding(8.dp)) {
                 Row() {
                     Text(
                         "Select Your Browser to Open:",
                         modifier = Modifier.padding(8.dp),
-                        color = MaterialTheme.colors.onSecondary,
-                        fontSize = 18.sp
+                        color = MaterialTheme.colors.onBackground,
+                        fontSize = 20.sp
                     )
                 }
                 Row {
                     browserOptions.forEach { (item, identifier) ->
                         Button(
                             onClick = {
-                                selectedBrowser = identifier
                                 onSelectedChanged(identifier)
                             },
                             colors = ButtonDefaults.buttonColors(
-                                backgroundColor = if (selectedBrowser == identifier) MaterialTheme.colors.primary else MaterialTheme.colors.background,
-                                contentColor = if (selectedBrowser == identifier) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onBackground
+                                backgroundColor = if (selectedBrowser == identifier) MaterialTheme.colors.primary else MaterialTheme.colors.surface,
+                                contentColor = if (selectedBrowser == identifier) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onSurface
                             ),
                             modifier = Modifier.padding(horizontal = 8.dp)
                         ) {
@@ -246,39 +245,39 @@ fun BrowserGroup(
     }
 }
 
-@Preview(showBackground = true)
+//@Preview(showBackground = true)
 @Composable
 fun FontSizeGroup(
-    selectedFontSize: String = "medium",
+    selectedFontSize: String,
     onSelectedChanged: (String) -> Unit = {}
 ) {
-    var selectedFontSize by remember { mutableStateOf(selectedFontSize) }
     val fontSizeOptions: List<String> = listOf("small", "medium", "large")
 
     Column(modifier = Modifier.padding(8.dp)) {
         Card(
-            backgroundColor = MaterialTheme.colors.secondary,
-            modifier = Modifier.padding(8.dp)
+            backgroundColor = MaterialTheme.colors.background,
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxSize()
         ) {
             Column(Modifier.padding(8.dp)) {
                 Row() {
                     Text(
                         "Select Font Size:",
                         modifier = Modifier.padding(8.dp),
-                        color = MaterialTheme.colors.onSecondary,
-                        fontSize = 18.sp
+                        color = MaterialTheme.colors.onBackground,
+                        fontSize = 20.sp
                     )
                 }
                 Row {
                     fontSizeOptions.forEach { item ->
                         Button(
                             onClick = {
-                                selectedFontSize = item
                                 onSelectedChanged(item)
                             },
                             colors = ButtonDefaults.buttonColors(
-                                backgroundColor = if (selectedFontSize == item) MaterialTheme.colors.primary else MaterialTheme.colors.background,
-                                contentColor = if (selectedFontSize == item) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onBackground
+                                backgroundColor = if (selectedFontSize == item) MaterialTheme.colors.primary else MaterialTheme.colors.surface,
+                                contentColor = if (selectedFontSize == item) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onSurface
                             ),
                             modifier = Modifier.padding(horizontal = 8.dp)
                         ) {
@@ -291,10 +290,10 @@ fun FontSizeGroup(
     }
 }
 
-@Preview(showBackground = true)
+//@Preview(showBackground = true)
 @Composable
 fun ArticleGroup(
-    selectedType: String = "top",
+    selectedType: String,
     onSelectedChanged: (String) -> Unit = {}
 ) {
     var selectedType by remember { mutableStateOf(selectedType) }
@@ -302,16 +301,18 @@ fun ArticleGroup(
 
     Column(modifier = Modifier.padding(8.dp)) {
         Card(
-            backgroundColor = MaterialTheme.colors.secondary,
-            modifier = Modifier.padding(8.dp)
+            backgroundColor = MaterialTheme.colors.background,
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxSize()
         ) {
             Column(Modifier.padding(8.dp)) {
                 Row() {
                     Text(
                         "Select Type of Articles:",
                         modifier = Modifier.padding(8.dp),
-                        color = MaterialTheme.colors.onSecondary,
-                        fontSize = 18.sp
+                        color = MaterialTheme.colors.onBackground,
+                        fontSize = 20.sp
                     )
                 }
                 Row {
@@ -322,8 +323,8 @@ fun ArticleGroup(
                                 onSelectedChanged(item)
                             },
                             colors = ButtonDefaults.buttonColors(
-                                backgroundColor = if (selectedType == item) MaterialTheme.colors.primary else MaterialTheme.colors.background,
-                                contentColor = if (selectedType == item) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onBackground
+                                backgroundColor = if (selectedType == item) MaterialTheme.colors.primary else MaterialTheme.colors.surface,
+                                contentColor = if (selectedType == item) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onSurface
                             ),
                             modifier = Modifier.padding(horizontal = 8.dp)
                         ) {
@@ -343,7 +344,6 @@ fun ThemeGroup(
     selectedTheme: String,
     onSelectedChanged: (String) -> Unit = {}
 ) {
-    Log.i("WidgetConfiguration", "ITheme=$selectedTheme")
     val themes = mapOf(
         stringResource(R.string.hacker_news_orange_light) to HackerNewsOrangeLightColorPalette(),
         stringResource(R.string.hacker_news_orange_dark) to HackerNewsOrangeDarkColorPalette(),
@@ -356,30 +356,34 @@ fun ThemeGroup(
         stringResource(R.string.solarized_light) to SolarizedLightColorPalette(),
         stringResource(R.string.solarized_dark) to SolarizedDarkColorPalette(),
     )
-    Column(modifier = Modifier.padding(8.dp)) {
+    Column(
+        modifier = Modifier
+            .padding(8.dp)
+    ) {
         Card(
-            backgroundColor = MaterialTheme.colors.secondary,
-            modifier = Modifier.padding(8.dp)
+            backgroundColor = MaterialTheme.colors.background,
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxSize()
         ) {
             Column(Modifier.padding(8.dp)) {
                 Row() {
                     Text(
                         "Select Color Theme:",
                         modifier = Modifier.padding(8.dp),
-                        color = MaterialTheme.colors.onSecondary,
-                        fontSize = 18.sp
+                        color = MaterialTheme.colors.onBackground,
+                        fontSize = 20.sp
                     )
                 }
                 FlowRow {
                     themes.forEach { item ->
-                        Log.i("WidgetConfiguration", "ITheme=$selectedTheme == ${item.key}")
                         Button(
                             onClick = {
                                 onSelectedChanged(item.key)
                             },
                             colors = ButtonDefaults.buttonColors(
-                                backgroundColor = if (selectedTheme == item.key) MaterialTheme.colors.primary else MaterialTheme.colors.background,
-                                contentColor = if (selectedTheme == item.key) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onBackground
+                                backgroundColor = if (selectedTheme == item.key) MaterialTheme.colors.primary else MaterialTheme.colors.surface,
+                                contentColor = if (selectedTheme == item.key) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onSurface
                             ),
                             modifier = Modifier.padding(horizontal = 8.dp)
                         ) {

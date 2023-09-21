@@ -45,6 +45,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun ArticleList(
     articles: List<ArticleData.ArticleInfo>,
+    fontSize: String,
+    browserPreference: String,
     onEndOfListReached: () -> Unit
 ) {
     val context = LocalContext.current
@@ -65,34 +67,27 @@ fun ArticleList(
     Box(Modifier.pullRefresh(state)) {
         LazyColumn(state = lazyListState) {
             items(articles) { article ->
+                val url = article.url as? String ?: ""
+                val commentUrl = article.commentUrl as? String ?: ""
+                val browserIntent: Intent
+                val commentIntent: Intent
+                if (browserPreference == "inapp") {
+                    browserIntent = Intent(context, WebViewActivity::class.java)
+                    browserIntent.putExtra(WebViewActivity.EXTRA_URL, url)
+                    commentIntent = Intent(context, WebViewActivity::class.java)
+                    commentIntent.putExtra(WebViewActivity.EXTRA_URL, commentUrl)
+                } else {
+                    commentIntent = Intent(Intent.ACTION_VIEW, Uri.parse(commentUrl))
+                    browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                }
                 // Default Browser
                 ArticleView(
                     article = article,
                     onTitleClick = {
-                        val url = article.url as? String ?: ""
-                        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                         context.startActivity(browserIntent)
                     },
                     onCommentClick = {
-                        val commentUrl = article.commentUrl as? String ?: ""
-                        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(commentUrl))
-                        context.startActivity(browserIntent)
-                    }
-                )
-                // In App Browser
-                ArticleView(
-                    article = article,
-                    onTitleClick = {
-                        val url = article.url as? String ?: ""
-                        val intent = Intent(context, WebViewActivity::class.java)
-                        intent.putExtra(WebViewActivity.EXTRA_URL, url)
-                        context.startActivity(intent)
-                    },
-                    onCommentClick = {
-                        val commentUrl = article.commentUrl as? String ?: ""
-                        val intent = Intent(context, WebViewActivity::class.java)
-                        intent.putExtra(WebViewActivity.EXTRA_URL, commentUrl)
-                        context.startActivity(intent)
+                        context.startActivity(commentIntent)
                     }
                 )
             }

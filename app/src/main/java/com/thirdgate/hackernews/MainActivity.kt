@@ -40,14 +40,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
-import com.thirdgate.hackernews.ArticlesRepository.fetchTheme
+import com.thirdgate.hackernews.ArticlesRepository.dataStore
 import com.thirdgate.hackernews.ui.theme.MyAppTheme
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 
 class MainActivity : ComponentActivity() {
 
     private var currentTheme by mutableStateOf("Default")
+    private var currentFontSize by mutableStateOf("medium")
+    private var currentBrowserPreference by mutableStateOf("inapp")
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -68,16 +71,14 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             LaunchedEffect(key1 = Unit) {
-                currentTheme = fetchTheme(context)
+                val appSettings = context.dataStore.data.first()
+                currentTheme = appSettings.themeId
+                currentBrowserPreference = appSettings.browserPreference
+                currentFontSize = appSettings.fontSizePreference
             }
             MyAppTheme(theme = currentTheme) {
                 MyApp {
-                    NewsScreen(onThemeChanged = { theme ->
-                        currentTheme = theme
-                        lifecycleScope.launch {
-                            ArticlesRepository.writeTheme(context, theme)
-                        }
-                    })
+                    NewsScreen(currentFontSize, currentBrowserPreference)
                 }
             }
         }
@@ -94,10 +95,11 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun NewsScreen(onThemeChanged: (String) -> Unit) {
+    fun NewsScreen(currentFontSize: String, currentBrowserPreference: String) {
         val topArticles = ArticlesRepository.topArticles.value
         val bestArticles = ArticlesRepository.bestArticles.value
         val newArticles = ArticlesRepository.newArticles.value
+
 
         var topPage by remember { mutableStateOf(1) }
         var bestPage by remember { mutableStateOf(1) }
@@ -216,8 +218,11 @@ class MainActivity : ComponentActivity() {
                             }
 
                             is ArticleData.Available -> {
+
                                 ArticleList(
                                     articles = getArticles(topArticles, articleType),
+                                    fontSize = currentFontSize,
+                                    browserPreference = currentBrowserPreference,
                                     onEndOfListReached = {
                                         // Fetch more 'top' articles
                                         lifecycleScope.launch {
@@ -268,6 +273,8 @@ class MainActivity : ComponentActivity() {
                             is ArticleData.Available -> {
                                 ArticleList(
                                     articles = getArticles(bestArticles, articleType),
+                                    fontSize = currentFontSize,
+                                    browserPreference = currentBrowserPreference,
                                     onEndOfListReached = {
                                         // Fetch more 'best' articles
                                         lifecycleScope.launch {
@@ -317,6 +324,8 @@ class MainActivity : ComponentActivity() {
                                 Log.i("MainActivity", "Content Aavailable")
                                 ArticleList(
                                     articles = getArticles(newArticles, articleType),
+                                    fontSize = currentFontSize,
+                                    browserPreference = currentBrowserPreference,
                                     onEndOfListReached = {
                                         // Fetch more 'new' articles
                                         lifecycleScope.launch {
@@ -348,7 +357,7 @@ class MainActivity : ComponentActivity() {
 
         // Fetch and update theme if it has changed
         lifecycleScope.launch {
-            val currentThemeFromDisk = ArticlesRepository.fetchTheme(this@MainActivity)
+            val currentThemeFromDisk = ArticlesRepository.readTheme(this@MainActivity)
             if (currentThemeFromDisk != currentTheme) {
                 currentTheme = currentThemeFromDisk
                 // This will trigger a re-composition of any Composable that reads currentTheme

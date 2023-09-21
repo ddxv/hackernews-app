@@ -40,7 +40,7 @@ object ArticlesRepository {
     private var fetchedBestPages = mutableSetOf<Int>()
     private var fetchedNewPages = mutableSetOf<Int>()
 
-    suspend fun fetchTheme(context: Context): String {
+    suspend fun readTheme(context: Context): String {
         var myTheme = "default"
         context.dataStore.data
             .map { settings -> settings.themeId }
@@ -62,6 +62,29 @@ object ArticlesRepository {
         }
     }
 
+    suspend fun writeBrowserPreference(context: Context, browserPreference: String) {
+        Log.i("ArticleRepository", "Write out browserPref: $browserPreference")
+        context.dataStore.updateData { currentSettings ->
+            AppInfo(
+                articleData = currentSettings.articleData,
+                themeId = currentSettings.themeId,
+                browserPreference = browserPreference,
+                fontSizePreference = currentSettings.fontSizePreference
+            )
+        }
+    }
+
+    suspend fun writeFontSizePreference(context: Context, fontSizePreference: String) {
+        Log.i("ArticleRepository", "Write out browserPref: $fontSizePreference")
+        context.dataStore.updateData { currentSettings ->
+            AppInfo(
+                articleData = currentSettings.articleData,
+                themeId = currentSettings.themeId,
+                browserPreference = currentSettings.browserPreference,
+                fontSizePreference = fontSizePreference
+            )
+        }
+    }
 
     suspend fun fetchArticles(articleType: String, page: Int = 1): ArticleData {
         Log.i("ArticlesRepository", "Fetching articleType=$articleType")
