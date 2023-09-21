@@ -45,6 +45,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun ArticleList(
     articles: List<ArticleData.ArticleInfo>,
+    fontSize: String,
+    browserPreference: String,
     onEndOfListReached: () -> Unit
 ) {
     val context = LocalContext.current
@@ -65,17 +67,28 @@ fun ArticleList(
     Box(Modifier.pullRefresh(state)) {
         LazyColumn(state = lazyListState) {
             items(articles) { article ->
+                val url = article.url as? String ?: ""
+                val commentUrl = article.commentUrl as? String ?: ""
+                val browserIntent: Intent
+                val commentIntent: Intent
+                if (browserPreference == "inapp") {
+                    browserIntent = Intent(context, WebViewActivity::class.java)
+                    browserIntent.putExtra(WebViewActivity.EXTRA_URL, url)
+                    commentIntent = Intent(context, WebViewActivity::class.java)
+                    commentIntent.putExtra(WebViewActivity.EXTRA_URL, commentUrl)
+                } else {
+                    commentIntent = Intent(Intent.ACTION_VIEW, Uri.parse(commentUrl))
+                    browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                }
+                // Default Browser
                 ArticleView(
                     article = article,
+                    chosenFontSize = fontSize,
                     onTitleClick = {
-                        val url = article.url as? String ?: ""
-                        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                         context.startActivity(browserIntent)
                     },
                     onCommentClick = {
-                        val commentUrl = article.commentUrl as? String ?: ""
-                        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(commentUrl))
-                        context.startActivity(browserIntent)
+                        context.startActivity(commentIntent)
                     }
                 )
             }
@@ -98,9 +111,30 @@ fun ArticleList(
 @Composable
 fun ArticleView(
     article: ArticleData.ArticleInfo,
+    chosenFontSize: String,
     onTitleClick: () -> Unit,
     onCommentClick: () -> Unit
 ) {
+
+    var smallFontSize = 12
+    var regularFontSize = 14
+    var largeFontSize = 18
+
+    when (chosenFontSize) {
+        "small" -> {
+            largeFontSize -= 2
+            regularFontSize -= 2
+            smallFontSize -= 2
+        }
+
+        "large" -> {
+            largeFontSize += 2
+            regularFontSize += 2
+            smallFontSize += 2
+        }
+    }
+
+
     val rank = article.rank.toString().replace(".0", "")
     val title = article.title ?: ""
     val domain = article.domain as? String ?: ""
@@ -120,7 +154,7 @@ fun ArticleView(
                     withStyle(
                         style = SpanStyle(
                             fontWeight = FontWeight.Bold,
-                            fontSize = 14.sp,
+                            fontSize = regularFontSize.sp,
                             color = MaterialTheme.colors.onBackground
                         )
                     ) {
@@ -128,7 +162,7 @@ fun ArticleView(
                     }
                     withStyle(
                         style = SpanStyle(
-                            fontSize = 12.sp,
+                            fontSize = smallFontSize.sp,
                             color = MaterialTheme.colors.onSurface
                         )
                     ) {

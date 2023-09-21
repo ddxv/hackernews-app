@@ -2,10 +2,8 @@ package com.thirdgate.hackernews
 
 import android.content.Context
 import android.util.Log
-import androidx.glance.GlanceId
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
-import androidx.glance.appwidget.updateAll
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
@@ -140,21 +138,4 @@ class GlanceWorker(
     }
 
 
-    /**
-     * Update the state of all widgets and then force update UI
-     */
-    private suspend fun updateAllAppWidgetStates(
-        glanceIds: List<GlanceId>,
-        newWidgetInfo: WidgetInfo
-    ) {
-        glanceIds.forEach { glanceId ->
-            updateAppWidgetState(
-                context = context,
-                definition = GlanceButtonWidgetStateDefinition(),
-                glanceId = glanceId,
-                updateState = { newWidgetInfo }
-            )
-        }
-        GlanceButtonWidget().updateAll(context)
-    }
 }

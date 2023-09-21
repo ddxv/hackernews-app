@@ -40,30 +40,51 @@ object ArticlesRepository {
     private var fetchedBestPages = mutableSetOf<Int>()
     private var fetchedNewPages = mutableSetOf<Int>()
 
-    suspend fun fetchTheme(context: Context): String {
+    suspend fun readTheme(context: Context): String {
         var myTheme = "default"
         context.dataStore.data
             .map { settings -> settings.themeId }
             .firstOrNull()
             ?.let { myTheme = it }
         Log.i("ArticleRepository", "Read out theme: $myTheme")
-//        val themeId: Flow<String> = context.dataStore.data
-//            .map { settings ->
-//                // The exampleCounter property is generated from the proto schema.
-//                settings.themeId
-//            }
-//        val myTheme = themeId.toString()
-//        Log.i("ArticleRepository", "Read out theme: $themeId")
         return myTheme
     }
 
     suspend fun writeTheme(context: Context, themeId: String) {
         Log.i("ArticleRepository", "Write out theme: $themeId")
         context.dataStore.updateData { currentSettings ->
-            AppInfo(articleData = currentSettings.articleData, themeId = themeId)
+            AppInfo(
+                articleData = currentSettings.articleData,
+                themeId = themeId,
+                browserPreference = currentSettings.browserPreference,
+                fontSizePreference = currentSettings.fontSizePreference
+            )
         }
     }
 
+    suspend fun writeBrowserPreference(context: Context, browserPreference: String) {
+        Log.i("ArticleRepository", "Write out browserPref: $browserPreference")
+        context.dataStore.updateData { currentSettings ->
+            AppInfo(
+                articleData = currentSettings.articleData,
+                themeId = currentSettings.themeId,
+                browserPreference = browserPreference,
+                fontSizePreference = currentSettings.fontSizePreference
+            )
+        }
+    }
+
+    suspend fun writeFontSizePreference(context: Context, fontSizePreference: String) {
+        Log.i("ArticleRepository", "Write out browserPref: $fontSizePreference")
+        context.dataStore.updateData { currentSettings ->
+            AppInfo(
+                articleData = currentSettings.articleData,
+                themeId = currentSettings.themeId,
+                browserPreference = currentSettings.browserPreference,
+                fontSizePreference = fontSizePreference
+            )
+        }
+    }
 
     suspend fun fetchArticles(articleType: String, page: Int = 1): ArticleData {
         Log.i("ArticlesRepository", "Fetching articleType=$articleType")

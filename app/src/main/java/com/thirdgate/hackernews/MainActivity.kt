@@ -40,13 +40,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
-import com.thirdgate.hackernews.ArticlesRepository.fetchTheme
+import com.thirdgate.hackernews.ArticlesRepository.dataStore
 import com.thirdgate.hackernews.ui.theme.MyAppTheme
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 
 class MainActivity : ComponentActivity() {
 
+    private var currentTheme by mutableStateOf("Default")
+    private var currentFontSize by mutableStateOf("medium")
+    private var currentBrowserPreference by mutableStateOf("inapp")
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -54,8 +58,6 @@ class MainActivity : ComponentActivity() {
 
         // Hide the status bar
         actionBar?.hide()
-
-        var readTheme: String = "Default"
 
         val context: Context = this
 
@@ -68,21 +70,19 @@ class MainActivity : ComponentActivity() {
 
 
         setContent {
-            var currentTheme by remember { mutableStateOf("Default") }
             LaunchedEffect(key1 = Unit) {
-                currentTheme = fetchTheme(context)
+                val appSettings = context.dataStore.data.first()
+                currentTheme = appSettings.themeId
+                currentBrowserPreference = appSettings.browserPreference
+                currentFontSize = appSettings.fontSizePreference
             }
             MyAppTheme(theme = currentTheme) {
                 MyApp {
-                    NewsScreen(onThemeChanged = { theme ->
-                        currentTheme = theme
-                        lifecycleScope.launch {
-                            ArticlesRepository.writeTheme(context, theme)
-                        }
-                    })
+                    NewsScreen(currentFontSize, currentBrowserPreference)
                 }
             }
         }
+
     }
 
     @Composable
@@ -95,10 +95,11 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun NewsScreen(onThemeChanged: (String) -> Unit) {
+    fun NewsScreen(currentFontSize: String, currentBrowserPreference: String) {
         val topArticles = ArticlesRepository.topArticles.value
         val bestArticles = ArticlesRepository.bestArticles.value
         val newArticles = ArticlesRepository.newArticles.value
+
 
         var topPage by remember { mutableStateOf(1) }
         var bestPage by remember { mutableStateOf(1) }
@@ -109,19 +110,6 @@ class MainActivity : ComponentActivity() {
         var showMenu by remember { mutableStateOf(false) }
 
         val context = LocalContext.current
-
-        val themes = listOf(
-            getString(R.string.hacker_news_orange_light),
-            getString(R.string.hacker_news_orange_dark),
-            getString(R.string.darcula),
-            getString(R.string.cyberpunk_light),
-            getString(R.string.cyberpunk_dark),
-            getString(R.string.lavender_light),
-            getString(R.string.lavender_dark),
-            getString(R.string.crystal_blue),
-            getString(R.string.solarized_light),
-            getString(R.string.solarized_dark),
-        )
 
         val articleType = when (selectedTab) {
             0 -> "top"
@@ -146,22 +134,16 @@ class MainActivity : ComponentActivity() {
                             expanded = showMenu,
                             onDismissRequest = { showMenu = false }
                         ) {
-                            themes.forEach { theme ->
-                                DropdownMenuItem(
-                                    onClick = {
-                                        onThemeChanged(theme)
-                                        lifecycleScope.launch {
-                                            ArticlesRepository.writeTheme(context, theme)
-                                        }
-                                        showMenu = false
-                                    },
-                                    modifier = Modifier.background(color = MaterialTheme.colors.background),
-                                ) {
-                                    Text(theme, color = MaterialTheme.colors.onBackground)
-                                }
+                            DropdownMenuItem(onClick = {
+                                showMenu = false
+                                val intent = Intent(this@MainActivity, SettingsActivity::class.java)
+                                startActivity(intent)
+                            }) {
+                                Text("Settings", color = MaterialTheme.colors.onBackground)
                             }
                             DropdownMenuItem(
                                 onClick = {
+                                    showMenu = false
                                     startActivity(
                                         Intent(
                                             context,
@@ -238,8 +220,11 @@ class MainActivity : ComponentActivity() {
                             }
 
                             is ArticleData.Available -> {
+
                                 ArticleList(
                                     articles = getArticles(topArticles, articleType),
+                                    fontSize = currentFontSize,
+                                    browserPreference = currentBrowserPreference,
                                     onEndOfListReached = {
                                         // Fetch more 'top' articles
                                         lifecycleScope.launch {
@@ -290,6 +275,8 @@ class MainActivity : ComponentActivity() {
                             is ArticleData.Available -> {
                                 ArticleList(
                                     articles = getArticles(bestArticles, articleType),
+                                    fontSize = currentFontSize,
+                                    browserPreference = currentBrowserPreference,
                                     onEndOfListReached = {
                                         // Fetch more 'best' articles
                                         lifecycleScope.launch {
@@ -339,6 +326,8 @@ class MainActivity : ComponentActivity() {
                                 Log.i("MainActivity", "Content Aavailable")
                                 ArticleList(
                                     articles = getArticles(newArticles, articleType),
+                                    fontSize = currentFontSize,
+                                    browserPreference = currentBrowserPreference,
                                     onEndOfListReached = {
                                         // Fetch more 'new' articles
                                         lifecycleScope.launch {
@@ -362,6 +351,25 @@ class MainActivity : ComponentActivity() {
         return when (articleData) {
             is ArticleData.Available -> articleData.articles[type] ?: emptyList()
             else -> emptyList()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        // Fetch and update theme if it has changed
+        lifecycleScope.launch {
+            val appSettings = this@MainActivity.dataStore.data.first()
+            val currentThemeFromDisk = appSettings.themeId
+            val currentBrowserPreferenceFromDisk = appSettings.browserPreference
+            val currentFontSizeFromDisk = appSettings.fontSizePreference
+
+            if (currentThemeFromDisk != currentTheme || currentFontSizeFromDisk != currentFontSize || currentBrowserPreferenceFromDisk != currentBrowserPreference) {
+                currentTheme = currentThemeFromDisk
+                currentFontSize = currentFontSizeFromDisk
+                currentBrowserPreference = currentBrowserPreferenceFromDisk
+                // This will trigger a re-composition of any Composable that reads currentTheme
+            }
         }
     }
 
