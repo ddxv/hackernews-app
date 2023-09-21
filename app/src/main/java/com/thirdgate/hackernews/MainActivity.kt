@@ -135,6 +135,7 @@ class MainActivity : ComponentActivity() {
                             onDismissRequest = { showMenu = false }
                         ) {
                             DropdownMenuItem(onClick = {
+                                showMenu = false
                                 val intent = Intent(this@MainActivity, SettingsActivity::class.java)
                                 startActivity(intent)
                             }) {
@@ -142,6 +143,7 @@ class MainActivity : ComponentActivity() {
                             }
                             DropdownMenuItem(
                                 onClick = {
+                                    showMenu = false
                                     startActivity(
                                         Intent(
                                             context,
@@ -357,7 +359,6 @@ class MainActivity : ComponentActivity() {
 
         // Fetch and update theme if it has changed
         lifecycleScope.launch {
-            //val currentThemeFromDisk = ArticlesRepository.readTheme(this@MainActivity)
             val appSettings = this@MainActivity.dataStore.data.first()
             val currentThemeFromDisk = appSettings.themeId
             val currentBrowserPreferenceFromDisk = appSettings.browserPreference
