@@ -65,6 +65,7 @@ fun ArticleList(
     Box(Modifier.pullRefresh(state)) {
         LazyColumn(state = lazyListState) {
             items(articles) { article ->
+                // Default Browser
                 ArticleView(
                     article = article,
                     onTitleClick = {
@@ -76,6 +77,22 @@ fun ArticleList(
                         val commentUrl = article.commentUrl as? String ?: ""
                         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(commentUrl))
                         context.startActivity(browserIntent)
+                    }
+                )
+                // In App Browser
+                ArticleView(
+                    article = article,
+                    onTitleClick = {
+                        val url = article.url as? String ?: ""
+                        val intent = Intent(context, WebViewActivity::class.java)
+                        intent.putExtra(WebViewActivity.EXTRA_URL, url)
+                        context.startActivity(intent)
+                    },
+                    onCommentClick = {
+                        val commentUrl = article.commentUrl as? String ?: ""
+                        val intent = Intent(context, WebViewActivity::class.java)
+                        intent.putExtra(WebViewActivity.EXTRA_URL, commentUrl)
+                        context.startActivity(intent)
                     }
                 )
             }

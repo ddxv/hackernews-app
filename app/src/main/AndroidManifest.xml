@@ -25,6 +25,10 @@
             android:name=".AboutActivity"
             android:exported="true" />
 
+        <activity android:name=".WebViewActivity" />
+
+        <activity android:name=".SettingsActivity" />
+
         <activity
             android:name=".GlanceWidgetConfigurationActivity"
             android:exported="true">

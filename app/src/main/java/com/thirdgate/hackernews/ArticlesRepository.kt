@@ -47,13 +47,6 @@ object ArticlesRepository {
             .firstOrNull()
             ?.let { myTheme = it }
         Log.i("ArticleRepository", "Read out theme: $myTheme")
-//        val themeId: Flow<String> = context.dataStore.data
-//            .map { settings ->
-//                // The exampleCounter property is generated from the proto schema.
-//                settings.themeId
-//            }
-//        val myTheme = themeId.toString()
-//        Log.i("ArticleRepository", "Read out theme: $themeId")
         return myTheme
     }
 

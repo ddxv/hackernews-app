@@ -47,6 +47,7 @@ import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
+    private var currentTheme by mutableStateOf("Default")
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -54,8 +55,6 @@ class MainActivity : ComponentActivity() {
 
         // Hide the status bar
         actionBar?.hide()
-
-        var readTheme: String = "Default"
 
         val context: Context = this
 
@@ -68,7 +67,6 @@ class MainActivity : ComponentActivity() {
 
 
         setContent {
-            var currentTheme by remember { mutableStateOf("Default") }
             LaunchedEffect(key1 = Unit) {
                 currentTheme = fetchTheme(context)
             }
@@ -83,6 +81,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+
     }
 
     @Composable
@@ -110,19 +109,6 @@ class MainActivity : ComponentActivity() {
 
         val context = LocalContext.current
 
-        val themes = listOf(
-            getString(R.string.hacker_news_orange_light),
-            getString(R.string.hacker_news_orange_dark),
-            getString(R.string.darcula),
-            getString(R.string.cyberpunk_light),
-            getString(R.string.cyberpunk_dark),
-            getString(R.string.lavender_light),
-            getString(R.string.lavender_dark),
-            getString(R.string.crystal_blue),
-            getString(R.string.solarized_light),
-            getString(R.string.solarized_dark),
-        )
-
         val articleType = when (selectedTab) {
             0 -> "top"
             1 -> "best"
@@ -146,19 +132,11 @@ class MainActivity : ComponentActivity() {
                             expanded = showMenu,
                             onDismissRequest = { showMenu = false }
                         ) {
-                            themes.forEach { theme ->
-                                DropdownMenuItem(
-                                    onClick = {
-                                        onThemeChanged(theme)
-                                        lifecycleScope.launch {
-                                            ArticlesRepository.writeTheme(context, theme)
-                                        }
-                                        showMenu = false
-                                    },
-                                    modifier = Modifier.background(color = MaterialTheme.colors.background),
-                                ) {
-                                    Text(theme, color = MaterialTheme.colors.onBackground)
-                                }
+                            DropdownMenuItem(onClick = {
+                                val intent = Intent(this@MainActivity, SettingsActivity::class.java)
+                                startActivity(intent)
+                            }) {
+                                Text("Settings", color = MaterialTheme.colors.onBackground)
                             }
                             DropdownMenuItem(
                                 onClick = {
@@ -362,6 +340,19 @@ class MainActivity : ComponentActivity() {
         return when (articleData) {
             is ArticleData.Available -> articleData.articles[type] ?: emptyList()
             else -> emptyList()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        // Fetch and update theme if it has changed
+        lifecycleScope.launch {
+            val currentThemeFromDisk = ArticlesRepository.fetchTheme(this@MainActivity)
+            if (currentThemeFromDisk != currentTheme) {
+                currentTheme = currentThemeFromDisk
+                // This will trigger a re-composition of any Composable that reads currentTheme
+            }
         }
     }
 
