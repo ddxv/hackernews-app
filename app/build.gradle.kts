@@ -15,7 +15,7 @@ android {
         applicationId = "com.thirdgate.hackernews"
         minSdk = 26
         targetSdk = 34
-        versionCode = 6
+        versionCode = 7
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -83,14 +83,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
     implementation("com.google.code.gson:gson:2.10.1") // Check for the latest version
-
-    // Import the Firebase BoM
-
-    implementation(platform("com.google.firebase:firebase-bom:32.2.2"))
-    // TODO: Add the dependencies for Firebase products you want to use
-    // When using the BoM, don't specify versions in Firebase dependencies
-    // https://firebase.google.com/docs/android/setup#available-libraries
-
 
     implementation(platform("com.squareup.okhttp3:okhttp-bom:4.10.0"))
     // define any required OkHttp artifacts without version
