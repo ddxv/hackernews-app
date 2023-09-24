@@ -80,7 +80,9 @@ class GlanceWorker(
                             articleData = ArticleData.Loading,
                             widgetGlanceId = widgetInfo.widgetGlanceId,
                             articleType = widgetInfo.articleType,
-                            themeId = widgetInfo.themeId
+                            themeId = widgetInfo.themeId,
+                            widgetFontSize = widgetInfo.widgetFontSize,
+                            widgetBrowser = widgetInfo.widgetBrowser
                         )
                     }
                 )
@@ -101,7 +103,9 @@ class GlanceWorker(
                         ),
                         widgetGlanceId = widgetInfo.widgetGlanceId,
                         articleType = widgetInfo.articleType,
-                        themeId = widgetInfo.themeId
+                        themeId = widgetInfo.themeId,
+                        widgetFontSize = widgetInfo.widgetFontSize,
+                        widgetBrowser = widgetInfo.widgetBrowser
                     )
                 }
                 GlanceButtonWidget().update(context, glanceId)
@@ -120,7 +124,9 @@ class GlanceWorker(
                             articleData = ArticleData.Unavailable(e.message.orEmpty()),
                             widgetGlanceId = widgetInfo.widgetGlanceId,
                             articleType = widgetInfo.articleType,
-                            themeId = widgetInfo.themeId
+                            themeId = widgetInfo.themeId,
+                            widgetFontSize = widgetInfo.widgetFontSize,
+                            widgetBrowser = widgetInfo.widgetBrowser
                         )
                     }
                 )
