@@ -64,6 +64,17 @@ class GlanceWorker(
 
         val r: Result = Result.failure()
 
+        fun createWidgetInfo(data: ArticleData, widgetInfo: WidgetInfo): WidgetInfo {
+            return WidgetInfo(
+                articleData = data,
+                widgetGlanceId = widgetInfo.widgetGlanceId,
+                articleType = widgetInfo.articleType,
+                themeId = widgetInfo.themeId,
+                widgetFontSize = widgetInfo.widgetFontSize,
+                widgetBrowser = widgetInfo.widgetBrowser
+            )
+        }
+
         // Update state with new data
         glanceIds.forEach { glanceId ->
             var previousData: ArticleData? = null
@@ -75,63 +86,22 @@ class GlanceWorker(
                     glanceId = glanceId,
                     updateState = { widgetInfo ->
                         previousData = widgetInfo.articleData
-                        Log.i("GlanceWorker", "previousData: ${previousData}")
-                        WidgetInfo(
-                            articleData = ArticleData.Loading,
-                            widgetGlanceId = widgetInfo.widgetGlanceId,
-                            articleType = widgetInfo.articleType,
-                            themeId = widgetInfo.themeId,
-                            widgetFontSize = widgetInfo.widgetFontSize,
-                            widgetBrowser = widgetInfo.widgetBrowser
-                        )
+                        createWidgetInfo(ArticleData.Loading, widgetInfo)
                     }
                 )
-                Log.i("GlanceWorker", "previousData: ${previousData}")
                 GlanceButtonWidget().update(context, glanceId)
                 updateAppWidgetState(
                     context = context,
                     glanceId = glanceId,
                     definition = GlanceButtonWidgetStateDefinition()
                 ) { widgetInfo ->
-                    Log.i(
-                        "GlanceWidgetWorker",
-                        "LoopWidgets: glanceId: $glanceId, Fetch articles "
-                    )
-                    val pulledData = ArticlesRepository.fetchArticles(
-                        widgetInfo.articleType,
-                        page = 1
-                    )
-                    val tempPreviousData = previousData
-                    if (pulledData is ArticleData.Available) {
-                        Log.i("GlanceWorker", "using new data")
-                        WidgetInfo(
-                            articleData = pulledData,
-                            widgetGlanceId = widgetInfo.widgetGlanceId,
-                            articleType = widgetInfo.articleType,
-                            themeId = widgetInfo.themeId,
-                            widgetFontSize = widgetInfo.widgetFontSize,
-                            widgetBrowser = widgetInfo.widgetBrowser
-                        )
-                    } else if (tempPreviousData != null) {
-                        Log.i("GlanceWorker", "previousData: using! ${previousData}")
-                        WidgetInfo(
-                            articleData = tempPreviousData,
-                            widgetGlanceId = widgetInfo.widgetGlanceId,
-                            articleType = widgetInfo.articleType,
-                            themeId = widgetInfo.themeId,
-                            widgetFontSize = widgetInfo.widgetFontSize,
-                            widgetBrowser = widgetInfo.widgetBrowser
-                        )
-                    } else {
-                        WidgetInfo(
-                            articleData = ArticleData.Unavailable("Failed to get new or existing data"),
-                            widgetGlanceId = widgetInfo.widgetGlanceId,
-                            articleType = widgetInfo.articleType,
-                            themeId = widgetInfo.themeId,
-                            widgetFontSize = widgetInfo.widgetFontSize,
-                            widgetBrowser = widgetInfo.widgetBrowser
-                        )
+                    val data = when (val pulledData =
+                        ArticlesRepository.fetchArticles(widgetInfo.articleType, page = 1)) {
+                        is ArticleData.Available -> pulledData
+                        else -> previousData
+                            ?: ArticleData.Unavailable("Failed to get new or existing data")
                     }
+                    createWidgetInfo(data, widgetInfo)
                 }
                 GlanceButtonWidget().update(context, glanceId)
                 val r = Result.success()
