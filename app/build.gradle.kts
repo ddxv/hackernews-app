@@ -15,7 +15,7 @@ android {
         applicationId = "com.thirdgate.hackernews"
         minSdk = 26
         targetSdk = 34
-        versionCode = 7
+        versionCode = 9
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -54,8 +54,8 @@ dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2023.08.00")
     implementation(composeBom)
     implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.compose.ui:ui:1.5.1")
-    implementation("androidx.compose.foundation:foundation-layout-android:1.5.1")
+    implementation("androidx.compose.ui:ui:1.5.2")
+    implementation("androidx.compose.foundation:foundation-layout-android:1.5.2")
     implementation("androidx.activity:activity-compose:1.7.2")
     // Android Studio Preview support
     debugImplementation("androidx.compose.ui:ui-tooling")
@@ -82,7 +82,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
-    implementation("com.google.code.gson:gson:2.10.1") // Check for the latest version
+    implementation("com.google.code.gson:gson:2.10.1")
 
     implementation(platform("com.squareup.okhttp3:okhttp-bom:4.10.0"))
     // define any required OkHttp artifacts without version
