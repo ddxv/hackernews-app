@@ -66,16 +66,16 @@ class GlanceWorker(
 
         // Update state with new data
         glanceIds.forEach { glanceId ->
+            var previousData: ArticleData? = null
             try {
-                Log.i(
-                    "GlanceWidgetWorker",
-                    "Looptime: Outside StateDefinition: this.glanceId: $glanceId"
-                )
+                Log.i("GlanceWorker", "forEach glanceId: $glanceId")
                 updateAppWidgetState(
                     context = context,
                     definition = GlanceButtonWidgetStateDefinition(),
                     glanceId = glanceId,
                     updateState = { widgetInfo ->
+                        previousData = widgetInfo.articleData
+                        Log.i("GlanceWorker", "previousData: ${previousData}")
                         WidgetInfo(
                             articleData = ArticleData.Loading,
                             widgetGlanceId = widgetInfo.widgetGlanceId,
@@ -86,6 +86,7 @@ class GlanceWorker(
                         )
                     }
                 )
+                Log.i("GlanceWorker", "previousData: ${previousData}")
                 GlanceButtonWidget().update(context, glanceId)
                 updateAppWidgetState(
                     context = context,
@@ -96,17 +97,41 @@ class GlanceWorker(
                         "GlanceWidgetWorker",
                         "LoopWidgets: glanceId: $glanceId, Fetch articles "
                     )
-                    WidgetInfo(
-                        articleData = ArticlesRepository.fetchArticles(
-                            widgetInfo.articleType,
-                            page = 1
-                        ),
-                        widgetGlanceId = widgetInfo.widgetGlanceId,
-                        articleType = widgetInfo.articleType,
-                        themeId = widgetInfo.themeId,
-                        widgetFontSize = widgetInfo.widgetFontSize,
-                        widgetBrowser = widgetInfo.widgetBrowser
+                    val pulledData = ArticlesRepository.fetchArticles(
+                        widgetInfo.articleType,
+                        page = 1
                     )
+                    val tempPreviousData = previousData
+                    if (pulledData is ArticleData.Available) {
+                        Log.i("GlanceWorker", "using new data")
+                        WidgetInfo(
+                            articleData = pulledData,
+                            widgetGlanceId = widgetInfo.widgetGlanceId,
+                            articleType = widgetInfo.articleType,
+                            themeId = widgetInfo.themeId,
+                            widgetFontSize = widgetInfo.widgetFontSize,
+                            widgetBrowser = widgetInfo.widgetBrowser
+                        )
+                    } else if (tempPreviousData != null) {
+                        Log.i("GlanceWorker", "previousData: using! ${previousData}")
+                        WidgetInfo(
+                            articleData = tempPreviousData,
+                            widgetGlanceId = widgetInfo.widgetGlanceId,
+                            articleType = widgetInfo.articleType,
+                            themeId = widgetInfo.themeId,
+                            widgetFontSize = widgetInfo.widgetFontSize,
+                            widgetBrowser = widgetInfo.widgetBrowser
+                        )
+                    } else {
+                        WidgetInfo(
+                            articleData = ArticleData.Unavailable("Failed to get new or existing data"),
+                            widgetGlanceId = widgetInfo.widgetGlanceId,
+                            articleType = widgetInfo.articleType,
+                            themeId = widgetInfo.themeId,
+                            widgetFontSize = widgetInfo.widgetFontSize,
+                            widgetBrowser = widgetInfo.widgetBrowser
+                        )
+                    }
                 }
                 GlanceButtonWidget().update(context, glanceId)
                 val r = Result.success()
@@ -142,6 +167,4 @@ class GlanceWorker(
         }
         return r
     }
-
-
 }
