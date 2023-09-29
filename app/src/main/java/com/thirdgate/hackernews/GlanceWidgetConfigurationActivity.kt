@@ -209,8 +209,8 @@ fun BrowserGroup(
 ) {
 
     val browserOptions = listOf(
-        "Default Browser" to "system",
         "HackerNews App Browser" to "inapp",
+        "Default Browser" to "system",
     )
 
     Column(modifier = Modifier.padding(8.dp)) {
