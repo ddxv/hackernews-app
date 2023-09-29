@@ -202,6 +202,7 @@ fun ConfigurationUI(
 
 
 //@Preview(showBackground = true)
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun BrowserGroup(
     selectedBrowser: String,
@@ -229,7 +230,7 @@ fun BrowserGroup(
                         fontSize = 20.sp
                     )
                 }
-                Row {
+                FlowRow() {
                     browserOptions.forEach { (item, identifier) ->
                         Button(
                             onClick = {
@@ -251,6 +252,7 @@ fun BrowserGroup(
 }
 
 //@Preview(showBackground = true)
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun FontSizeGroup(
     selectedFontSize: String,
@@ -274,7 +276,7 @@ fun FontSizeGroup(
                         fontSize = 20.sp
                     )
                 }
-                Row {
+                FlowRow() {
                     fontSizeOptions.forEach { item ->
                         Button(
                             onClick = {
