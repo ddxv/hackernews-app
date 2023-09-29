@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -25,6 +26,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,6 +51,7 @@ import com.thirdgate.hackernews.ui.theme.HackerNewsOrangeDarkColorPalette
 import com.thirdgate.hackernews.ui.theme.HackerNewsOrangeLightColorPalette
 import com.thirdgate.hackernews.ui.theme.LavenderDarkColorPalette
 import com.thirdgate.hackernews.ui.theme.LavenderLightColorPalette
+import com.thirdgate.hackernews.ui.theme.MyAppTheme
 import com.thirdgate.hackernews.ui.theme.SolarizedDarkColorPalette
 import com.thirdgate.hackernews.ui.theme.SolarizedLightColorPalette
 import kotlinx.coroutines.launch
@@ -142,7 +145,10 @@ fun ConfigurationScreen(
 
     // Based on the loading state, decide to display the UI or a loading spinner.
     if (isLoaded) {
-        ConfigurationUI(widgetInfo, glanceApp, glanceWidgetId, finishActivity)
+        var themeChoice = remember { mutableStateOf(widgetInfo.themeId) }
+        MyAppTheme(theme = themeChoice.value) {
+            ConfigurationUI(widgetInfo, glanceApp, glanceWidgetId, finishActivity, themeChoice)
+        }
     } else {
         // Show a loading spinner or some placeholder here
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -156,23 +162,22 @@ fun ConfigurationUI(
     widgetInfo: WidgetInfo,
     glanceApp: GlanceButtonWidget,
     glanceWidgetId: GlanceId,
-    finishActivity: (Int) -> Unit
+    finishActivity: (Int) -> Unit,
+    themeChoice: MutableState<String>
 ) {
     val context = LocalContext.current
 
-
-    var themeChoice by remember { mutableStateOf(widgetInfo.themeId) }
     var fontSizeChoice by remember { mutableStateOf(widgetInfo.widgetFontSize) }
     var articleType by remember { mutableStateOf(widgetInfo.articleType) }
     var browserChoice by remember { mutableStateOf(widgetInfo.widgetBrowser) }
 
-    LazyColumn {
+    LazyColumn(modifier = Modifier.background(MaterialTheme.colors.background)) {
         items(1) {
             Text("Widget Settings:")
             ArticleGroup(selectedType = articleType,
                 onSelectedChanged = { selected -> articleType = selected })
-            ThemeGroup(selectedTheme = themeChoice,
-                onSelectedChanged = { selected -> themeChoice = selected })
+            ThemeGroup(selectedTheme = themeChoice.value,
+                onSelectedChanged = { selected -> themeChoice.value = selected })
             FontSizeGroup(selectedFontSize = fontSizeChoice,
                 onSelectedChanged = { selected -> fontSizeChoice = selected })
             BrowserGroup(
@@ -185,7 +190,7 @@ fun ConfigurationUI(
                     glanceApp = glanceApp,
                     glanceWidgetId = glanceWidgetId,
                     finishActivity = finishActivity,
-                    themeChoice = themeChoice,
+                    themeChoice = themeChoice.value,
                     articleType = articleType,
                     fontSizeChoice = fontSizeChoice,
                     browserChoice = browserChoice
