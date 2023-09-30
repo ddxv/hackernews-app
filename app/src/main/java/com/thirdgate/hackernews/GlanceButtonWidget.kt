@@ -135,7 +135,7 @@ class GlanceButtonWidget : GlanceAppWidget() {
                     ).padding(4.dp).fillMaxWidth()
                 ) {
                     Text(
-                        text = LocalContext.current.getString(R.string.glances_button_title) + "X: ${articleType.replaceFirstChar { it.uppercase() }}",
+                        text = LocalContext.current.getString(R.string.glances_button_title) + ": ${articleType.replaceFirstChar { it.uppercase() }}",
                         modifier = GlanceModifier.defaultWeight(),
                         style = TextStyle(
                             fontWeight = FontWeight.Bold,
