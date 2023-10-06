@@ -2,9 +2,6 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     kotlin("plugin.serialization") version "1.9.10"
-
-    // Add the Google services Gradle plugin
-    id("com.google.gms.google-services")
 }
 
 android {
