@@ -1,4 +1,4 @@
-package com.thirdgate.hackernews
+package com.thirdgate.hackernews.widget
 
 import android.content.Context
 import android.content.Intent
@@ -23,7 +23,7 @@ class GlanceButtonWidgetReceiver : GlanceAppWidgetReceiver() {
     override fun onEnabled(context: Context) {
         super.onEnabled(context)
         Log.i("Widget", "GlanceButtonWidgetReceiver onEnabled, enqueue time")
-        GlanceWorker.enqueue(context, force = true)
+        WidgetWorker.enqueue(context, force = true)
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -39,7 +39,7 @@ class GlanceButtonWidgetReceiver : GlanceAppWidgetReceiver() {
             "android.appwidget.action.APPWIDGET_UPDATE_OPTIONS" -> {
                 Log.i("Widget", "GlanceButtonWidgetReceiver options changed, force refresh")
                 // TODO This force reloads on resize. Expensive but fixes issue of initial XML on reinstall...
-                GlanceWorker.enqueue(context, force = true)
+                WidgetWorker.enqueue(context, force = true)
             }
 
             else -> {
@@ -60,6 +60,6 @@ class GlanceButtonWidgetReceiver : GlanceAppWidgetReceiver() {
     override fun onDisabled(context: Context) {
         Log.i("Widget", "GlanceButtonWidgetReceiver onDIsabled!")
         super.onDisabled(context)
-        GlanceWorker.cancel(context)
+        WidgetWorker.cancel(context)
     }
 }

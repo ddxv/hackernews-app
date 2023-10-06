@@ -1,15 +1,8 @@
 <resources>
     <string name="app_name">Hacker News and Widget</string>
     <string name="action_settings">Settings</string>
-    <!-- Strings used for fragments for navigation -->
     <string name="glances_button_title">Hacker News</string>
-
-    <string name="glance_widget_description">Description from glance_widget_info.xml</string>
-    <string name="button">this is button text</string>
-    <string name="check_box">check box eg string</string>
-    <string name="switch_element">eg string switch eleemn</string>
-    <string name="glance_widget_preview_title">HackerNews Articles</string>
-    <string name="glance_widget_preview_text">Article: 1</string>
+    <string name="glance_widget_description">Read Hacker News from a configurable widget</string>
 
     <!--    THEME NAMES-->
     <string name="cyberpunk_dark">Cyberpunk Dark</string>

@@ -19,6 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import com.thirdgate.hackernews.ArticlesRepository.dataStore
 import com.thirdgate.hackernews.ui.theme.MyAppTheme
+import com.thirdgate.hackernews.widget.BrowserGroup
+import com.thirdgate.hackernews.widget.FontSizeGroup
+import com.thirdgate.hackernews.widget.ThemeGroup
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 

@@ -1,4 +1,4 @@
-package com.thirdgate.hackernews
+package com.thirdgate.hackernews.widget
 
 import android.app.Activity
 import android.appwidget.AppWidgetManager
@@ -43,6 +43,9 @@ import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.getAppWidgetState
 import androidx.glance.appwidget.state.updateAppWidgetState
+import com.thirdgate.hackernews.ArticleData
+import com.thirdgate.hackernews.ArticlesRepository
+import com.thirdgate.hackernews.R
 import com.thirdgate.hackernews.ui.theme.CrystalBlueColorPalette
 import com.thirdgate.hackernews.ui.theme.CyberpunkDarkColorPalette
 import com.thirdgate.hackernews.ui.theme.CyberpunkLightColorPalette

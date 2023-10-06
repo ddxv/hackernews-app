@@ -33,7 +33,7 @@
         <activity android:name=".SettingsActivity" />
 
         <activity
-            android:name=".GlanceWidgetConfigurationActivity"
+            android:name=".widget.GlanceWidgetConfigurationActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
@@ -43,7 +43,7 @@
 
         <!-- Register the AppWidgetProvider -->
         <receiver
-            android:name=".GlanceButtonWidgetReceiver"
+            android:name=".widget.GlanceButtonWidgetReceiver"
             android:enabled="@bool/glance_appwidget_available"
             android:exported="true">
             <intent-filter>

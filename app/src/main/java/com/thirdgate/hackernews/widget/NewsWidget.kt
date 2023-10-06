@@ -1,4 +1,4 @@
-package com.thirdgate.hackernews
+package com.thirdgate.hackernews.widget
 
 import android.content.Context
 import android.content.Intent
@@ -41,6 +41,10 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
+import com.thirdgate.hackernews.ArticleData
+import com.thirdgate.hackernews.MainActivity
+import com.thirdgate.hackernews.R
+import com.thirdgate.hackernews.WebViewActivity
 import com.thirdgate.hackernews.ui.theme.CrystalBlueColorPalette
 import com.thirdgate.hackernews.ui.theme.CyberpunkDarkColorPalette
 import com.thirdgate.hackernews.ui.theme.CyberpunkLightColorPalette
@@ -315,6 +319,6 @@ class RefreshAction : ActionCallback {
         parameters: ActionParameters
     ) {
         // Force the worker to refresh
-        GlanceWorker.enqueue(context = context, force = true)
+        WidgetWorker.enqueue(context = context, force = true)
     }
 }
