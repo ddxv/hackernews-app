@@ -1,4 +1,4 @@
-package com.thirdgate.hackernews.ui.theme
+package com.thirdgate.hackernews.presentation.ui.theme
 
 import androidx.compose.material.Colors
 import androidx.compose.ui.graphics.Color

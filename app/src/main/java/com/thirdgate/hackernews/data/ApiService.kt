@@ -1,4 +1,4 @@
-package com.thirdgate.hackernews
+package com.thirdgate.hackernews.data
 
 import android.util.Log
 import com.google.gson.Gson

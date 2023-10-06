@@ -41,20 +41,20 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
-import com.thirdgate.hackernews.ArticleData
+import com.thirdgate.hackernews.data.model.ArticleData
 import com.thirdgate.hackernews.MainActivity
 import com.thirdgate.hackernews.R
 import com.thirdgate.hackernews.WebViewActivity
-import com.thirdgate.hackernews.ui.theme.CrystalBlueColorPalette
-import com.thirdgate.hackernews.ui.theme.CyberpunkDarkColorPalette
-import com.thirdgate.hackernews.ui.theme.CyberpunkLightColorPalette
-import com.thirdgate.hackernews.ui.theme.DarculaColorPalette
-import com.thirdgate.hackernews.ui.theme.HackerNewsOrangeDarkColorPalette
-import com.thirdgate.hackernews.ui.theme.HackerNewsOrangeLightColorPalette
-import com.thirdgate.hackernews.ui.theme.LavenderDarkColorPalette
-import com.thirdgate.hackernews.ui.theme.LavenderLightColorPalette
-import com.thirdgate.hackernews.ui.theme.SolarizedDarkColorPalette
-import com.thirdgate.hackernews.ui.theme.SolarizedLightColorPalette
+import com.thirdgate.hackernews.presentation.ui.theme.CrystalBlueColorPalette
+import com.thirdgate.hackernews.presentation.ui.theme.CyberpunkDarkColorPalette
+import com.thirdgate.hackernews.presentation.ui.theme.CyberpunkLightColorPalette
+import com.thirdgate.hackernews.presentation.ui.theme.DarculaColorPalette
+import com.thirdgate.hackernews.presentation.ui.theme.HackerNewsOrangeDarkColorPalette
+import com.thirdgate.hackernews.presentation.ui.theme.HackerNewsOrangeLightColorPalette
+import com.thirdgate.hackernews.presentation.ui.theme.LavenderDarkColorPalette
+import com.thirdgate.hackernews.presentation.ui.theme.LavenderLightColorPalette
+import com.thirdgate.hackernews.presentation.ui.theme.SolarizedDarkColorPalette
+import com.thirdgate.hackernews.presentation.ui.theme.SolarizedLightColorPalette
 
 
 class GlanceButtonWidget : GlanceAppWidget() {

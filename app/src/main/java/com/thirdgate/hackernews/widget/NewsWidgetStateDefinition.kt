@@ -6,7 +6,7 @@ import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.core.Serializer
 import androidx.datastore.dataStoreFile
 import androidx.glance.state.GlanceStateDefinition
-import com.thirdgate.hackernews.ArticleData
+import com.thirdgate.hackernews.data.model.ArticleData
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import java.io.InputStream

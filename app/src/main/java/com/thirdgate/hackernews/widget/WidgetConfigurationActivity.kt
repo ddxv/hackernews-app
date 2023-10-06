@@ -43,20 +43,20 @@ import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.getAppWidgetState
 import androidx.glance.appwidget.state.updateAppWidgetState
-import com.thirdgate.hackernews.ArticleData
-import com.thirdgate.hackernews.ArticlesRepository
+import com.thirdgate.hackernews.data.model.ArticleData
+import com.thirdgate.hackernews.data.repository.ArticlesRepository
 import com.thirdgate.hackernews.R
-import com.thirdgate.hackernews.ui.theme.CrystalBlueColorPalette
-import com.thirdgate.hackernews.ui.theme.CyberpunkDarkColorPalette
-import com.thirdgate.hackernews.ui.theme.CyberpunkLightColorPalette
-import com.thirdgate.hackernews.ui.theme.DarculaColorPalette
-import com.thirdgate.hackernews.ui.theme.HackerNewsOrangeDarkColorPalette
-import com.thirdgate.hackernews.ui.theme.HackerNewsOrangeLightColorPalette
-import com.thirdgate.hackernews.ui.theme.LavenderDarkColorPalette
-import com.thirdgate.hackernews.ui.theme.LavenderLightColorPalette
-import com.thirdgate.hackernews.ui.theme.MyAppTheme
-import com.thirdgate.hackernews.ui.theme.SolarizedDarkColorPalette
-import com.thirdgate.hackernews.ui.theme.SolarizedLightColorPalette
+import com.thirdgate.hackernews.presentation.ui.theme.CrystalBlueColorPalette
+import com.thirdgate.hackernews.presentation.ui.theme.CyberpunkDarkColorPalette
+import com.thirdgate.hackernews.presentation.ui.theme.CyberpunkLightColorPalette
+import com.thirdgate.hackernews.presentation.ui.theme.DarculaColorPalette
+import com.thirdgate.hackernews.presentation.ui.theme.HackerNewsOrangeDarkColorPalette
+import com.thirdgate.hackernews.presentation.ui.theme.HackerNewsOrangeLightColorPalette
+import com.thirdgate.hackernews.presentation.ui.theme.LavenderDarkColorPalette
+import com.thirdgate.hackernews.presentation.ui.theme.LavenderLightColorPalette
+import com.thirdgate.hackernews.presentation.ui.theme.MyAppTheme
+import com.thirdgate.hackernews.presentation.ui.theme.SolarizedDarkColorPalette
+import com.thirdgate.hackernews.presentation.ui.theme.SolarizedLightColorPalette
 import kotlinx.coroutines.launch
 
 class GlanceWidgetConfigurationActivity : ComponentActivity() {

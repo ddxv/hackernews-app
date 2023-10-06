@@ -1,6 +1,6 @@
 package com.thirdgate.hackernews.widget
 
-import com.thirdgate.hackernews.ArticleData
+import com.thirdgate.hackernews.data.model.ArticleData
 import kotlinx.serialization.Serializable
 
 @Serializable

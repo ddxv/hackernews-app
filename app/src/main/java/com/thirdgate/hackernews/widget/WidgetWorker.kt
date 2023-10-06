@@ -9,8 +9,8 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import com.thirdgate.hackernews.ArticleData
-import com.thirdgate.hackernews.ArticlesRepository
+import com.thirdgate.hackernews.data.model.ArticleData
+import com.thirdgate.hackernews.data.repository.ArticlesRepository
 import java.time.Duration
 
 class WidgetWorker(
