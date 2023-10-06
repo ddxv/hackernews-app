@@ -13,14 +13,14 @@ import com.thirdgate.hackernews.ArticleData
 import com.thirdgate.hackernews.ArticlesRepository
 import java.time.Duration
 
-class GlanceWorker(
+class WidgetWorker(
     private val context: Context,
     workerParameters: WorkerParameters
 ) : CoroutineWorker(context, workerParameters) {
 
     companion object {
 
-        private val uniqueWorkName = GlanceWorker::class.java.simpleName
+        private val uniqueWorkName = WidgetWorker::class.java.simpleName
 
         /**
          * Enqueues a new worker to refresh article data only if not enqueued already
@@ -32,7 +32,7 @@ class GlanceWorker(
          */
         fun enqueue(context: Context, force: Boolean = false) {
             val manager = WorkManager.getInstance(context)
-            val requestBuilder = PeriodicWorkRequestBuilder<GlanceWorker>(
+            val requestBuilder = PeriodicWorkRequestBuilder<WidgetWorker>(
                 Duration.ofMinutes(30)
             )
             var workPolicy = ExistingPeriodicWorkPolicy.KEEP

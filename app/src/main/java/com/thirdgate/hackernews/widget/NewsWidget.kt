@@ -319,6 +319,6 @@ class RefreshAction : ActionCallback {
         parameters: ActionParameters
     ) {
         // Force the worker to refresh
-        GlanceWorker.enqueue(context = context, force = true)
+        WidgetWorker.enqueue(context = context, force = true)
     }
 }
