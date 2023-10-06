@@ -1,4 +1,4 @@
-package com.thirdgate.hackernews
+package com.thirdgate.hackernews.widget
 
 
 import android.os.Build

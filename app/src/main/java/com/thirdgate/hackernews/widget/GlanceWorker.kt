@@ -1,4 +1,4 @@
-package com.thirdgate.hackernews
+package com.thirdgate.hackernews.widget
 
 import android.content.Context
 import android.util.Log
@@ -9,6 +9,8 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import com.thirdgate.hackernews.ArticleData
+import com.thirdgate.hackernews.ArticlesRepository
 import java.time.Duration
 
 class GlanceWorker(

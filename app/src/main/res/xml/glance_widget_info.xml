@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:configure="com.thirdgate.hackernews.GlanceWidgetConfigurationActivity"
+    android:configure="com.thirdgate.hackernews.widget.GlanceWidgetConfigurationActivity"
     android:description="@string/glance_widget_description"
     android:initialLayout="@layout/glance_widget_initial_layout"
     android:minWidth="180dp"

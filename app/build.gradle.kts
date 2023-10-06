@@ -15,7 +15,7 @@ android {
         applicationId = "com.thirdgate.hackernews"
         minSdk = 26
         targetSdk = 34
-        versionCode = 9
+        versionCode = 10
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -43,7 +43,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.2"
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
 
 }
@@ -54,17 +54,17 @@ dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2023.08.00")
     implementation(composeBom)
     implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.compose.ui:ui:1.5.2")
-    implementation("androidx.compose.foundation:foundation-layout-android:1.5.2")
-    implementation("androidx.activity:activity-compose:1.7.2")
+    implementation("androidx.compose.ui:ui:1.5.3")
+    implementation("androidx.compose.foundation:foundation-layout-android:1.5.3")
+    implementation("androidx.activity:activity-compose:1.8.0")
     // Android Studio Preview support
     debugImplementation("androidx.compose.ui:ui-tooling")
     implementation("androidx.compose.ui:ui-tooling-preview")
 
     // Material
-    implementation("androidx.compose.material:material:1.5.1")
+    implementation("androidx.compose.material:material:1.5.3")
     //implementation("androidx.compose.material3:material3:1.1.1")
-    implementation("com.google.android.material:material:1.9.0")
+    implementation("com.google.android.material:material:1.10.0")
 
     // Glance
     implementation("androidx.glance:glance-appwidget:1.0.0")
