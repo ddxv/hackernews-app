@@ -1,6 +1,6 @@
-package com.thirdgate.hackernews
+package com.thirdgate.hackernews.data.model
 
-import com.thirdgate.hackernews.ArticlesRepository.convertEpochToRelativeTime
+import com.thirdgate.hackernews.data.repository.ArticlesRepository.convertEpochToRelativeTime
 import kotlinx.serialization.Serializable
 
 @Serializable

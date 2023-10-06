@@ -17,8 +17,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
-import com.thirdgate.hackernews.ArticlesRepository.dataStore
-import com.thirdgate.hackernews.ui.theme.MyAppTheme
+import com.thirdgate.hackernews.data.repository.ArticlesRepository
+import com.thirdgate.hackernews.data.repository.ArticlesRepository.dataStore
+import com.thirdgate.hackernews.presentation.ui.theme.MyAppTheme
 import com.thirdgate.hackernews.widget.BrowserGroup
 import com.thirdgate.hackernews.widget.FontSizeGroup
 import com.thirdgate.hackernews.widget.ThemeGroup

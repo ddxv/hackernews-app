@@ -40,8 +40,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
-import com.thirdgate.hackernews.ArticlesRepository.dataStore
-import com.thirdgate.hackernews.ui.theme.MyAppTheme
+import com.thirdgate.hackernews.data.model.ArticleData
+import com.thirdgate.hackernews.data.repository.ArticlesRepository
+import com.thirdgate.hackernews.data.repository.ArticlesRepository.dataStore
+import com.thirdgate.hackernews.presentation.ArticleList
+import com.thirdgate.hackernews.presentation.ui.theme.MyAppTheme
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 

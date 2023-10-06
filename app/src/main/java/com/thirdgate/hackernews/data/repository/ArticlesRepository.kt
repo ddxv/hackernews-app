@@ -1,4 +1,4 @@
-package com.thirdgate.hackernews
+package com.thirdgate.hackernews.data.repository
 
 import android.content.Context
 import android.util.Log
@@ -8,6 +8,9 @@ import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.Serializer
 import androidx.datastore.dataStore
+import com.thirdgate.hackernews.data.ApiService
+import com.thirdgate.hackernews.data.model.AppInfo
+import com.thirdgate.hackernews.data.model.ArticleData
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.SerializationException
