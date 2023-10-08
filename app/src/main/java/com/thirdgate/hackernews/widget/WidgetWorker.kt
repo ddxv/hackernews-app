@@ -62,7 +62,7 @@ class WidgetWorker(
 
     override suspend fun doWork(): Result {
         val manager = GlanceAppWidgetManager(context)
-        val glanceIds = manager.getGlanceIds(GlanceButtonWidget::class.java)
+        val glanceIds = manager.getGlanceIds(NewsWidget::class.java)
 
         val r: Result = Result.failure()
 
@@ -84,18 +84,18 @@ class WidgetWorker(
                 Log.i("GlanceWorker", "forEach glanceId: $glanceId")
                 updateAppWidgetState(
                     context = context,
-                    definition = GlanceButtonWidgetStateDefinition(),
+                    definition = NewsWidgetStateDefinition(),
                     glanceId = glanceId,
                     updateState = { widgetInfo ->
                         previousData = widgetInfo.articleData
                         createWidgetInfo(ArticleData.Loading, widgetInfo)
                     }
                 )
-                GlanceButtonWidget().update(context, glanceId)
+                NewsWidget().update(context, glanceId)
                 updateAppWidgetState(
                     context = context,
                     glanceId = glanceId,
-                    definition = GlanceButtonWidgetStateDefinition()
+                    definition = NewsWidgetStateDefinition()
                 ) { widgetInfo ->
                     val data = when (val pulledData =
                         ArticlesRepository.fetchArticles(widgetInfo.articleType, page = 1)) {
@@ -105,7 +105,7 @@ class WidgetWorker(
                     }
                     createWidgetInfo(data, widgetInfo)
                 }
-                GlanceButtonWidget().update(context, glanceId)
+                NewsWidget().update(context, glanceId)
                 val r = Result.success()
             } catch (e: Exception) {
                 Log.i(
@@ -114,7 +114,7 @@ class WidgetWorker(
                 )
                 updateAppWidgetState(
                     context = context,
-                    definition = GlanceButtonWidgetStateDefinition(),
+                    definition = NewsWidgetStateDefinition(),
                     glanceId = glanceId,
                     updateState = { widgetInfo ->
                         WidgetInfo(
@@ -127,7 +127,7 @@ class WidgetWorker(
                         )
                     }
                 )
-                GlanceButtonWidget().update(context, glanceId)
+                NewsWidget().update(context, glanceId)
                 if (runAttemptCount < 10) {
                     // Exponential backoff strategy will avoid the request to repeat
                     // too fast in case of failures.

@@ -33,7 +33,7 @@
         <activity android:name=".SettingsActivity" />
 
         <activity
-            android:name=".widget.GlanceWidgetConfigurationActivity"
+            android:name=".widget.WidgetConfigurationActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />

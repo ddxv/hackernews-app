@@ -16,7 +16,7 @@ import java.io.OutputStream
 /**
  * Provides our own definition of "Glance state" using Kotlin serialization.
  */
-class GlanceButtonWidgetStateDefinition : GlanceStateDefinition<WidgetInfo> {
+class NewsWidgetStateDefinition : GlanceStateDefinition<WidgetInfo> {
 
     val DATASTORE_FILE_PREFIX = "hackernews_widget_"
 

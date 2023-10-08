@@ -39,12 +39,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.glance.appwidget.updateAll
 import androidx.lifecycle.lifecycleScope
 import com.thirdgate.hackernews.data.model.ArticleData
 import com.thirdgate.hackernews.data.repository.ArticlesRepository
 import com.thirdgate.hackernews.data.repository.ArticlesRepository.dataStore
 import com.thirdgate.hackernews.presentation.ArticleList
 import com.thirdgate.hackernews.presentation.ui.theme.MyAppTheme
+import com.thirdgate.hackernews.widget.NewsWidget
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -69,6 +71,9 @@ class MainActivity : ComponentActivity() {
             ArticlesRepository.fetchArticles("top")
             ArticlesRepository.fetchArticles("best")
             ArticlesRepository.fetchArticles("new")
+        }
+        lifecycleScope.launch {
+            NewsWidget().updateAll(context = context)
         }
 
 

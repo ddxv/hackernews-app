@@ -11,7 +11,7 @@ import androidx.glance.appwidget.GlanceAppWidgetReceiver
  * Use this class to handle widget lifecycle specific events like onEnable/Disable.
  */
 class GlanceButtonWidgetReceiver : GlanceAppWidgetReceiver() {
-    override val glanceAppWidget = GlanceButtonWidget()
+    override val glanceAppWidget = NewsWidget()
 
     /**
      * Called when the first instance of the widget is placed. Since all instances share the same

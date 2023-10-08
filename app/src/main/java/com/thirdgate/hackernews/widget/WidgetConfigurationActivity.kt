@@ -43,9 +43,9 @@ import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.getAppWidgetState
 import androidx.glance.appwidget.state.updateAppWidgetState
+import com.thirdgate.hackernews.R
 import com.thirdgate.hackernews.data.model.ArticleData
 import com.thirdgate.hackernews.data.repository.ArticlesRepository
-import com.thirdgate.hackernews.R
 import com.thirdgate.hackernews.presentation.ui.theme.CrystalBlueColorPalette
 import com.thirdgate.hackernews.presentation.ui.theme.CyberpunkDarkColorPalette
 import com.thirdgate.hackernews.presentation.ui.theme.CyberpunkLightColorPalette
@@ -59,7 +59,7 @@ import com.thirdgate.hackernews.presentation.ui.theme.SolarizedDarkColorPalette
 import com.thirdgate.hackernews.presentation.ui.theme.SolarizedLightColorPalette
 import kotlinx.coroutines.launch
 
-class GlanceWidgetConfigurationActivity : ComponentActivity() {
+class WidgetConfigurationActivity : ComponentActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -91,7 +91,7 @@ class GlanceWidgetConfigurationActivity : ComponentActivity() {
             glanceWidgetId = glanceAppWidgetManager.getGlanceIdBy(appWidgetId)
 
 
-            val glanceAppWidget: GlanceButtonWidget = GlanceButtonWidget()
+            val glanceAppWidget: NewsWidget = NewsWidget()
             setContent {
                 CompositionLocalProvider(LocalContext provides context) {
                     ConfigurationScreen(
@@ -117,7 +117,7 @@ class GlanceWidgetConfigurationActivity : ComponentActivity() {
 @Composable
 fun ConfigurationScreen(
     glanceWidgetId: GlanceId,
-    glanceApp: GlanceButtonWidget,
+    glanceApp: NewsWidget,
     finishActivity: (Int) -> Unit
 ) {
     val context = LocalContext.current
@@ -163,7 +163,7 @@ fun ConfigurationScreen(
 @Composable
 fun ConfigurationUI(
     widgetInfo: WidgetInfo,
-    glanceApp: GlanceButtonWidget,
+    glanceApp: NewsWidget,
     glanceWidgetId: GlanceId,
     finishActivity: (Int) -> Unit,
     themeChoice: MutableState<String>
@@ -427,7 +427,7 @@ fun FinishButton(
             scope.launch {
                 updateAppWidgetState(context = context,
                     glanceId = glanceWidgetId,
-                    definition = GlanceButtonWidgetStateDefinition(),
+                    definition = NewsWidgetStateDefinition(),
                     updateState = { widgetInfo ->
                         WidgetInfo(
                             articleData = ArticlesRepository.fetchArticles(
