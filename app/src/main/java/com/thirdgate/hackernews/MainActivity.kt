@@ -68,12 +68,10 @@ class MainActivity : ComponentActivity() {
 
         // Fetch the articles
         lifecycleScope.launch {
+            NewsWidget().updateAll(context)
             ArticlesRepository.fetchArticles("top")
             ArticlesRepository.fetchArticles("best")
             ArticlesRepository.fetchArticles("new")
-        }
-        lifecycleScope.launch {
-            NewsWidget().updateAll(context = context)
         }
 
 
