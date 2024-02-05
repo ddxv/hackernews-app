@@ -41,6 +41,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.glance.appwidget.updateAll
 import androidx.lifecycle.lifecycleScope
+import com.appsflyer.AppsFlyerLib
 import com.thirdgate.hackernews.data.model.ArticleData
 import com.thirdgate.hackernews.data.repository.ArticlesRepository
 import com.thirdgate.hackernews.data.repository.ArticlesRepository.dataStore
@@ -59,7 +60,12 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
+
         super.onCreate(savedInstanceState)
+
+        AppsFlyerLib.getInstance().init("justatest", null, this);
+        AppsFlyerLib.getInstance().start(this);
+
 
         // Hide the status bar
         actionBar?.hide()

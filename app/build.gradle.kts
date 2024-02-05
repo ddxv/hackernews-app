@@ -86,4 +86,8 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp")
     implementation("com.squareup.okhttp3:logging-interceptor")
 
+    // Example
+    implementation("com.appsflyer:af-android-sdk:6.12.6")
+    implementation("com.android.installreferrer:installreferrer:2.2")
+
 }
