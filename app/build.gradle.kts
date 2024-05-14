@@ -48,20 +48,20 @@ android {
 
 
 dependencies {
-    val composeBom = platform("androidx.compose:compose-bom:2023.08.00")
-    implementation("androidx.compose:compose-bom:2023.10.01")
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.compose.ui:ui:1.5.4")
-    implementation("androidx.compose.foundation:foundation-layout-android:1.5.4")
-    implementation("androidx.activity:activity-compose:1.8.2")
+    val composeBom = platform("androidx.compose:compose-bom:2024.05.00")
+//    implementation("androidx.compose:compose-bom:2024.05.00")
+    implementation("androidx.core:core-ktx:1.13.1")
+    implementation("androidx.compose.ui:ui:1.6.7")
+    implementation("androidx.compose.foundation:foundation-layout-android:1.6.7")
+    implementation("androidx.activity:activity-compose:1.9.0")
     // Android Studio Preview support
     debugImplementation("androidx.compose.ui:ui-tooling")
     implementation("androidx.compose.ui:ui-tooling-preview")
 
     // Material
-    implementation("androidx.compose.material:material:1.5.4")
+    implementation("androidx.compose.material:material:1.6.7")
     //implementation("androidx.compose.material3:material3:1.1.1")
-    implementation("com.google.android.material:material:1.11.0")
+    implementation("com.google.android.material:material:1.12.0")
 
     // Glance
     implementation("androidx.glance:glance-appwidget:1.0.0")
@@ -69,25 +69,25 @@ dependencies {
     implementation("androidx.glance:glance:1.0.0")
 
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
     implementation("androidx.work:work-runtime-ktx:2.9.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    implementation("androidx.datastore:datastore:1.0.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("androidx.datastore:datastore:1.1.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
 
     implementation("com.google.code.gson:gson:2.10.1")
 
-    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.10.0"))
+    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.12.0"))
     // define any required OkHttp artifacts without version
     implementation("com.squareup.okhttp3:okhttp")
     implementation("com.squareup.okhttp3:logging-interceptor")
 
     // Example
-    implementation("com.appsflyer:af-android-sdk:6.12.6")
-    implementation("com.android.installreferrer:installreferrer:2.2")
+//    implementation("com.appsflyer:af-android-sdk:6.12.6")
+//    implementation("com.android.installreferrer:installreferrer:2.2")
 
 }
