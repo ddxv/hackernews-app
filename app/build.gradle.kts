@@ -11,7 +11,7 @@ android {
     defaultConfig {
         applicationId = "com.thirdgate.hackernews"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 10
         versionName = "1.0"
 
