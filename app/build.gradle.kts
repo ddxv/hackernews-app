@@ -54,6 +54,7 @@ dependencies {
     implementation("androidx.compose.ui:ui:1.7.5")
     implementation("androidx.compose.foundation:foundation-layout-android:1.7.5")
     implementation("androidx.activity:activity-compose:1.9.3")
+    implementation("com.google.android.gms:play-services-ads-identifier:18.1.0")
     // Android Studio Preview support
     debugImplementation("androidx.compose.ui:ui-tooling")
     implementation("androidx.compose.ui:ui-tooling-preview")
