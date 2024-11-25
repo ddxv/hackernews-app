@@ -48,6 +48,9 @@ android {
 
 
 dependencies {
+
+
+
 //    val composeBom = platform("androidx.compose:compose-bom:2024.05.00")
 //    implementation("androidx.compose:compose-bom:2024.05.00")
     implementation("androidx.core:core-ktx:1.15.0")
@@ -55,6 +58,7 @@ dependencies {
     implementation("androidx.compose.foundation:foundation-layout-android:1.7.5")
     implementation("androidx.activity:activity-compose:1.9.3")
     implementation("com.google.android.gms:play-services-ads-identifier:18.1.0")
+    implementation(files("//home/james/AndroidStudioProjects/OpenAttributionSDK/OpenAttribution/build/outputs/aar/OpenAttribution-debug.aar"))
     // Android Studio Preview support
     debugImplementation("androidx.compose.ui:ui-tooling")
     implementation("androidx.compose.ui:ui-tooling-preview")
@@ -71,7 +75,7 @@ dependencies {
     implementation("androidx.glance:glance:1.1.1")
 
     implementation("androidx.constraintlayout:constraintlayout:2.2.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
     implementation("androidx.work:work-runtime-ktx:2.10.0")
     testImplementation("junit:junit:4.13.2")
