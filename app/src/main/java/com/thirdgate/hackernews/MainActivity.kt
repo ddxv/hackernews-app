@@ -49,6 +49,10 @@ import com.thirdgate.hackernews.presentation.ui.theme.MyAppTheme
 import com.thirdgate.hackernews.widget.NewsWidget
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import okhttp3.OkHttpClient
+import okhttp3.Request
 
 
 class MainActivity : ComponentActivity() {
@@ -380,4 +384,21 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun sendTrackingRequest(url: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val client = OkHttpClient()
+                val request = Request.Builder().url(url).build()
+                val response = client.newCall(request).execute()
+                if (response.isSuccessful) {
+                    println("Tracking request successful: ${response.body?.string()}")
+                } else {
+                    println("Tracking request failed: ${response.code}")
+                }
+            } catch (e: Exception) {
+                println("Error sending tracking request: ${e.message}")
+            }
+        }
+
+    }
 }
