@@ -41,7 +41,20 @@ class AboutActivity : ComponentActivity() {
 
 @Composable
 fun AboutPage() {
+
     val context = LocalContext.current
+
+    val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+    val versionName = packageInfo.versionName
+    val versionCode = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+        packageInfo.longVersionCode.toInt()
+    } else {
+        @Suppress("DEPRECATION")
+        packageInfo.versionCode
+    }
+    val versionText = "$versionName ($versionCode)"
+
+
     val currentContext = rememberUpdatedState(context)
     Column(
         modifier = Modifier
@@ -51,6 +64,10 @@ fun AboutPage() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Text("HackerNews", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+        Text("Version $versionText", fontSize = 16.sp)
+        Spacer(modifier = Modifier.height(24.dp))
+
         Text("Source code available", fontSize = 20.sp)
         Spacer(modifier = Modifier.height(16.dp))
         Text("App Source Code", fontWeight = FontWeight.Bold, fontSize = 18.sp)

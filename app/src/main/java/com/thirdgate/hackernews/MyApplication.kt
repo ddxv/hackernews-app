@@ -10,9 +10,7 @@ class MyApplication : Application() {
     private lateinit var openAttribution: OpenAttribution
 
     override fun onCreate() {
-        Log.d("MyOA", "onCreateBefore")
         super.onCreate()
-        Log.d("MyOA", "onCreateAfter")
         // Initialize the OpenAttribution SDK
         openAttribution = OpenAttribution.initialize(this, "https://oa.thirdgate.dev")
 
