@@ -63,7 +63,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-
         super.onCreate(savedInstanceState)
 
         // Hide the status bar
@@ -384,21 +383,4 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun sendTrackingRequest(url: String) {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val client = OkHttpClient()
-                val request = Request.Builder().url(url).build()
-                val response = client.newCall(request).execute()
-                if (response.isSuccessful) {
-                    println("Tracking request successful: ${response.body?.string()}")
-                } else {
-                    println("Tracking request failed: ${response.code}")
-                }
-            } catch (e: Exception) {
-                println("Error sending tracking request: ${e.message}")
-            }
-        }
-
-    }
 }
