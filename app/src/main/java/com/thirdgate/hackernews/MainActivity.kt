@@ -49,10 +49,8 @@ import com.thirdgate.hackernews.presentation.ui.theme.MyAppTheme
 import com.thirdgate.hackernews.widget.NewsWidget
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import okhttp3.OkHttpClient
-import okhttp3.Request
+import dev.openattribution.sdk.OpenAttribution
+
 
 
 class MainActivity : ComponentActivity() {
@@ -117,6 +115,8 @@ class MainActivity : ComponentActivity() {
 
         var selectedTab by remember { mutableStateOf(0) }
 
+
+
         var showMenu by remember { mutableStateOf(false) }
 
         val context = LocalContext.current
@@ -127,6 +127,8 @@ class MainActivity : ComponentActivity() {
             2 -> "new"
             else -> "top"
         }
+
+
 
         Scaffold(
             topBar = {
@@ -206,6 +208,8 @@ class MainActivity : ComponentActivity() {
                                     contentAlignment = Alignment.Center,
                                     modifier = Modifier.fillMaxSize()
                                 ) {
+                                    OpenAttribution.trackEvent(context, "home_top_articles")
+
                                     Column(
                                         horizontalAlignment = Alignment.CenterHorizontally,
                                         verticalArrangement = Arrangement.Top, // or Arrangement.Center, Arrangement.Bottom
@@ -255,6 +259,8 @@ class MainActivity : ComponentActivity() {
                             is ArticleData.Loading -> {
 
                                 Log.i("MainActivity", "Content Loading")
+//                                OpenAttribution.trackEvent(this, "home_best_articles")
+
                                 Box(
                                     contentAlignment = Alignment.Center,
                                     modifier = Modifier.fillMaxSize()
