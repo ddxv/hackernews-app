@@ -1,7 +1,13 @@
 package com.thirdgate.hackernews
 
+
+import android.content.Intent
+
+import android.net.Uri
 import android.os.Bundle
 import android.view.KeyEvent
+import android.view.Menu
+import android.view.MenuItem
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -38,7 +44,29 @@ class WebViewActivity : ComponentActivity() {
                 return true
             }
         }
+    }
 
+    // Inflate the menu
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_webview, menu)
+        return true
+    }
+
+    // Handle menu item click
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_open_in_browser -> {
+                val url = webView.url ?: return super.onOptionsItemSelected(item)
+                openInBrowser(url)
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun openInBrowser(url: String) {
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        startActivity(browserIntent)
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
@@ -46,8 +74,6 @@ class WebViewActivity : ComponentActivity() {
             webView.goBack()
             return true
         }
-        // If it wasn't the Back key or there's no webpage history, bubble up to the default
-        // system behavior (probably exit the activity)
         return super.onKeyDown(keyCode, event)
     }
 

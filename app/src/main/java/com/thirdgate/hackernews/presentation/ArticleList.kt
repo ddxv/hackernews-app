@@ -118,6 +118,7 @@ fun ArticleView(
     onCommentClick: () -> Unit
 ) {
 
+    var spacingSize = 7
     var smallFontSize = 12
     var regularFontSize = 14
     var largeFontSize = 18
@@ -127,12 +128,14 @@ fun ArticleView(
             largeFontSize -= 2
             regularFontSize -= 2
             smallFontSize -= 2
+            spacingSize -= 2
         }
 
         "large" -> {
             largeFontSize += 2
             regularFontSize += 2
             smallFontSize += 2
+            spacingSize += 2
         }
     }
 
@@ -145,7 +148,7 @@ fun ArticleView(
     val by = article.by as? String ?: ""
     val relativeTime = article.relativeTime as? String ?: ""
 
-    Column(modifier = Modifier.padding(8.dp)) {
+    Column(modifier = Modifier.padding(spacingSize.dp)) {
         Row(
             modifier = Modifier
                 .background(color = MaterialTheme.colors.background)
@@ -170,7 +173,8 @@ fun ArticleView(
                     ) {
                         append(" ($domain)")
                     }
-                }
+                },
+                lineHeight = regularFontSize.sp
             )
         }
         Row(
@@ -181,7 +185,9 @@ fun ArticleView(
             Text(
                 text = "$score points by: $by $relativeTime | $descendants comments",
                 fontSize = 12.sp,
-                color = MaterialTheme.colors.onSurface
+                color = MaterialTheme.colors.onSurface,
+                lineHeight = smallFontSize.sp
+
             )
         }
     }
