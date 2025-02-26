@@ -98,7 +98,7 @@ class WidgetWorker(
                     definition = NewsWidgetStateDefinition()
                 ) { widgetInfo ->
                     val data = when (val pulledData =
-                        ArticlesRepository.fetchArticles(widgetInfo.articleType, page = 1)) {
+                        ArticlesRepository.fetchArticles(context, "widget", widgetInfo.articleType, page = 1)) {
                         is ArticleData.Available -> pulledData
                         else -> previousData
                             ?: ArticleData.Unavailable("Failed to get new or existing data")

@@ -11,6 +11,7 @@ import androidx.datastore.dataStore
 import com.thirdgate.hackernews.data.ApiService
 import com.thirdgate.hackernews.data.model.AppInfo
 import com.thirdgate.hackernews.data.model.ArticleData
+import dev.openattribution.sdk.OpenAttribution
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.SerializationException
@@ -89,8 +90,11 @@ object ArticlesRepository {
         }
     }
 
-    suspend fun fetchArticles(articleType: String, page: Int = 1): ArticleData {
+    suspend fun fetchArticles(context: Context, appLocation:String, articleType: String, page: Int = 1): ArticleData {
         Log.i("ArticlesRepository", "Fetching articleType=$articleType")
+
+        OpenAttribution.trackEvent(context, "fetchArticles_${appLocation}_${articleType}_page_${page}")
+
 
         if (page == 1) {
             when (articleType) {

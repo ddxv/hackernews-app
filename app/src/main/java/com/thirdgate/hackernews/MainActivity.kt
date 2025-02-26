@@ -71,9 +71,9 @@ class MainActivity : ComponentActivity() {
         // Fetch the articles
         lifecycleScope.launch {
             NewsWidget().updateAll(context)
-            ArticlesRepository.fetchArticles("top")
-            ArticlesRepository.fetchArticles("best")
-            ArticlesRepository.fetchArticles("new")
+            ArticlesRepository.fetchArticles(context, "home","top")
+            ArticlesRepository.fetchArticles(context,"home", "best")
+            ArticlesRepository.fetchArticles(context, "home", "new")
         }
 
 
@@ -83,6 +83,7 @@ class MainActivity : ComponentActivity() {
                 currentTheme = appSettings.themeId
                 currentBrowserPreference = appSettings.browserPreference
                 currentFontSize = appSettings.fontSizePreference
+
             }
             MyAppTheme(theme = currentTheme) {
                 MyApp {
@@ -114,8 +115,7 @@ class MainActivity : ComponentActivity() {
         var newPage by remember { mutableStateOf(1) }
 
         var selectedTab by remember { mutableStateOf(0) }
-
-
+        var previousSelectedTab by remember { mutableStateOf(0) }
 
         var showMenu by remember { mutableStateOf(false) }
 
@@ -128,6 +128,12 @@ class MainActivity : ComponentActivity() {
             else -> "top"
         }
 
+        LaunchedEffect(selectedTab) {
+            if (selectedTab != previousSelectedTab || previousSelectedTab == 0) {
+                OpenAttribution.trackEvent(context, "home_${articleType}_articles")
+                previousSelectedTab = selectedTab
+            }
+        }
 
 
         Scaffold(
@@ -208,7 +214,6 @@ class MainActivity : ComponentActivity() {
                                     contentAlignment = Alignment.Center,
                                     modifier = Modifier.fillMaxSize()
                                 ) {
-                                    OpenAttribution.trackEvent(context, "home_top_articles")
 
                                     Column(
                                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -224,6 +229,7 @@ class MainActivity : ComponentActivity() {
                             is ArticleData.Unavailable -> {
                                 // Show an error message
                                 Log.i("MainActivity", "Content UnAvailable")
+
                                 Box(
                                     contentAlignment = Alignment.Center,
                                     modifier = Modifier.fillMaxSize()
@@ -234,7 +240,6 @@ class MainActivity : ComponentActivity() {
                             }
 
                             is ArticleData.Available -> {
-
                                 ArticleList(
                                     articles = getArticles(topArticles, articleType),
                                     fontSize = currentFontSize,
@@ -244,6 +249,8 @@ class MainActivity : ComponentActivity() {
                                         lifecycleScope.launch {
                                             topPage++
                                             ArticlesRepository.fetchArticles(
+                                                context,
+                                                "home",
                                                 articleType,
                                                 page = topPage
                                             )
@@ -259,7 +266,7 @@ class MainActivity : ComponentActivity() {
                             is ArticleData.Loading -> {
 
                                 Log.i("MainActivity", "Content Loading")
-//                                OpenAttribution.trackEvent(this, "home_best_articles")
+
 
                                 Box(
                                     contentAlignment = Alignment.Center,
@@ -298,6 +305,8 @@ class MainActivity : ComponentActivity() {
                                         lifecycleScope.launch {
                                             bestPage++
                                             ArticlesRepository.fetchArticles(
+                                                context,
+                                                "home",
                                                 articleType,
                                                 page = bestPage
                                             )
@@ -349,6 +358,8 @@ class MainActivity : ComponentActivity() {
                                         lifecycleScope.launch {
                                             newPage++
                                             ArticlesRepository.fetchArticles(
+                                                context,
+                                                "home",
                                                 articleType,
                                                 page = newPage
                                             )
@@ -365,7 +376,7 @@ class MainActivity : ComponentActivity() {
 
     private fun getArticles(articleData: ArticleData, type: String): List<ArticleData.ArticleInfo> {
         return when (articleData) {
-            is ArticleData.Available -> articleData.articles[type] ?: emptyList()
+                    is ArticleData.Available -> articleData.articles[type] ?: emptyList()
             else -> emptyList()
         }
     }

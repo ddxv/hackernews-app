@@ -431,6 +431,8 @@ fun FinishButton(
                     updateState = { widgetInfo ->
                         WidgetInfo(
                             articleData = ArticlesRepository.fetchArticles(
+                                context,
+                                "widget",
                                 widgetInfo.articleType,
                                 page = 1
                             ),
