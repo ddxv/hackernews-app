@@ -9,7 +9,6 @@ class MyApplication : Application() {
         super.onCreate()
         // Initialize the OpenAttribution SDK
         OpenAttribution.initialize(this, "https://oa.thirdgate.dev")
-
     }
 
 }

@@ -300,7 +300,7 @@ class NewsWidget : GlanceAppWidget() {
 }
 
 fun makeAClick(context: Context, url: String, chosenBrowser: String) {
-    var webIntent = Intent(context, WebViewActivity::class.java)
+    val webIntent: Intent
     if (chosenBrowser == "inapp") {
         webIntent = Intent(context, WebViewActivity::class.java)
         webIntent.putExtra(WebViewActivity.EXTRA_URL, url)

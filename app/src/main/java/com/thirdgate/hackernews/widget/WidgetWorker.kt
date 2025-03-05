@@ -106,7 +106,7 @@ class WidgetWorker(
                     createWidgetInfo(data, widgetInfo)
                 }
                 NewsWidget().update(context, glanceId)
-                val r = Result.success()
+                Result.success()
             } catch (e: Exception) {
                 Log.i(
                     "GlanceWidgetWorker",
@@ -131,9 +131,9 @@ class WidgetWorker(
                 if (runAttemptCount < 10) {
                     // Exponential backoff strategy will avoid the request to repeat
                     // too fast in case of failures.
-                    val r = Result.retry()
+                    Result.retry()
                 } else {
-                    val r = Result.failure()
+                    Result.failure()
                 }
             }
         }

@@ -25,6 +25,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.MoreVert
@@ -193,7 +194,7 @@ class MainActivity : ComponentActivity() {
                         onClick = { selectedTab = 1 }
                     )
                     BottomNavigationItem(
-                        icon = { Icon(Icons.Default.List, contentDescription = null) },
+                        icon = { Icon(Icons.AutoMirrored.Filled.List, contentDescription = null) },
                         label = { Text("New") },
                         selected = selectedTab == 2,
                         onClick = { selectedTab = 2 }
